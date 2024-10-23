@@ -15,29 +15,16 @@
             <mxPoint x="115" y="110" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="RT94g-_-oweFpu_uJFlS-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="2" source="7" target="RT94g-_-oweFpu_uJFlS-9">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="RT94g-_-oweFpu_uJFlS-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="2" source="7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="115.09999999999991" y="182.08539325842685" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="7" value="User checks interested profile" style="whiteSpace=wrap;rounded=1;" parent="2" vertex="1">
           <mxGeometry x="60" y="110" width="110" height="50" as="geometry" />
         </mxCell>
         <mxCell id="apRJwEjl137yek2u8yZG-43" value="User clicks &quot;Add Friend&quot; button" style="whiteSpace=wrap;html=1;rounded=1;" parent="2" vertex="1">
-          <mxGeometry x="55" y="242" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="RT94g-_-oweFpu_uJFlS-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="2" source="RT94g-_-oweFpu_uJFlS-9" target="apRJwEjl137yek2u8yZG-43">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="RT94g-_-oweFpu_uJFlS-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="2" source="RT94g-_-oweFpu_uJFlS-9" target="RT94g-_-oweFpu_uJFlS-12">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="RT94g-_-oweFpu_uJFlS-9" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;Does the other user have public profile?&lt;/font&gt;" style="rhombus;html=1;align=center;horizontal=1;verticalAlign=middle;labelPosition=center;verticalLabelPosition=middle;spacingLeft=23;spacingBottom=11;spacingTop=-16;" vertex="1" parent="2">
-          <mxGeometry x="92.75" y="182" width="44.5" height="38" as="geometry" />
-        </mxCell>
-        <mxCell id="RT94g-_-oweFpu_uJFlS-12" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="2">
-          <mxGeometry x="235.5" y="186" width="30" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="RT94g-_-oweFpu_uJFlS-14" value="NO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="2">
-          <mxGeometry x="70" y="212" width="60" height="30" as="geometry" />
+          <mxGeometry x="55" y="182" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="3" value="Webapp" style="swimlane;whiteSpace=wrap" parent="1" vertex="1">
           <mxGeometry x="444.5" y="128" width="280" height="570" as="geometry" />
