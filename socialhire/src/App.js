@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import Footer from './components/Footer'; // Adjust path if needed
 
 
 function App() {
@@ -18,8 +19,9 @@ function App() {
         >
           Learn React
         </a>
-        
+        <h1>This is a test of the project!</h1>
       </header>
+      <Footer />
     </div>
   );
 }
