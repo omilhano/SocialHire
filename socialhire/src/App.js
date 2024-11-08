@@ -1,28 +1,26 @@
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Footer from './components/Footer';
 import NavbarSocialhire from './components/Navbar';
-
+import { Routes, Route } from 'react-router-dom';
+import NotFound from './pages/NotFound';
+import Landing from './pages/Landing';
 
 function App() {
   return (
     <div className="App">
       <NavbarSocialhire />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <h1>This is a test of the project!</h1>
-      </header>
+      <Routes>
+        {/* Define routes for created paths */}
+        <Route path="/" element={<Landing />} />
+
+        {/* <Route path="/profile" element={<Profile />} */}
+
+        {/* Fallback 404 route for unknown paths */}
+        <Route path="*" element={<NotFound />} />
+
+      </Routes>
       <Footer />
     </div>
   );
