@@ -19,11 +19,10 @@ function App() {
         {/* <Route path="/profile" element={<Profile />} */}
 
         {/* Fallback 404 route for unknown paths */}
+        <Route path="*" element={<NotFound />} />
 
-        
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<NotFound />} />
 
       </Routes>
       <Footer />

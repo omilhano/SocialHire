@@ -1,11 +1,11 @@
 /* Landing.css */
-.landing-page {
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #EBF5FF, #FFFFFF);
+#background{
+    background-image: url(../images/backgroundLanding.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;
 }
-
 .landing-container {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 4rem 1rem;
 }

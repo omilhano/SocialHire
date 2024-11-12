@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Landing.css';
+import Container from 'react-bootstrap/Container';
 
 const Landing = () => {
     const navigate = useNavigate();
-
     return (
-        <div className="landing-page">
+        <Container fluid id='background'>
             <div className="landing-container">
                 <div className="landing-content">
                     <h1 className="landing-title">Welcome to SocialHire</h1>
@@ -14,7 +14,7 @@ const Landing = () => {
                         Connect with professionals, discover opportunities, and build your career path
                         with our powerful networking platform.
                     </p>
-                    
+
                     <div className="landing-buttons">
                         <button
                             onClick={() => navigate('./SignIn')}
@@ -52,7 +52,7 @@ const Landing = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Container>
     );
 };
 
