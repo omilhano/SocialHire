@@ -1,33 +1,41 @@
 /* Landing.css */
-#background{
-    background-image: url(../images/backgroundLanding.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
+
 .landing-container {
     margin: 0 auto;
-    padding: 4rem 1rem;
+    padding: 2rem 1rem;
 }
 
 .landing-content {
-    max-width: 48rem;
     margin: 0 auto;
     text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
-.landing-title {
-    font-size: 3.5rem;
-    font-weight: bold;
-    color: #1E3A8A;
+.landing-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2rem;
 }
 
 .landing-description {
+    color: #177b7b;
     font-family: 'Futura Pt', 'Arial';
-    font-size: 1.25rem;
-    margin-bottom: 0.5em;
-    font-weight: bold;
-    font-size: 2rem;
+    margin-bottom: 0;
+    font-size: 3.5rem;
+    max-width: 500px;
+    word-break: break-word;
+    text-align: left;
+}
+
+.landing-span {
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-align: left;
+    word-break: break-word;
+    max-width: 600px;
 }
 
 .landing-buttons {
@@ -38,22 +46,80 @@
     margin: 0 auto;
 }
 
-#highlight-orange{
+#highlight-orange {
     color: #FF9F80;
-    -webkit-text-stroke: 0.2px   black;
+    -webkit-text-stroke: 0.2px black;
 }
 
-#highlight-teal{
+#highlight-teal {
     color: #177b7b;
     font-style: italic;
-    
+
 }
+
+.landing-forms{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20%;
+
+}
+.table-forms {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 5px;
+
+}
+
+#login,
+#joinus {
+    background-color: #177b7b;
+    color: #F9FAFB;
+    border: none;
+    min-width: 350px;
+    padding: 15px 20px;
+    font-size: 16px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+#joinus {
+    background-color: white;
+    color: #4B5563;
+    border: 1px solid black;
+}
+
+#login:hover,
+#joinus:hover {
+    background-color: #145a5a;
+
+}
+
+.decide {
+    margin: 15px 0;
+    font-weight: bold;
+
+}
+
 
 @media (min-width: 768px) {
     .landing-buttons {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+@media (max-width: 918px) {
+    .landing-content {
+        flex-direction: column;
+    }
+}
+
 
 .button-primary {
     height: 3rem;

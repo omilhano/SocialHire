@@ -11,17 +11,30 @@ const Landing = () => {
                 <div className="landing-content">
                     <div className='landing-text'>
                         <p className="landing-description">
-                            Land your next <span id='highlight-orange'>opportunity</span>
+                            Land your next opportunity through the power of personal recommendation
                         </p>
-                        <p className="landing-description">
-                            through the power of
-                        </p>
-                        <p className="landing-description">
-                            <span id='highlight-teal'>Personal Recommendations</span>
+                        <p className="landing-span">
+                            Connect with your network to discover job opportunities and help others grow their careers, all based on trust and community.
                         </p>
                     </div>
+                    <div className="landing-forms">
+                        <p className='forms-span'>
+                            Ready to take the opportunity?
+                        </p>
+                        <div className='table-forms'>
+                            <button id='login' onClick={() => navigate('./SignIn')}>Log In</button>
+                            <p className='decide'>OR</p>
+                            <button id='joinus' onClick={() => navigate('./SignUp')}>Join Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Container>
+    );
+};
 
-                    <div className="landing-buttons">
+export default Landing;
+{/* <div className="landing-buttons">
                         <button
                             onClick={() => navigate('./SignIn')}
                             className="button-primary"
@@ -34,32 +47,4 @@ const Landing = () => {
                         >
                             Register
                         </button>
-                    </div>
-
-                    <div className="features-grid">
-                        <div className="feature-card">
-                            <div className="feature-title">Connect</div>
-                            <p className="feature-description">
-                                Build your professional network with like-minded individuals
-                            </p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-title">Discover</div>
-                            <p className="feature-description">
-                                Find exciting job opportunities tailored to your skills
-                            </p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-title">Grow</div>
-                            <p className="feature-description">
-                                Advance your career with professional development resources
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Container>
-    );
-};
-
-export default Landing;
+                    </div> */}
