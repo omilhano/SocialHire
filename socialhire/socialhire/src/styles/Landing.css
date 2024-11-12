@@ -1,0 +1,106 @@
+/* Landing.css */
+.landing-page {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #EBF5FF, #FFFFFF);
+}
+
+.landing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1rem;
+}
+
+.landing-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.landing-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #1E3A8A;
+    margin-bottom: 1.5rem;
+}
+
+.landing-description {
+    font-size: 1.25rem;
+    color: #4B5563;
+    margin-bottom: 3rem;
+}
+
+.landing-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 32rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .landing-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.button-primary {
+    background-color: #2563EB;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #1D4ED8;
+    transform: translateY(-2px);
+}
+
+.button-secondary {
+    background-color: white;
+    color: #2563EB;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid #2563EB;
+    transition: all 0.3s ease;
+}
+
+.button-secondary:hover {
+    background-color: #F9FAFB;
+    transform: translateY(-2px);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 5rem;
+}
+
+@media (min-width: 768px) {
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.feature-card {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.feature-title {
+    color: #2563EB;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.feature-description {
+    color: #4B5563;
+}
