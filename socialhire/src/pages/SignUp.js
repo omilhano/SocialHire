@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth, db } from "../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import '../styles/SignUp.css';
 
 const SignUp = () => {
@@ -10,34 +13,46 @@ const SignUp = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        accountType: 'jobseeker'
+        accountType: 'user'
     });
 
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const validateForm = () => {
         const newErrors = {};
-        
+
+        // Validate First Name
         if (!formData.firstName.trim()) {
             newErrors.firstName = 'First name is required';
+        } else if (formData.firstName.length < 2) {
+            newErrors.firstName = 'First name must be at least 2 characters';
         }
-        
+
+        // Validate Last Name
         if (!formData.lastName.trim()) {
             newErrors.lastName = 'Last name is required';
+        } else if (formData.lastName.length < 2) {
+            newErrors.lastName = 'Last name must be at least 2 characters';
         }
-        
+
+        // Validate Email
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
+            newErrors.email = 'Invalid email address';
         }
-        
+
+        // Validate Password
         if (!formData.password) {
             newErrors.password = 'Password is required';
         } else if (formData.password.length < 6) {
             newErrors.password = 'Password must be at least 6 characters';
+        } else if (!/(?=.*[0-9])/.test(formData.password)) {
+            newErrors.password = 'Password must contain at least one number';
         }
-        
+
+        // Validate Confirm Password
         if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Passwords do not match';
         }
@@ -47,27 +62,80 @@ const SignUp = () => {
     };
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
         // Clear error when user starts typing
-        if (errors[e.target.name]) {
-            setErrors({
-                ...errors,
-                [e.target.name]: ''
-            });
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
+            setIsSubmitting(true);
             try {
-                // Add your sign-up logic here
-                console.log('Sign up data:', formData);
+                // Create authentication user
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth,
+                    formData.email,
+                    formData.password
+                );
+
+                // Get the user ID from authentication
+                const userId = userCredential.user.uid;
+
+                // Create user document in Firestore
+                await setDoc(doc(db, "users", userId), {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    accountType: formData.accountType,
+                    createdAt: new Date().toISOString(),
+                    userId: userId // Store the userId for reference
+                    // Note: We don't store the password in Firestore
+                });
+
+                console.log("User account created successfully!");
+                alert("Account created successfully! Please sign in.");
+                navigate('/signin');
+
             } catch (error) {
-                console.error('Sign up error:', error);
+                console.error("Error creating account:", error);
+                let errorMessage = 'Failed to create account. ';
+
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage += 'Email is already registered.';
+                        setErrors(prev => ({ ...prev, email: 'Email is already registered' }));
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage += 'Invalid email address.';
+                        setErrors(prev => ({ ...prev, email: 'Invalid email address' }));
+                        break;
+                    case 'auth/operation-not-allowed':
+                        errorMessage += 'Email/password accounts are not enabled. Please contact support.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage += 'Please choose a stronger password.';
+                        setErrors(prev => ({ ...prev, password: 'Please choose a stronger password' }));
+                        break;
+                    default:
+                        errorMessage += error.message;
+                }
+
+                setErrors(prev => ({
+                    ...prev,
+                    submit: errorMessage
+                }));
+            } finally {
+                setIsSubmitting(false);
             }
         }
     };
@@ -93,6 +161,7 @@ const SignUp = () => {
                                 value={formData.firstName}
                                 onChange={handleChange}
                                 className={`form-input ${errors.firstName ? 'error' : ''}`}
+                                disabled={isSubmitting}
                             />
                             {errors.firstName && <span className="error-message">{errors.firstName}</span>}
                         </div>
@@ -108,6 +177,7 @@ const SignUp = () => {
                                 value={formData.lastName}
                                 onChange={handleChange}
                                 className={`form-input ${errors.lastName ? 'error' : ''}`}
+                                disabled={isSubmitting}
                             />
                             {errors.lastName && <span className="error-message">{errors.lastName}</span>}
                         </div>
@@ -124,6 +194,7 @@ const SignUp = () => {
                             value={formData.email}
                             onChange={handleChange}
                             className={`form-input ${errors.email ? 'error' : ''}`}
+                            disabled={isSubmitting}
                         />
                         {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
@@ -139,6 +210,7 @@ const SignUp = () => {
                             value={formData.password}
                             onChange={handleChange}
                             className={`form-input ${errors.password ? 'error' : ''}`}
+                            disabled={isSubmitting}
                         />
                         {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
@@ -154,6 +226,7 @@ const SignUp = () => {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
+                            disabled={isSubmitting}
                         />
                         {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
                     </div>
@@ -168,29 +241,37 @@ const SignUp = () => {
                             value={formData.accountType}
                             onChange={handleChange}
                             className="form-select"
+                            disabled={isSubmitting}
                         >
-                            <option value="jobseeker">Job Seeker</option>
-                            <option value="employer">Employer</option>
-                            <option value="recruiter">Recruiter</option>
+                            <option value="user">User</option>
+                            <option value="company">Company</option>
                         </select>
                     </div>
 
-                    <button type="submit" className="signup-button">
-                        Create Account
+                    {errors.submit && (
+                        <div className="error-message submit-error">
+                            {errors.submit}
+                        </div>
+                    )}
+
+                    <button 
+                        type="submit" 
+                        className="signup-button"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Creating Account...' : 'Create Account'}
                     </button>
 
                     <div className="signin-link">
-                        <span className="signin-text">Already have an account?</span>
-                        <a
-                            href="#"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                navigate('/signin');
-                            }}
+                        <span className="signin-text">Already have an account? </span>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/signin')}
                             className="login-link"
+                            disabled={isSubmitting}
                         >
                             Sign in
-                        </a>
+                        </button>
                     </div>
                 </form>
             </div>
