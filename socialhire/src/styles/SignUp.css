@@ -1,0 +1,143 @@
+/* SignUp.css */
+.signup-page {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #EBF5FF, #FFFFFF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.signup-card {
+    width: 100%;
+    max-width: 28rem;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.signup-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.signup-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1E3A8A;
+    margin-bottom: 0.5rem;
+}
+
+.signup-subtitle {
+    color: #6B7280;
+    font-size: 1rem;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.name-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 640px) {
+    .name-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-input {
+    height: 2.75rem;
+    padding: 0 1rem;
+    background-color: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.form-input.error {
+    border-color: #DC2626;
+}
+
+.error-message {
+    color: #DC2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-select {
+    height: 2.75rem;
+    padding: 0 1rem;
+    background-color: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.signup-button {
+    height: 2.75rem;
+    background-color: #2563EB;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.signup-button:hover {
+    background-color: #1D4ED8;
+}
+
+.signup-button:disabled {
+    background-color: #93C5FD;
+    cursor: not-allowed;
+}
+
+.signin-link {
+    text-align: center;
+    color: #6B7280;
+    margin-top: 1rem;
+}
+
+.login-link {
+    color: #2563EB;
+    text-decoration: none;
+    margin-left: 0.25rem;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
