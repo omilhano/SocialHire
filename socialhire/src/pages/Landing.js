@@ -9,11 +9,17 @@ const Landing = () => {
         <Container fluid id='background'>
             <div className="landing-container">
                 <div className="landing-content">
-                    <h1 className="landing-title">Welcome to SocialHire</h1>
-                    <p className="landing-description">
-                        Connect with professionals, discover opportunities, and build your career path
-                        with our powerful networking platform.
-                    </p>
+                    <div className='landing-text'>
+                        <p className="landing-description">
+                            Land your next <span id='highlight-orange'>opportunity</span>
+                        </p>
+                        <p className="landing-description">
+                            through the power of
+                        </p>
+                        <p className="landing-description">
+                            <span id='highlight-teal'>Personal Recommendations</span>
+                        </p>
+                    </div>
 
                     <div className="landing-buttons">
                         <button
