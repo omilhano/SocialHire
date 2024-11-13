@@ -1,0 +1,119 @@
+#nav-bar {
+    padding: 10px 20px;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 5px 10px;
+    width: 300px;
+    margin-right: auto;
+    transition: width 0.3s ease; /* Smooth transition when resizing hopefully */
+}
+
+.search-bar .form-control {
+    border: none;
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+    color: black;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.search-icon {
+    width: 25px;
+    height: 25px;
+}
+
+.icons-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Adds spacing between the icons */
+    margin-left: auto;
+    padding-right: 20px;
+}
+
+
+.navbar-icon {
+    width: 30px;
+    height: 30px; 
+    object-fit: contain; /* Ensures the icon maintains its aspect ratio */
+    cursor: pointer; 
+}
+
+.profile-picture {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    text-align: center;
+    border-left: 3px solid #177B7B; /* Vertical line on the left */
+    padding-left: 20px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+.profile-name {
+    margin-top: 5px; /* Space between the image and text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 1200px) {
+    .search-bar {
+        width: 250px; /* Smaller width on medium-large screens */
+    }
+}
+
+@media (max-width: 992px) {
+    .search-bar {
+        width: 200px; /* Medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .search-bar {
+        width: 100%; /* Full width on small screens */
+        margin-top: 10px; /* Adds space when stacked */
+    }
+    .navbar-icon {
+        width: 25px; /* Adjust size for medium screens */
+        height: 25px; /* Adjust size for medium screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .search-bar {
+        padding: 5px 8px; /* Adjust padding for smaller screens */
+    }
+
+    .search-icon {
+        width: 20px; /* Smaller icon for tight spaces */
+        height: 20px;
+    }
+
+    .navbar-icon {
+        width: 20px; /* Further reduce size for small screens */
+        height: 20px; /* Further reduce size for small screens */
+    }
+}   
