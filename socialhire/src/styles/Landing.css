@@ -30,6 +30,7 @@
     max-width: 500px;
     word-break: break-word;
     text-align: left;
+    margin-left: 5%;
 }
 
 .landing-span {
@@ -39,6 +40,7 @@
     text-align: left;
     word-break: break-word;
     max-width: 600px;
+    margin-left: 5%;
 }
 
 .landing-buttons {
@@ -117,15 +119,7 @@
     }
 }
 
-@media (max-width: 918px) {
-    .landing-content {
-        flex-direction: column;
-    }
 
-    .landing-forms {
-        margin-right: 0;
-    }
-}
 
 
 .button-primary {
@@ -213,12 +207,187 @@
     font-weight: 500;
 }
 
-.landing-actions {
+.highlight-actions {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    margin-right: 20%;
+    max-width: 400px;
 }
 
-.landing-buttonsbox {
+.actions-buttonsbox {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.actions-button {
+    border-radius: 20px;
+    background-color: #177b7b;
+    color: #F9FAFB;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.actions-text {
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.company-highlight {
+    padding-top: 1%;
+    background-color: rgba(255, 159, 128, 0.3);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.company-text {
+    max-width: 500px;
+    word-break: break-word;
+    text-align: left;
+    margin-left: 2rem;
+}
+
+.company-description {
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.company-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20%;
+    max-width: 400px;
+}
+
+.company-actions-text {
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.belief-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.belief-text {
+    margin-left: 2rem;
+    max-width: 500px;
+    text-align: left;
+}
+
+.belief-text-title {
+    color: #177b7b;
+    font-size: 1.8rem;
+    font-weight: 550;
+    word-break: break-word;
+}
+
+.belief-small-text {
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.button-container {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 20px;
+    margin-right: 20%;
+}
+
+.custom-button,
+.actions-button {
+    width: 100px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: #177b7b;
+    border: none;
+    color: #F9FAFB;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: center;
+}
+
+.custom-button:hover {
+    background-color: #FF7A59;
+}
+
+.belief-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.belief-bottom-title {
+    color: #177b7b;
+    font-size: 1.8rem;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.belief-bottom-small-text {
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+@media (max-width: 918px) {
+    .landing-content {
+        flex-direction: column;
+    }
+
+    .landing-highlight {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 2%;
+        padding-bottom: 3px;
+    }
+
+    .highlight-text {
+        text-align: center;
+        margin-left: 0;
+    }
+
+    .highlight-actions {
+        margin-right: 0;
+    }
+
+    .landing-forms {
+        margin-right: 0;
+    }
+
+    .company-highlight {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin: 0 auto;
+        padding-bottom: 2px;
+    }
+
+    .company-text {
+        text-align: center;
+        margin-left: 0;
+    }
+
+    .company-actions {
+        margin-right: 0;
+    }
+
+    .belief-top {
+        flex-direction: column;
+    }
 }
