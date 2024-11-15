@@ -6,6 +6,7 @@ import Bell from '../images/Bell.png';
 import Chats from '../images/Chats.png';
 import JobSearch from '../images/JobSearch.png';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
@@ -18,6 +19,10 @@ const NavbarSocialhire = () => {
     const handleSearchSubmit = (e) => {
         e.preventDefault(); // Prevent page reload on form submission
         alert(`You typed: ${searchInput}. This function is not implemented yet`);
+    };
+    // unimplemented notifications, hamburgerMenu and chats
+    const handleClick = (message) => {
+        alert(message);
     };
     return (
         <Navbar style={{ backgroundColor: '#E2E2E2' }} expand="lg" id="nav-bar">
@@ -48,18 +53,37 @@ const NavbarSocialhire = () => {
                     </button>
                 </Form>
                 <div className="icons-container">
-                    <img src={JobSearch} alt="Job Search" className="navbar-icon" />
-                    <img src={Chats} alt="Chats" className="navbar-icon" />
-                    <img src={Bell} alt="Notifications" className="navbar-icon" />
-                    <img src={HambMenu} alt="Menu" className="navbar-icon" />
+                    <Link to="/JobSearch">
+                        <img src={JobSearch} alt="Job Search" className="navbar-icon" />
+                    </Link>
+                    <img
+                        src={Chats}
+                        alt="Chats"
+                        className="navbar-icon"
+                        onClick={() => handleClick('Function not implemented yet')}
+                    />
+                    <img
+                        src={Bell}
+                        alt="Notifications"
+                        className="navbar-icon"
+                        onClick={() => handleClick('Function not implemented yet')}
+                    />
+                    <img
+                        src={HambMenu}
+                        alt="Menu"
+                        className="navbar-icon"
+                        onClick={() => handleClick('Function not implemented yet')}
+                    />
                 </div>
                 <div className="profile-picture">
-                    <img
-                        src={placeholderPic} // note, this will need to be able to change somehow
-                        alt="Profile"
-                        className="profile-pic"
-                    />
-                    <span className="profile-name">Name</span>
+                    <Link to="/Profile">
+                        <img
+                            src={placeholderPic}// note, this will need to be able to change somehow
+                            alt="Profile"
+                            className="profile-pic"
+                        />
+                        <span className="profile-name">Name</span>
+                    </Link>
                 </div>
             </Container>
         </Navbar>

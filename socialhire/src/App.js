@@ -12,6 +12,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TOS from './pages/TOS';
 import Contacts from './pages/Contacts';
 import Credits from './pages/Credits';
+import JobSearch from './pages/JobSearch'; 
+import Profile from './pages/Profile';
 
 
 
@@ -27,7 +29,8 @@ function App() {
 
         {/* Fallback 404 route for unknown paths */}
         <Route path="*" element={<NotFound />} />
-
+        <Route path="/JobSearch" element={<JobSearch />} />
+        <Route path="/Profile" element={<Profile />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path='/aboutus' element={<About />} />
