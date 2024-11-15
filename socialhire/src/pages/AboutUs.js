@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AboutUs.css';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
 import Diversity from '../images/Diversity.jpg';
 import Scratch from '../images/scratch.png';
 import Explode from '../images/explode.png';
+import Alex from '../images/SocialHirealex.png';
+import Brenda from '../images/SocialHirebrenda.png';
+import Eli from '../images/SocialHireeli.png';
 
 const About = () => {
     const navigate = useNavigate();
@@ -38,9 +40,32 @@ const About = () => {
                 </div>
                 <div className='founders-cards'>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src="holder.js/100px180" />
+                        <Card.Img variant="top" src={Alex} style={{ 'maxHeight': '310px', 'width': '100%' }} />
                         <Card.Body>
-                            <Card.Title>Card Title</Card.Title>
+                            <Card.Title>Alexandre Francisco</Card.Title>
+                            <Card.Text>
+                                Some quick example text to build on the card title and make up the
+                                bulk of the card's content.
+                            </Card.Text>
+                        </Card.Body>
+                    </Card>
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Img variant="top" src={Brenda} style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Body>
+                            <Card.Title>Brenda Lima</Card.Title>
+                            <Card.Text>
+                                “Well I always know someone that knows someone that would be perfect for a job!
+                                After recommending many people to many jobs I could not help but wonder: How come there are no social networks that simplify this proccess?
+                                All are so formal or do not take into consideration your contacts.
+                                That is where SocialHire was born.
+                                A way to take advantage on our own networks when searching for a job.”
+                            </Card.Text>
+                        </Card.Body>
+                    </Card>
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Img variant="top" src={Alex} style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Body>
+                            <Card.Title>Eli Godinho</Card.Title>
                             <Card.Text>
                                 Some quick example text to build on the card title and make up the
                                 bulk of the card's content.
@@ -50,27 +75,7 @@ const About = () => {
                     <Card style={{ width: '18rem' }}>
                         <Card.Img variant="top" src="holder.js/100px180" />
                         <Card.Body>
-                            <Card.Title>Card Title</Card.Title>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the
-                                bulk of the card's content.
-                            </Card.Text>
-                        </Card.Body>
-                    </Card>
-                    <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src="holder.js/100px180" />
-                        <Card.Body>
-                            <Card.Title>Card Title</Card.Title>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the
-                                bulk of the card's content.
-                            </Card.Text>
-                        </Card.Body>
-                    </Card>
-                    <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src="holder.js/100px180" />
-                        <Card.Body>
-                            <Card.Title>Card Title</Card.Title>
+                            <Card.Title>Simon Sazonov</Card.Title>
                             <Card.Text>
                                 Some quick example text to build on the card title and make up the
                                 bulk of the card's content.

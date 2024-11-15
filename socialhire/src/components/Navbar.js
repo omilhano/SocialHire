@@ -75,8 +75,8 @@ const NavbarSocialhire = () => {
                         onClick={() => handleClick('Function not implemented yet')}
                     />
                 </div>
-                <div className="profile-picture">
-                    <Link to="/Profile">
+                <div className="profile-picture-1">
+                    <Link className='profile-picture' to="/Profile">
                         <img
                             src={placeholderPic}// note, this will need to be able to change somehow
                             alt="Profile"

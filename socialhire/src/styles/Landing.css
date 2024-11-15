@@ -406,10 +406,12 @@
     .belief-bottom {
         padding-top: 10px;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     #image-hands {
-        width: 60%;
+        max-width: 200px;
     }
 
     .table-forms {

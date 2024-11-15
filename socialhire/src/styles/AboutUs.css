@@ -43,15 +43,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    padding-bottom: 20px;
 }
 .filler-left{
     width: 266px;
-    height: 264px;
 }
 
 .filler-right{
     width: 137px;
-    height: 274px;
 }
 
 .founders-cards{
