@@ -20,12 +20,14 @@ const Landing = () => {
                     </div>
                     <div className="landing-forms">
                         <p className='forms-span'>
-                            Ready to take the opportunity?
+                            Ready to take the opportunity? {/*TODO: Text is too small i think */}
                         </p>
+                        {/*TODO: button login hovers in a dark teal color - supposed to be dark teal or coral?
+                        button joinus text disappears when hovering */}
                         <div className='table-forms'>
                             <button id='login' onClick={() => navigate('./SignIn')}>Log In</button>
                             <p className='decide'>OR</p>
-                            <button id='joinus' onClick={() => navigate('./SignUp')}>Join Now</button>
+                            <button id='joinus' onClick={() => navigate('./SignUp')}>Join Now</button> 
                         </div>
                     </div>
                 </div>
@@ -84,7 +86,9 @@ const Landing = () => {
                                 Check beforehand if all requirements resonate with you, if not, pass to the next opportunity!
                             </p>
                         </div>
-                        <div className="button-container">
+                        {/* TODO: These buttons hover and change colors. They are not buttons, just visual circles i guess
+                        they shouldnt change color when hovering */}
+                         <div className="button-container">
                             <button className="custom-button">Button 1</button>
                             <button className="custom-button">Button 2</button>
                             <button className="custom-button">Button 3</button>
