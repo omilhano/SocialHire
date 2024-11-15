@@ -94,7 +94,7 @@ const Landing = () => {
                         </div>
                     </div>
                     <div className='belief-bottom'>
-                        <img src={Elipse} alt='imagem of people holding hands'></img>
+                        <img src={Elipse} alt='imagem of people holding hands' id='image-hands'></img>
                         <div className='belief-bottom-text'>
                             <h3 className='belief-bottom-title'>Your friends are your best recommendations</h3>
                             <p className='belief-bottom-small-text'>Let your friends
