@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="py-3" style={{ backgroundColor: "#E2E2E2" }}>
       <Container className="d-flex flex-column align-items-center">
-        <p id="trademarker-E5E5" style={{ color: "black", fontSize: "1.6em" }}>
+        <p id="trademarker-E5E5" style={{ color: "black", fontSize: "1.6em", fontWeight: "bold" }}>
           © {new Date().getFullYear()} SocialHire. All rights reserved.
         </p>
         <ul className="list-inline">
