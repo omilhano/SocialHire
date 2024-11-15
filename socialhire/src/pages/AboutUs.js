@@ -9,6 +9,9 @@ import Explode from '../images/explode.png';
 import Alex from '../images/SocialHirealex.png';
 import Brenda from '../images/SocialHirebrenda.png';
 import Eli from '../images/SocialHireeli.png';
+import Dash from '../images/dashhalf.png';
+import Diamond from '../images/doublediamond.png';
+
 
 const About = () => {
     const navigate = useNavigate();
@@ -41,9 +44,9 @@ const About = () => {
                 <div className='founders-cards'>
                     <Card style={{ width: '18rem' }}>
                         <Card.Img variant="top" src={Alex} style={{ 'maxHeight': '310px', 'width': '100%' }} />
-                        <Card.Body>
-                            <Card.Title>Alexandre Francisco</Card.Title>
-                            <Card.Text>
+                        <Card.Body style={{ 'background-color': '#177B7B' }}>
+                            <Card.Title style={{ 'color': '#E5E5E5' }}>Alexandre Francisco</Card.Title>
+                            <Card.Text style={{ 'color': '#E5E5E5' }}>
                                 Some quick example text to build on the card title and make up the
                                 bulk of the card's content.
                             </Card.Text>
@@ -51,9 +54,9 @@ const About = () => {
                     </Card>
                     <Card style={{ width: '18rem' }}>
                         <Card.Img variant="top" src={Brenda} style={{ 'maxHeight': '310px', 'width': '100%' }} />
-                        <Card.Body>
-                            <Card.Title>Brenda Lima</Card.Title>
-                            <Card.Text>
+                        <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.8)' }}>
+                            <Card.Title style={{ 'color': '#E5E5E5' }}>Brenda Lima</Card.Title>
+                            <Card.Text style={{ 'color': '#E5E5E5' }}>
                                 “Well I always know someone that knows someone that would be perfect for a job!
                                 After recommending many people to many jobs I could not help but wonder: How come there are no social networks that simplify this proccess?
                                 All are so formal or do not take into consideration your contacts.
@@ -63,10 +66,10 @@ const About = () => {
                         </Card.Body>
                     </Card>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src={Alex} style={{ 'maxHeight': '310px', 'width': '100%' }} />
-                        <Card.Body>
-                            <Card.Title>Eli Godinho</Card.Title>
-                            <Card.Text>
+                        <Card.Img variant="top" src={Eli} style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.6)' }}>
+                            <Card.Title style={{ 'color': '#E5E5E5' }}>Eli Godinho</Card.Title>
+                            <Card.Text style={{ 'color': '#E5E5E5' }}>
                                 Some quick example text to build on the card title and make up the
                                 bulk of the card's content.
                             </Card.Text>
@@ -74,14 +77,27 @@ const About = () => {
                     </Card>
                     <Card style={{ width: '18rem' }}>
                         <Card.Img variant="top" src="holder.js/100px180" />
-                        <Card.Body>
-                            <Card.Title>Simon Sazonov</Card.Title>
-                            <Card.Text>
+                        <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.4)' }}>
+                            <Card.Title style={{ 'color': '#E5E5E5' }}>Simon Sazonov</Card.Title>
+                            <Card.Text style={{ 'color': '#E5E5E5' }}>
                                 Some quick example text to build on the card title and make up the
                                 bulk of the card's content.
                             </Card.Text>
                         </Card.Body>
                     </Card>
+                </div>
+            </div>
+            <div className='aboutus-bottom'>
+                <div className='aboutus-botom-images'>
+                    <img src={Dash}></img>
+                    <img src={Diamond}></img>
+                </div>
+                <div className='aboutus-botom-text'>
+                    <p>SocialHire is a platform that focuses on</p>
+                    <p>We hope to change the job hunting market bench through this new sense of online community.</p>
+                    <p>Join us in this mission.</p>
+                </div>
+                <div className='aboutus-fill'>
                 </div>
             </div>
         </Container>
