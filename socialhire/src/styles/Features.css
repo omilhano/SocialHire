@@ -1,0 +1,34 @@
+#background {
+    width: 100%;
+}
+
+.features-left-sided {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    justify-content: start;
+    margin-left: 5%;
+    gap: 20px;
+}
+
+.features-left-sided-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.features-left-sided-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    text-align: left;
+    gap: 20px;
+}
+
+.buttton-box {
+    display: flex;
+    gap: 10px;
+}

@@ -14,6 +14,7 @@ import Contacts from './pages/Contacts';
 import Credits from './pages/Credits';
 import JobSearch from './pages/JobSearch'; 
 import Profile from './pages/Profile';
+import Features from './pages/Features';
 
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path='/aboutus' element={<About />} />
+        <Route path='/features' element={<Features />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/TOS" element={<TOS />} />
         <Route path="/Contacts" element={<Contacts />} />

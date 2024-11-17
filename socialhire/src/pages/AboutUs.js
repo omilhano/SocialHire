@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/AboutUs.css';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -14,7 +13,6 @@ import Diamond from '../images/doublediamond.png';
 
 
 const About = () => {
-    const navigate = useNavigate();
     return (
         <Container fluid id='background' className="g-0">
             <div className='aboutus-container-top'>
