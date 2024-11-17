@@ -101,7 +101,8 @@
 @media (max-width: 768px) {
     .search-bar {
         width: 100%; /* Full width on small screens */
-        margin-top: 10px; /* Adds space when stacked */
+        margin-top: 8px; /* Adds space when stacked */
+        margin-bottom: 5px;
     }
     .navbar-icon {
         width: 25px; /* Adjust size for medium screens */
