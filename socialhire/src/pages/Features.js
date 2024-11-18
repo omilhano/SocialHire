@@ -11,6 +11,11 @@ import Adspng from '../images/digitaladspng.png';
 import Adswebp from '../images/digitaladswebp.webp';
 import Paymentpng from '../images/payment.png';
 import Paymentwebp from '../images/payment.webp';
+import Shieldpng from '../images/shield.png';
+import Shieldwebp from '../images/shield.webp';
+import Surveypng from '../images/survey.png';
+import Surveywebp from '../images/survey.webp';
+import WebsiteFeatureButton from '../components/WebsiteButton';
 
 const Features = () => {
     return (
@@ -46,6 +51,22 @@ const Features = () => {
                     title="Secure Payment"
                     description="Handle payments safely within the platform for all informal jobs, ensuring reliability and convenience for both parties."
                     buttons={[UserFeatureButton]}
+                />
+
+                <LeftSidedFeature
+                    imageWebp={Shieldwebp}
+                    imagePng={Shieldpng}
+                    title="Security"
+                    description="Encryption: Enjoy peace of mind knowing your data and conversations are protected with end-to-end encryption, prioritizing your security and privacy.
+                    Reporting and Moderation: Keep the community safe with tools to report inappropriate content, backed by a robust strike system to enforce platform rules fairly."
+                    buttons={[WebsiteFeatureButton]}
+                />
+                <LeftSidedFeature
+                    imageWebp={Surveywebp}
+                    imagePng={Surveypng}
+                    title="Smart Search Filters"
+                    description="Easily find the right job, hustle, or connection using advanced search tools with customizable filters for more precise results."
+                    buttons={[WebsiteFeatureButton]}
                 />
             </div>
         </Container>
