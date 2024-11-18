@@ -19,7 +19,7 @@ const LeftSidedFeature = ({ imageWebp, imagePng, title, description, buttons }) 
                         ))}
                     </div>
                 </div>
-                <p>{description}</p>
+                <p id='small-text'>{description}</p>
             </div>
         </div>
     );

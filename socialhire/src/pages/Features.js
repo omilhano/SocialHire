@@ -15,7 +15,17 @@ import Shieldpng from '../images/shield.png';
 import Shieldwebp from '../images/shield.webp';
 import Surveypng from '../images/survey.png';
 import Surveywebp from '../images/survey.webp';
+import SocialMediapng from '../images/socialmedia.png';
+import SocialMediawebp from '../images/socialmedia.webp';
+import Promotionpng from '../images/promotion.png';
+import Promotionwebp from '../images/promotion.webp';
+import Romancepng from '../images/romance.png';
+import Romancewebp from '../images/romance.webp';
+import ToTheMoonpng from '../images/tothemoon.png';
+import ToTheMoonwebp from '../images/tothemoon.webp';
 import WebsiteFeatureButton from '../components/WebsiteButton';
+import RightSidedFeature from '../components/RightSided';
+
 
 const Features = () => {
     return (
@@ -28,13 +38,20 @@ const Features = () => {
                     </p>
                 </div>
 
-                {/* First Left Sided Feature with 2 Buttons */}
                 <LeftSidedFeature
                     imageWebp={Dealwebp}
                     imagePng={Dealpng}
                     title="Close Deals"
                     description="Simplify the job-hiring process with streamlined tools to finalize agreements quickly and efficiently, whether for formal or informal work opportunities."
-                    buttons={[CompanyFeatureButton, UserFeatureButton]} // Two buttons
+                    buttons={[CompanyFeatureButton, UserFeatureButton]}
+                />
+
+                <RightSidedFeature
+                    imageWebp={SocialMediawebp}
+                    imagePng={SocialMediapng}
+                    title="Network"
+                    description="Connect with professionals and companies in your sector, build meaningful relationships, and discover new opportunities through personalized recommendations."
+                    buttons={[UserFeatureButton]}
                 />
 
                 <LeftSidedFeature
@@ -42,6 +59,14 @@ const Features = () => {
                     imagePng={Adspng}
                     title="Posting"
                     description="Share job openings or project opportunities with ease. Our platform supports tailored posts for both formal roles and informal gigs, ensuring your needs are met."
+                    buttons={[CompanyFeatureButton, UserFeatureButton]}
+                />
+
+                <RightSidedFeature
+                    imageWebp={Promotionwebp}
+                    imagePng={Promotionpng}
+                    title="Ratings"
+                    description="Foster trust in the community with our transparent rating system, allowing users to evaluate and be evaluated for their roles as workers, job providers, or companies."
                     buttons={[CompanyFeatureButton, UserFeatureButton]}
                 />
 
@@ -53,6 +78,14 @@ const Features = () => {
                     buttons={[UserFeatureButton]}
                 />
 
+                <RightSidedFeature
+                    imageWebp={Romancewebp}
+                    imagePng={Romancepng}
+                    title="Chatting area"
+                    description="Communicate seamlessly with other users through our integrated chat feature, designed to help you discuss job details and build connections."
+                    buttons={[CompanyFeatureButton, UserFeatureButton]}
+                />
+
                 <LeftSidedFeature
                     imageWebp={Shieldwebp}
                     imagePng={Shieldpng}
@@ -61,6 +94,15 @@ const Features = () => {
                     Reporting and Moderation: Keep the community safe with tools to report inappropriate content, backed by a robust strike system to enforce platform rules fairly."
                     buttons={[WebsiteFeatureButton]}
                 />
+
+                <RightSidedFeature
+                    imageWebp={ToTheMoonwebp}
+                    imagePng={ToTheMoonpng}
+                    title="Boosted Visibility"
+                    description="Increase exposure for your posts or ads with boosting options, ensuring they reach the right audience quickly."
+                    buttons={[CompanyFeatureButton, UserFeatureButton]}
+                />
+
                 <LeftSidedFeature
                     imageWebp={Surveywebp}
                     imagePng={Surveypng}

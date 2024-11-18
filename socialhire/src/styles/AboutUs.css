@@ -80,3 +80,27 @@
 .aboutus-fill{
     width: 143px;
 }
+
+@media (max-width: 918px) {
+    .aboutus-container-top{
+        flex-direction: column;
+    }
+
+    .aboutus-founders-header{
+        justify-content: center;
+    }
+
+    .filler-left{
+        width: 0;
+    }
+
+    .filler-right{
+        width: 0;
+    }
+
+    .founders-cards{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
