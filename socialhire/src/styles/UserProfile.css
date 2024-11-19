@@ -1,0 +1,356 @@
+/* UserProfile.css */
+
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f3f2ef;
+}
+
+.profile-header {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden; /* Ensures profile picture aligns well with cover */
+}
+
+.profile-cover {
+    height: 200px;
+    background-color: #8c8c8c;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.profile-picture-container {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    bottom: 0;
+    width: 152px;
+    height: 152px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-picture {
+    width: 100%;
+    height: 100%;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-picture-upload {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s;
+}
+
+.profile-picture-upload:hover {
+    background-color: #f3f2ef;
+}
+
+
+.profile-picture-upload input {
+    display: none;
+}
+
+.edit-icon {
+    color: #666;
+}
+
+/* Basic Info Section */
+.basic-info {
+    padding: 24px 24px 24px 200px;
+}
+
+.info-display h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.headline {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 0 0 8px 0;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+/* Edit Buttons and Forms */
+.edit-btn, .add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    border: none;
+    color: #0a66c2;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+.edit-btn:hover, .add-btn:hover {
+    background-color: rgba(10, 102, 194, 0.1);
+}
+
+.edit-input {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.edit-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.save-btn, .cancel-btn {
+    padding: 8px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.save-btn {
+    background-color: #0a66c2;
+    color: #fff;
+    border: none;
+}
+
+.save-btn:hover {
+    background-color: #084d92;
+}
+
+.cancel-btn {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.6);
+    border: none;
+}
+
+.cancel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Profile Sections */
+.profile-section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.profile-section h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 0 0 16px 0;
+}
+
+/* Experience Section */
+.experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.experience-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.experience-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.experience-icon {
+    color: #666;
+}
+
+.experience-details h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 0 0 4px 0;
+}
+
+.experience-details .company {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0 0 4px 0;
+}
+
+.experience-details .date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 4px 0;
+}
+
+.experience-details .description {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 8px 0 0 0;
+    line-height: 1.5;
+}
+
+/* Add Experience Form */
+.add-experience-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+.date-inputs {
+    display: flex;
+    gap: 16px;
+    margin: 8px 0;
+}
+
+.current-job {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Posts Section */
+.posts-container {
+    margin-top: 16px;
+}
+
+.post-placeholder {
+    text-align: center;
+    padding: 40px;
+    background-color: #f3f2ef;
+    border-radius: 8px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.post-placeholder:hover {
+    background-color: #e9e9e9;
+}
+
+/* Loading State */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 12px;
+    }
+
+    .basic-info {
+        padding: 100px 20px 20px;
+    }
+
+    .profile-picture-container {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .profile-cover {
+        height: 160px;
+    }
+
+    .date-inputs {
+        flex-direction: column;
+    }
+
+    .edit-actions {
+        flex-direction: column;
+    }
+
+    .save-btn, .cancel-btn {
+        width: 100%;
+    }
+}
+
+/* Hidden class for file inputs */
+.hidden {
+    display: none;
+}
+
+/* Form Error States */
+.error {
+    border-color: #d93025;
+}
+
+.error-message {
+    color: #d93025;
+    font-size: 12px;
+    margin-top: 4px;
+}

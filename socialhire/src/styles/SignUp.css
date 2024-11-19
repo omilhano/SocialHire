@@ -34,29 +34,53 @@
     font-size: 1rem;
 }
 
+/* Form Container */
 .signup-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding: 20px;
+    box-sizing: border-box; /* Includes padding within form width */
 }
 
+/* Name Fields */
 .name-fields {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+    max-width: 100%;
+    width: 100%; /* Ensures it stays within the parent container */
+    box-sizing: border-box;
 }
 
-@media (max-width: 640px) {
-    .name-fields {
-        grid-template-columns: 1fr;
-    }
+/* To prevent overflow in grid columns */
+.name-fields > .form-group {
+    min-width: 0; /* Allows columns to shrink */
 }
 
+/* Individual Form Groups */
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
+
+/* Card Container */
+.signup-card {
+    width: 100%;
+    max-width: 28rem;
+    padding: 2rem;
+    box-sizing: border-box; /* Ensures padding is included in max-width */
+}
+
+/* Media Query */
+@media (max-width: 500px) {
+    .name-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+
 
 .form-label {
     font-size: 0.875rem;
