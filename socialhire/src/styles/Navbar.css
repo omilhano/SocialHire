@@ -1,7 +1,3 @@
-#nav-bar {
-    padding: 10px 20px;
-}
-
 .navbar-brand img {
     margin-right: 10px;
 }
@@ -14,7 +10,8 @@
     padding: 5px 10px;
     width: 300px;
     margin-right: auto;
-    transition: width 0.3s ease; /* Smooth transition when resizing hopefully */
+    transition: width 0.3s ease;
+    /* Smooth transition when resizing hopefully */
 }
 
 .search-bar .form-control {
@@ -32,6 +29,7 @@
     margin-left: 10px;
     cursor: pointer;
 }
+
 .search-icon {
     width: 25px;
     height: 25px;
@@ -40,17 +38,19 @@
 .icons-container {
     display: flex;
     align-items: center;
-    gap: 20px; /* Adds spacing between the icons */
+    gap: 20px;
+    /* Adds spacing between the icons */
     margin-left: auto;
     padding-right: 20px;
 }
 
 
 .navbar-icon {
-    width: 30px;
-    height: 30px; 
-    object-fit: contain; /* Ensures the icon maintains its aspect ratio */
-    cursor: pointer; 
+    width: 1.5rem;
+    /* Relative to the root font size */
+    height: 1.5rem;
+    object-fit: contain;
+    cursor: pointer;
 }
 
 .profile-picture-navbar {
@@ -60,9 +60,10 @@
     justify-content: center;
     margin-left: auto;
     text-align: center;
-    border-left: 3px solid #177B7B; /* Vertical line on the left */
+    border-left: 3px solid #177B7B;
+    /* Vertical line on the left */
     padding-left: 20px;
-}   
+}
 
 
 .profile-pic {
@@ -78,8 +79,9 @@
 }
 
 .profile-name {
-    
-    margin-top: 5px; /* Space between the image and text */
+
+    margin-top: 5px;
+    /* Space between the image and text */
     font-size: 14px;
     font-weight: bold;
     color: #333;
@@ -88,40 +90,51 @@
 /* Media queries for responsive design */
 @media (max-width: 1200px) {
     .search-bar {
-        width: 250px; /* Smaller width on medium-large screens */
+        width: 250px;
+        /* Smaller width on medium-large screens */
     }
 }
 
 @media (max-width: 992px) {
     .search-bar {
-        width: 200px; /* Medium screens */
+        width: 200px;
+        /* Medium screens */
     }
 }
 
 @media (max-width: 768px) {
     .search-bar {
-        width: 100%; /* Full width on small screens */
-        margin-top: 8px; /* Adds space when stacked */
+        width: 100%;
+        /* Full width on small screens */
+        margin-top: 8px;
+        /* Adds space when stacked */
         margin-bottom: 5px;
     }
+
     .navbar-icon {
-        width: 25px; /* Adjust size for medium screens */
-        height: 25px; /* Adjust size for medium screens */
+        width: 25px;
+        /* Adjust size for medium screens */
+        height: 25px;
+        /* Adjust size for medium screens */
     }
 }
 
 @media (max-width: 576px) {
     .search-bar {
-        padding: 5px 8px; /* Adjust padding for smaller screens */
+        padding: 5px 8px;
+        /* Adjust padding for smaller screens */
     }
 
     .search-icon {
-        width: 20px; /* Smaller icon for tight spaces */
+        width: 20px;
+        /* Smaller icon for tight spaces */
         height: 20px;
     }
 
     .navbar-icon {
-        width: 20px; /* Further reduce size for small screens */
-        height: 20px; /* Further reduce size for small screens */
+        width: 20px;
+        /* Further reduce size for small screens */
+        height: 20px;
+        /* Further reduce size for small screens */
     }
-}   
+}
