@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { auth, db, storage } from "../firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Pencil, Plus, Briefcase, MapPin, Calendar } from 'lucide-react';
+import DefaultProfilePic from '../images/profile_rand.png';
+import CreatePostPopup from '../components/CreatePostPopup';
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [posts, setPosts] = useState([]);
+    const [showAllPosts, setShowAllPosts] = useState(false);
+    const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
     const [editMode, setEditMode] = useState({
         basic: false,
         about: false,
         experience: false
     });
+
     const [profileData, setProfileData] = useState({
         firstName: '',
         lastName: '',
@@ -22,8 +28,9 @@ const UserProfile = () => {
         experience: [],
         education: [],
         skills: [],
-        profilePicture: '',
+        profilePicture: ''
     });
+
     const [newExperience, setNewExperience] = useState({
         title: '',
         company: '',
@@ -38,16 +45,12 @@ const UserProfile = () => {
         const fetchUserProfile = async () => {
             try {
                 const currentUser = auth.currentUser;
-                if (!currentUser) return;
-
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    setProfileData(prevData => ({
-                        ...prevData,
-                        ...userData
-                    }));
-                    setCurrentUser(currentUser);
+                if (currentUser) {
+                    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                    if (userDoc.exists()) {
+                        setProfileData(prevData => ({ ...prevData, ...userDoc.data() }));
+                        setCurrentUser(currentUser);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching user profile:", error);
@@ -58,6 +61,34 @@ const UserProfile = () => {
 
         fetchUserProfile();
     }, []);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            if (!auth.currentUser) return;
+            
+            try {
+                const postsQuery = query(
+                    collection(db, "posts"),
+                    where("userId", "==", auth.currentUser.uid),
+                    orderBy("timestamp", "desc"),
+                    limit(showAllPosts ? 50 : 4)
+                );
+                
+                const querySnapshot = await getDocs(postsQuery);
+                const fetchedPosts = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setPosts(fetchedPosts);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
+        };
+
+        fetchPosts();
+    }, [showAllPosts]);
+
+
 
     const handleProfilePictureChange = async (e) => {
         const file = e.target.files[0];
@@ -119,6 +150,28 @@ const UserProfile = () => {
             console.error("Error adding experience:", error);
         }
     };
+    const fetchPosts = async () => {
+        try {
+            const postsQuery = query(
+                collection(db, "posts"),
+                where("userId", "==", auth.currentUser.uid),
+                orderBy("timestamp", "desc"),
+                limit(showAllPosts ? 50 : 4)
+            );
+
+            const querySnapshot = await getDocs(postsQuery);
+            const fetchedPosts = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setPosts(fetchedPosts);
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     if (loading) {
         return <div className="loading">Loading...</div>;
@@ -130,11 +183,12 @@ const UserProfile = () => {
             <div className="profile-header">
                 <div className="profile-cover">
                     {/* Cover photo could be added here */}
-                    <div className="profile-picture-container">
+                </div>
+                <div className="profile-picture-container">
                     <div className="profile-picture">
-                        <img 
-                            src={profileData.profilePicture || "/api/placeholder/150/150"} 
-                            alt="Profile" 
+                        <img
+                            src={profileData.profilePicture || "/api/placeholder/150/150"}
+                            alt="Profile"
                             className="profile-image"
                         />
                         <label className="profile-picture-upload">
@@ -147,8 +201,6 @@ const UserProfile = () => {
                             <Pencil className="edit-icon" size={16} />
                         </label>
                     </div>
-                </div>
-                
                 </div>
 
                 {/* Basic Info Section */}
@@ -199,7 +251,7 @@ const UserProfile = () => {
                                 <button onClick={handleSaveBasicInfo} className="save-btn">
                                     Save
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setEditMode(prev => ({ ...prev, basic: false }))}
                                     className="cancel-btn"
                                 >
@@ -215,7 +267,7 @@ const UserProfile = () => {
                                 <MapPin size={16} />
                                 {profileData.location}
                             </p>
-                            <button 
+                            <button
                                 onClick={() => setEditMode(prev => ({ ...prev, basic: true }))}
                                 className="edit-btn"
                             >
@@ -245,7 +297,7 @@ const UserProfile = () => {
                                 // Save about logic
                                 setEditMode(prev => ({ ...prev, about: false }));
                             }} className="save-btn">Save</button>
-                            <button 
+                            <button
                                 onClick={() => setEditMode(prev => ({ ...prev, about: false }))}
                                 className="cancel-btn"
                             >
@@ -256,7 +308,7 @@ const UserProfile = () => {
                 ) : (
                     <div className="about-content">
                         <p>{profileData.about}</p>
-                        <button 
+                        <button
                             onClick={() => setEditMode(prev => ({ ...prev, about: true }))}
                             className="edit-btn"
                         >
@@ -271,7 +323,7 @@ const UserProfile = () => {
             <div className="profile-section">
                 <div className="section-header">
                     <h2>Experience</h2>
-                    <button 
+                    <button
                         onClick={() => setEditMode(prev => ({ ...prev, experience: true }))}
                         className="add-btn"
                     >
@@ -347,7 +399,7 @@ const UserProfile = () => {
                             <button onClick={handleAddExperience} className="save-btn">
                                 Add Experience
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setEditMode(prev => ({ ...prev, experience: false }))}
                                 className="cancel-btn"
                             >
@@ -376,16 +428,65 @@ const UserProfile = () => {
                     ))}
                 </div>
             </div>
-
-            {/* Posts Feed Section */}
-            <div className="profile-section">
-                <h2>Recent Posts</h2>
-                <div className="posts-container">
-                    {/* Posts will be populated here */}
-                    <div className="post-placeholder">
-                        Create your first post...
-                    </div>
+            <div className="profile-section posts-section">
+                <div className="section-header">
+                    <h2>My Posts</h2>
+                    <button
+                        onClick={() => setIsCreatePostOpen(true)}
+                        className="create-post-btn"
+                    >
+                        Create Post
+                    </button>
                 </div>
+
+                <div className="posts-container">
+                    {posts.length > 0 ? (
+                        <>
+                            <div className="posts-grid">
+                                {posts.map((post) => (
+                                    <div key={post.id} className="post-card">
+                                        {post.imageUrl && (
+                                            <img
+                                                src={post.imageUrl}
+                                                alt="Post"
+                                                className="post-image"
+                                            />
+                                        )}
+                                        <div className="post-content">
+                                            <p>{post.content}</p>
+                                            <div className="post-footer">
+                                                <span>{new Date(post.timestamp?.toDate()).toLocaleDateString()}</span>
+                                                <div className="post-stats">
+                                                    <span>{post.likes} likes</span>
+                                                    <span>{post.comments?.length || 0} comments</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {!showAllPosts && posts.length >= 4 && (
+                                <button
+                                    onClick={() => setShowAllPosts(true)}
+                                    className="see-all-btn"
+                                >
+                                    See All Posts
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <div className="post-placeholder">
+                            Create your first post...
+                        </div>
+                    )}
+                </div>
+
+                <CreatePostPopup
+                    isOpen={isCreatePostOpen}
+                    onClose={() => setIsCreatePostOpen(false)}
+                    onPostCreated={fetchPosts}
+                />
+
             </div>
         </div>
     );
