@@ -1,6 +1,6 @@
 import React from 'react';
 import placeholderPic from '../images/placeholderPic.jpg';
-//import '../styles/ProfileCard.css';
+import '../styles/ProfileCard.css';
 
 const ProfileCard = () => {
     return (
