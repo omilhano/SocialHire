@@ -3,6 +3,7 @@ import { Container } from 'react-bootstrap';
 import placeholderPic from '../images/placeholderPic.jpg';
 import '../styles/MainPage.css';
 import ProfileCard from '../components/ProfileCard';
+import PeopleToBefriend from '../components/AddPeople';
 
 const Main = () => {
     return (
@@ -13,17 +14,6 @@ const Main = () => {
                     <div className="sidebar-header">
                         <div className="header-top">
                         <ProfileCard />
-                            <div className="header-profile-pic">
-                                <img
-                                    src={placeholderPic}
-                                    alt="Profile"
-                                    className="profile-pic"
-                                />
-                            </div>
-                            <div className="header-profile-info">
-                                <h3 className="profile-name">John Doe</h3>
-                                <p className="profile-profession">Software Engineer</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -37,6 +27,7 @@ const Main = () => {
                 <div className="layout-aside">
                     <div className='add-people'>
                         <h2>Add people</h2>
+                        <PeopleToBefriend/>
                     </div>
                 </div>
             </div>
