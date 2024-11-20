@@ -13,6 +13,8 @@ const UserProfile = () => {
     // Custom hooks
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
+    const { updateDocument: updateExpirience } = useFirebaseDocument('expirience');
+
     const { updateDocument: updatePost } = useFirebaseDocument('posts');
 
     // State
@@ -117,6 +119,19 @@ const UserProfile = () => {
                     editMode: { ...prev.editMode, about: mode }
                 }))}
                 onSave={(value) => handleProfileUpdate('about', value)}
+            />
+             <ExperienceSection
+                experience={profileData.experience}
+                editMode={editMode.experience}
+                validation={validation}
+                onEditModeChange={(mode) => setState(prev => ({
+                    ...prev,
+                    editMode: { ...prev.editMode, experience: mode }
+                }))}
+                onAddExperience={(experience) => {
+                    const updatedExperience = [...(profileData.experience || []), experience];
+                    handleProfileUpdate('experience', updatedExperience);
+                }}
             />
 
         </div>
