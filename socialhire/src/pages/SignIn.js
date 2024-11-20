@@ -101,9 +101,9 @@ const SignIn = () => {
                 
                 // Redirect based on account type
                 if (userData.accountType === 'company') {
-                    navigate('/company-dashboard');
+                    navigate('/CompanyProfile');
                 } else {
-                    navigate('/dashboard');
+                    navigate('/UserProfile');
                 }
             } else {
                 // New Google user, create profile in Firestore
@@ -118,7 +118,7 @@ const SignIn = () => {
 
                 await setDoc(doc(db, "users", userCredential.user.uid), newUser);
                 localStorage.setItem('userProfile', JSON.stringify(newUser));
-                navigate('/dashboard');
+                navigate('/userProfile');
             }
         } catch (error) {
             console.error('Google sign in error:', error);

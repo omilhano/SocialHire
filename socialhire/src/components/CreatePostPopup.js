@@ -6,15 +6,21 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import '../styles/CreatePostPopup.css';
 
 const CreatePostPopup = ({ isOpen, onClose, onPostCreated }) => {
+    const [title, setTitle] = useState('');  // Added title field
     const [content, setContent] = useState('');
     const [image, setImage] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
 
     if (!isOpen) return null;
 
     const handleImageChange = (e) => {
-        if (e.target.files[0]) {
-            setImage(e.target.files[0]);
+        e.preventDefault();
+        setError('');
+        
+        if (!content.trim()) {
+            setError('Post content is required');
+            return;
         }
     };
 
@@ -24,32 +30,47 @@ const CreatePostPopup = ({ isOpen, onClose, onPostCreated }) => {
 
         setIsSubmitting(true);
         try {
+            // Ensure we have the current user
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                throw new Error('User not authenticated');
+            }
+
             let imageUrl = '';
             if (image) {
-                const imageRef = ref(storage, `post-images/${auth.currentUser.uid}/${Date.now()}`);
+                const imageRef = ref(storage, `post-images/${currentUser.uid}/${Date.now()}`);
                 await uploadBytes(imageRef, image);
                 imageUrl = await getDownloadURL(imageRef);
             }
 
             const postData = {
-                userId: auth.currentUser.uid,
-                content,
+                userId: currentUser.uid,
+                authorName: currentUser.displayName || 'Anonymous',
+                authorPhotoURL: currentUser.photoURL || '',
+                title: title.trim(),
+                content: content.trim(),
                 imageUrl,
                 timestamp: serverTimestamp(),
-                likes: 0,
-                comments: []
+                likeCount: 0,
+                commentCount: 0,
+                createdAt: new Date().toISOString()
             };
 
             const docRef = await addDoc(collection(db, "posts"), postData);
+            console.log("Post created with ID:", docRef.id);
+
+            // Clear form and close popup
+            setTitle('');
             setContent('');
             setImage(null);
             onPostCreated();
             onClose();
         } catch (error) {
             console.error("Error creating post:", error);
+            setError('Failed to create post. Please try again.');
         } finally {
             setIsSubmitting(false);
-        }
+        } setIsSubmitting(false);
     };
 
     return (
@@ -61,7 +82,13 @@ const CreatePostPopup = ({ isOpen, onClose, onPostCreated }) => {
                         <X size={24} />
                     </button>
                 </div>
-                
+                <input className="post-form"
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Post title"
+                    />
+
                 <form onSubmit={handleSubmit} className="post-form">
                     <textarea
                         value={content}
@@ -69,7 +96,7 @@ const CreatePostPopup = ({ isOpen, onClose, onPostCreated }) => {
                         placeholder="What do you want to share?"
                         className="post-input"
                     />
-                    
+
                     <div className="post-actions">
                         <input
                             type="file"
@@ -81,7 +108,7 @@ const CreatePostPopup = ({ isOpen, onClose, onPostCreated }) => {
                         <label htmlFor="image-upload" className="image-upload-button">
                             Add Image
                         </label>
-                        
+
                         <button
                             type="submit"
                             disabled={!content.trim() || isSubmitting}
