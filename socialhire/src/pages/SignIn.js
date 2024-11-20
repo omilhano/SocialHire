@@ -5,6 +5,8 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import '../styles/SignIn.css';
 
+
+// TODO change nav
 const SignIn = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({

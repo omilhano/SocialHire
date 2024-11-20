@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import '../styles/SignUp.css';
 
+// TODO change nav
 const SignUp = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({

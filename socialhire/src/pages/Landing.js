@@ -85,12 +85,12 @@ const Landing = () => {
                             </p>
                         </div>
                         <div className="button-container">
-                            <button className="custom-button">Button 1</button>
-                            <button className="custom-button">Button 2</button>
-                            <button className="custom-button">Button 3</button>
-                            <button className="custom-button">Button 4</button>
-                            <button className="custom-button">Button 5</button>
-                            <button className="custom-button">Button 6</button>
+                            <button className="custom-button">Date</button>
+                            <button className="custom-button">Duration</button>
+                            <button className="custom-button">Address</button>
+                            <button className="custom-button">Time</button>
+                            <button className="custom-button">Description</button>
+                            <button className="custom-button">Payment</button>
                         </div>
                     </div>
                     <div className='belief-bottom'>

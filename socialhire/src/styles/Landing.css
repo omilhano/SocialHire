@@ -286,16 +286,19 @@
 @media (max-width: 918px) {
     .landing-content {
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
-    .landing-text{
-        margin-left: 0%;
+    .landing-text {
+        margin-left: none;
+        text-align: center;
     }
 
-    .landing-description{
+    .landing-description {
         font-size: 2.5rem;
         text-align: center;
-        margin-left: 0%;
+        margin-left: none;
     }
 
     .landing-highlight {
@@ -316,11 +319,11 @@
         margin-right: 0;
     }
 
-    .actions-buttonsbox{
+    .actions-buttonsbox {
         padding-bottom: 5px;
     }
 
-    .company-actions-buttonsbox{
+    .company-actions-buttonsbox {
         padding-bottom: 5px;
     }
 
@@ -377,5 +380,19 @@
     #joinus {
         min-width: 300px;
         width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    .landing-text{
+        margin-left: 0%;
+    }
+
+    .landing-description{
+        margin-left: 0%;
+    }
+
+    .landing-span{
+        text-align: center;
     }
 }

@@ -1,0 +1,8 @@
+#navbar{
+    gap: 40px;
+}
+
+.nav-link{
+    font-family: 'Futura Pt', 'Arial';
+    font-size: 2rem !important;
+}

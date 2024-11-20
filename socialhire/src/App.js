@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 import Footer from './components/Footer';
 import NavbarSocialhire from './components/Navbar';
-import { Routes, Route } from 'react-router-dom';
+import LandingNavbar from './components/LandingNavbar'; // Import the different navbar
+import { Routes, Route, useLocation } from 'react-router-dom'; // Import useLocation
 import NotFound from './pages/NotFound';
 import Landing from './pages/Landing';
 import SignIn from './pages/SignIn';
@@ -20,6 +21,8 @@ import { ToastProvider } from './components/common/Toast';
 
 
 function App() {
+  const currentLocation = useLocation(); // Use useLocation hook to get the current route
+
   return (
     <ToastProvider>
       <div className="App">
