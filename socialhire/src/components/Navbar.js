@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { auth, db, storage } from "../firebaseConfig";
+import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
@@ -14,8 +17,10 @@ import Chats from '../images/Chats.png';
 import JobSearch from '../images/JobSearch.png';
 
 const NavbarSocialhire = () => {
+
     const [searchInput, setSearchInput] = useState('');
     const [showModal, setShowModal] = useState(false); // State for modal visibility
+    const [userName, setUserName] = useState(null); // Store the user's profile name
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -25,6 +30,40 @@ const NavbarSocialhire = () => {
     const handleClick = (message) => {
         alert(message);
     };
+
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        setUserName(userData.firstName || "User"); // Replace with actual field for the name
+                    }
+                } catch (error) {
+                    console.error("Error fetching user profile:", error);
+                }
+            } else {
+                setUserName(null); // User is not logged in
+            }
+        };
+
+        fetchUserProfile();
+
+        // Listen to auth state changes (optional for real-time updates)
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                fetchUserProfile();
+            } else {
+                setUserName(null); // Reset if user logs out
+            }
+        });
+
+        return () => unsubscribe(); // Cleanup on unmount
+    }, []);
+
 
     return (
         <>
@@ -92,7 +131,7 @@ const NavbarSocialhire = () => {
                                 alt="Profile"
                                 className="profile-pic"
                             />
-                            <span className="profile-name">Name</span>
+                            <span className="profile-name">{userName || "Login"}</span>
                         </Link>
                     </div>
                 </Container>

@@ -12,7 +12,6 @@ const SearchModal = ({ show, onClose }) => {
     // Reset the state when the modal is closed
     useEffect(() => {
         if (!show) {
-            // Reset states to initial values when modal is closed
             setJobType('Choose Type of Job');
             setLocation('Choose Location');
             setNumOfPeople('Choose Nº of people');
