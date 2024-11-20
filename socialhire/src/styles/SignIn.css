@@ -1,7 +1,7 @@
 /* SignIn.css */
 .signin-page {
     min-height: 100vh;
-    background: linear-gradient(to bottom, #EBF5FF, #FFFFFF);
+    background: linear-gradient(to bottom, #EBF5FF, #B3BDC7); /* todo change gradient*/
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,7 +25,7 @@
 .signin-title {
     font-size: 2rem;
     font-weight: bold;
-    color: #1E3A8A;
+    color: #177b7b;
     margin-bottom: 0.5rem;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .form-input:focus {
-    border-color: #2563EB;
+    border-color: #177b7b;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
@@ -89,7 +89,7 @@
 }
 
 .forgot-password {
-    color: #2563EB;
+    color: #177b7b;
     font-size: 0.875rem;
     background: none;
     border: none;
@@ -110,7 +110,7 @@
 
 .signin-button {
     height: 2.75rem;
-    background-color: #2563EB;
+    background-color: #177b7b;
     color: white;
     font-size: 1rem;
     font-weight: 500;
@@ -121,11 +121,11 @@
 }
 
 .signin-button:hover {
-    background-color: #1D4ED8;
+    background-color: #177b7b;
 }
 
 .signin-button:disabled {
-    background-color: #93C5FD;
+    background-color: #93C5FD;/* todo also what is this?*/
     cursor: not-allowed;
 }
 
@@ -166,7 +166,7 @@
 }
 
 .register-link {
-    color: #2563EB;
+    color: #177b7b;
     text-decoration: none;
     margin-left: 0.25rem;
 }

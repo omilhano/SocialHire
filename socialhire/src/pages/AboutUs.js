@@ -12,6 +12,7 @@ import Dash from '../images/dashhalf.png';
 import Diamond from '../images/doublediamond.png';
 
 
+// TODO change nav
 const About = () => {
     return (
         <Container fluid id='background' className="g-0">

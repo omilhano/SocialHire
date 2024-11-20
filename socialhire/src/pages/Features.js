@@ -26,7 +26,7 @@ import ToTheMoonwebp from '../images/tothemoon.webp';
 import WebsiteFeatureButton from '../components/WebsiteButton';
 import RightSidedFeature from '../components/RightSided';
 
-
+//TODO change nav
 const Features = () => {
     return (
         <Container fluid id='background' className="g-0">
