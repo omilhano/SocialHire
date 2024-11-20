@@ -1,52 +1,56 @@
-import React, {useEffect, useState} from 'react';
-import { Card } from 'react-bootstrap';
-import db from "../firebaseConfig";
-import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import React, { useState, useEffect } from 'react';
+import { db } from "../firebaseConfig"; // Ensure the path to firebaseConfig.js is correct
+import { collection, getDocs } from "firebase/firestore";
 
-const PeopleToBefriend = () => {
-    const [randomUsers, setRandomUsers] = useState([]);
+const People = () => {
+    const [users, setUsers] = useState([]); // State to store fetched users
+    const [loading, setLoading] = useState(true); // State to handle loading status
+    const [error, setError] = useState(null); // State to store error messages
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                // Fetch users collection
-                const usersSnapshot = await getDocs(collection(db, "users"));
-                const usersList = usersSnapshot.docs.map(doc => doc.data());
-                
-                // Select random users
-                const randomUsersList = getRandomUsers(usersList, 3); // Select 3 random users
-                setRandomUsers(randomUsersList);
-            } catch (error) {
-                console.error("Error fetching users:", error);
+                console.log("Fetching users from Firestore...");
+                const usersCollectionRef = collection(db, 'users'); // Reference to 'users' collection
+                const snapshot = await getDocs(usersCollectionRef); // Get all documents in the collection
+
+                console.log("Snapshot fetched:", snapshot.docs);
+
+                // Map documents to array of user data
+                const usersData = snapshot.docs.map((doc) => ({
+                    id: doc.id, // Document ID
+                    ...doc.data(), // Document fields
+                }));
+
+                console.log("Users data:", usersData);
+
+                setUsers(usersData); // Update state with fetched data
+            } catch (err) {
+                console.error("Error fetching users:", err);
+                setError("Failed to fetch users. Please try again later.");
+            } finally {
+                setLoading(false); // Set loading to false after fetch completes
             }
         };
 
-        fetchUsers();
-    }, []);
-
-    const getRandomUsers = (users, count) => {
-        const shuffledUsers = [...users];
-        for (let i = shuffledUsers.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledUsers[i], shuffledUsers[j]] = [shuffledUsers[j], shuffledUsers[i]]; // Swap
-        }
-        return shuffledUsers.slice(0, count); // Get the top 'count' random users
-    };
-
+        fetchUsers(); // Call the fetch function on component mount
+    }, []); // Empty dependency array ensures the effect runs only once
     return (
-        <div className="people-to-befriend">
-            <h2>People You May Know</h2>
-            {randomUsers.map((user, index) => (
-                <Card key={index} className="mb-3">
-                    <Card.Body>
-                        <Card.Title>{user.firstName} {user.lastName}</Card.Title>
-                        <Card.Text>{user.profession || 'Profession not available'}</Card.Text>
-                        <button className="btn btn-primary">Add Friend</button>
-                    </Card.Body>
-                </Card>
-            ))}
+        <div>
+            <div>
+                {users.length > 0 ? (
+                    users.map((user) => (
+                        <div key={user.id}>
+                            <h3>{user.firstName} {user.lastName}</h3>
+                            <p>{user.accountType}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>Loading users...</p>
+                )}
+            </div>
         </div>
     );
 };
 
-export default PeopleToBefriend;
+export default People;

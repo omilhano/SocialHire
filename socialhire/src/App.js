@@ -1,3 +1,4 @@
+
 import React from 'react';
 import './App.css';
 import Footer from './components/Footer';
@@ -16,41 +17,38 @@ import Credits from './pages/Credits';
 import JobSearch from './pages/JobSearch';
 import Profile from './pages/UserProfile';
 import Features from './pages/Features';
-import { ToastProvider } from './components/common/Toast';
-
-
+import Main from './pages/MainPage';
 
 function App() {
   const currentLocation = useLocation(); // Use useLocation hook to get the current route
-
   return (
-    <ToastProvider>
-      <div className="App">
-        <NavbarSocialhire />
-        <Routes>
-          {/* Define routes for created paths */}
-          <Route path="/" element={<Landing />} />
+    <div className="App">
+      {/* Conditional Navbar */}
+      {currentLocation.pathname === '/' ? <LandingNavbar /> : <NavbarSocialhire />}
 
-          {/* <Route path="/profile" element={<Profile />} */}
+      <Routes>
+        {/* Define routes for created paths */}
+        <Route path="/" element={<Landing />} />
 
-          {/* Fallback 404 route for unknown paths */}
-          <Route path="*" element={<NotFound />} />
-          <Route path="/JobSearch" element={<JobSearch />} />
-          <Route path="/UserProfile" element={<Profile />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path='/aboutus' element={<About />} />
-          <Route path='/features' element={<Features />} />
-          <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-          <Route path="/TOS" element={<TOS />} />
-          <Route path="/Contacts" element={<Contacts />} />
-          <Route path="/Credits" element={<Credits />} />
+        {/* Other Routes */}
+        <Route path="/Main" element={<Main />} />
+        <Route path="/JobSearch" element={<JobSearch />} />
+        <Route path="/UserProfile" element={<Profile />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/aboutus" element={<About />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/TOS" element={<TOS />} />
+        <Route path="/Contacts" element={<Contacts />} />
+        <Route path="/Credits" element={<Credits />} />
 
-        </Routes>
-        <Footer />
-      </div>
-    </ToastProvider>
-  );
-}
+        {/* Fallback 404 route for unknown paths */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
+    </div>
+  )
+};
 
 export default App;
