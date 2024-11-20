@@ -99,15 +99,15 @@ const UserProfile = () => {
 
             <ProfileHeader
                 profileData={profileData}
-                editMode={editMode.basic}
+                editMode={editMode?.basic || true}
                 validation={validation}
                 onEditModeChange={(mode) => setState(prev => ({
                     ...prev,
                     editMode: { ...prev.editMode, basic: mode }
                 }))}
                 onProfilePictureChange={handleProfilePictureChange}
-                onProfileUpdate={handleProfileUpdate}
-            />
+                onProfileDataChange={handleProfileUpdate} 
+                onSaveBasicInfo={(value) => handleProfileUpdate('about', value)}                />
             <AboutSection
                 about={profileData.about}
                 editMode={editMode.about}

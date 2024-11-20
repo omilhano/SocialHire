@@ -1,48 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pencil, MapPin } from 'lucide-react';
 import DefaultProfilePic from '../../images/placeholderPic.jpg';
 
-export const ProfileHeader = ({ 
-    profileData, 
-    editMode, 
-    onEditModeChange, 
-    onProfilePictureChange, 
-    onProfileDataChange,
-    onSaveBasicInfo 
+export const ProfileHeader = ({
+    profileData,
+    editMode,
+    onEditModeChange,
+    onProfilePictureChange,
+    onProfileDataChange
 }) => (
     <div className="profile-header">
         <div className="profile-cover" />
         <div className="profile-picture-container">
-            <div className="profile-picture">
-                <img
-                    src={profileData.profilePicture || DefaultProfilePic}
-                    alt="Profile"
-                    className="profile-image"
+            <img
+                src={profileData.profilePicture || DefaultProfilePic}
+                alt="Profile"
+                className="profile-image"
+            />
+            <label className="profile-picture-upload">
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={onProfilePictureChange}
+                    className="hidden"
                 />
-                <label className="profile-picture-upload">
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={onProfilePictureChange}
-                        className="hidden"
-                    />
-                    <Pencil className="edit-icon" size={16} />
-                </label>
-            </div>
+                <Pencil className="edit-icon" size={16} />
+            </label>
         </div>
+
 
         <div className="basic-info">
             {editMode.basic ? (
-                <BasicInfoForm 
+                <BasicInfoForm
                     profileData={profileData}
                     onProfileDataChange={onProfileDataChange}
-                    onSave={onSaveBasicInfo}
-                    onCancel={() => onEditModeChange(prev => ({ ...prev, basic: false }))}
+                    onSave={() => onEditModeChange({ basic: false })}
+                    onCancel={() => onEditModeChange({ basic: false })}
                 />
             ) : (
-                <BasicInfoDisplay 
+                <BasicInfoDisplay
                     profileData={profileData}
-                    onEdit={() => onEditModeChange(prev => ({ ...prev, basic: true }))}
+                    onEdit={() => onEditModeChange({ basic: true })}
                 />
             )}
         </div>
@@ -50,54 +48,71 @@ export const ProfileHeader = ({
 );
 
 // BasicInfoForm.js
-const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) => (
-    <div className="edit-basic-info">
-        <input
-            type="text"
-            value={profileData.firstName}
-            onChange={(e) => onProfileDataChange(prev => ({
-                ...prev,
-                firstName: e.target.value
-            }))}
-            placeholder="First Name"
-            className="edit-input"
-        />
-        <input
-            type="text"
-            value={profileData.lastName}
-            onChange={(e) => onProfileDataChange(prev => ({
-                ...prev,
-                lastName: e.target.value
-            }))}
-            placeholder="Last Name"
-            className="edit-input"
-        />
-        <input
-            type="text"
-            value={profileData.headline}
-            onChange={(e) => onProfileDataChange(prev => ({
-                ...prev,
-                headline: e.target.value
-            }))}
-            placeholder="Headline"
-            className="edit-input"
-        />
-        <input
-            type="text"
-            value={profileData.location}
-            onChange={(e) => onProfileDataChange(prev => ({
-                ...prev,
-                location: e.target.value
-            }))}
-            placeholder="Location"
-            className="edit-input"
-        />
-        <div className="edit-actions">
-            <button onClick={onSave} className="save-btn">Save</button>
-            <button onClick={onCancel} className="cancel-btn">Cancel</button>
+const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) => {
+    const [formData, setFormData] = useState({ ...profileData });
+
+    const handleInputChange = (field, value) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    };
+
+    const handleSave = () => {
+        if (onProfileDataChange) {
+            Object.keys(formData).forEach((field) =>
+                onProfileDataChange(field, formData[field])
+            );
+        }
+        if (onSave) {
+            onSave();
+        }
+    };
+
+    const handleCancel = () => {
+        setFormData({ ...profileData }); // Reset formData to original data
+        if (onCancel) {
+            onCancel();
+        }
+    };
+
+    return (
+        <div className="edit-basic-info">
+            <input
+                type="text"
+                value={formData.firstName}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                placeholder="First Name"
+                className="edit-input"
+            />
+            <input
+                type="text"
+                value={formData.lastName}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                placeholder="Last Name"
+                className="edit-input"
+            />
+            <input
+                type="text"
+                value={formData.headline}
+                onChange={(e) => handleInputChange('headline', e.target.value)}
+                placeholder="Headline"
+                className="edit-input"
+            />
+            <input
+                type="text"
+                value={formData.location}
+                onChange={(e) => handleInputChange('location', e.target.value)}
+                placeholder="Location"
+                className="edit-input"
+            />
+            <div className="edit-actions">
+                <button onClick={handleSave} className="save-btn">Save</button>
+                <button onClick={handleCancel} className="cancel-btn">Cancel</button>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 // BasicInfoDisplay.js
 const BasicInfoDisplay = ({ profileData, onEdit }) => (

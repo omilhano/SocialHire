@@ -5,6 +5,7 @@
     margin-bottom: 20px;
     position: relative;
     overflow: hidden;
+    margin-right: auto; /* Center align if combined with max-width */
 }
 
 .profile-cover {
@@ -16,19 +17,59 @@
 .profile-info-container {
     display: flex;
     padding: 24px;
-    gap: 24px;
+    gap: 24px;    
 }
 
 .profile-picture-container {
-    flex-shrink: 0;
+    position: relative; /* Allows positioning child elements inside */
     width: 152px;
     height: 152px;
-    border-radius: 50%;
-    border: 4px solid #fff;
-    overflow: hidden;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: -76px;
+    border-radius: 50%; /* Makes the container circular */
+    border: 4px solid #fff; /* White border for clean separation */
+    overflow: hidden; /* Ensures content stays inside the circle */
+    background-color: #fff; /* Background color for fallback */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: -76px; /* Adjusts positioning */
+    display: flex; /* Centers child content */
+    align-items: center; /* Vertical centering */
+    justify-content: center; /* Horizontal centering */
+    box-sizing: border-box; /* Ensures padding does not affect size */
+}
+
+.profile-image {
+    width: 100%; /* Ensures the image takes up available space */
+    height: 100%; /* Maintains aspect ratio within the circle */
+    object-fit: cover; /* Ensures the image fills the container */
+    border-radius: 50%; /* Ensures the image stays circular */
+}
+
+.profile-picture-upload {
+    position: absolute; /* Positioned relative to the container */
+    bottom: 10px; /* Adjusts pencil position */
+    right: 10px; /* Adjusts pencil position */
+    background-color: #0a66c2; /* Blue background for the pencil */
+    width: 36px; /* Icon container size */
+    height: 36px;
+    display: flex; /* Centers the pencil inside */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Makes the icon container circular */
+    cursor: pointer; /* Indicates interactivity */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.profile-picture-upload:hover {
+    background-color: #084d92; /* Darker blue on hover */
+}
+
+.profile-picture-upload .edit-icon {
+    color: #fff; /* White pencil icon for contrast */
+    width: 16px; /* Icon size */
+    height: 16px;
+}
+
+.hidden {
+    display: none; /* Hides the file input */
 }
 
 .basic-info {
@@ -55,7 +96,8 @@
     gap: 4px;
     color: rgba(0, 0, 0, 0.6);
     font-size: 14px;
-    margin: 4px 0;
+    padding: 3px 25px;
+    margin-left: auto; /* Align to the right */
 }
 
 /* Edit Buttons and Forms */
@@ -69,7 +111,7 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    padding: 6px 12px;
+    padding: 3px 25px;
     border-radius: 4px;
     margin-top: 12px;
 }
@@ -80,80 +122,176 @@
 
 .edit-input {
     width: 100%;
-    padding: 8px 12px;
+    padding: 3px 25px;
     margin: 8px 0;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     font-size: 14px;
 }
 
-.edit-textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    font-size: 14px;
-    resize: vertical;
+.edit-basic-info {
+    background-color: #fff; /* White background for better readability */
+    border-radius: 8px; /* Rounded corners for a modern look */
+    padding: 24px; /* Internal spacing for consistent design */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); /* Subtle border to separate from background */
+    display: flex; /* Flexbox for alignment */
+    flex-direction: column; /* Stack input fields vertically */
+    gap: 16px; /* Space between input fields and buttons */
+    width: 100%; /* Ensure it adapts to its container */
+    max-width: 1000px; /* Optional: Limit the width for a centered layout */
+    margin: 0 auto; /* Center horizontally */
 }
 
-.edit-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
+.edit-basic-info .edit-input {
+    width: 100%; /* Inputs take full width of the container */
+    padding: 10px 12px; /* Comfortable input padding */
+    border: 1px solid rgba(0, 0, 0, 0.2); /* Subtle border for inputs */
+    border-radius: 4px; /* Rounded corners for consistency */
+    font-size: 14px; /* Easy-to-read font size */
+    transition: border-color 0.3s; /* Smooth interaction effect */
 }
 
-.save-btn, .cancel-btn {
-    padding: 8px 16px;
-    border-radius: 16px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.edit-basic-info .edit-input:focus {
+    outline: none; /* Remove default outline */
+    border-color: #0a66c2; /* Highlight border on focus */
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2); /* Subtle glow on focus */
 }
 
-.save-btn {
-    background-color: #0a66c2;
-    color: #fff;
-    border: none;
+.edit-basic-info .edit-actions {
+    display: flex; /* Align buttons in a row */
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 12px; /* Space between buttons */
 }
 
-.save-btn:hover {
-    background-color: #084d92;
+.edit-basic-info .save-btn, 
+.edit-basic-info .cancel-btn {
+    padding: 8px 16px; /* Button padding */
+    border-radius: 16px; /* Rounded button shapes */
+    font-size: 14px; /* Consistent font size */
+    font-weight: 600; /* Bold text for prominence */
+    cursor: pointer; /* Pointer cursor for clickable buttons */
+    transition: background-color 0.3s, color 0.3s; /* Smooth interaction */
 }
 
-.cancel-btn {
-    background-color: transparent;
-    color: rgba(0, 0, 0, 0.6);
-    border: none;
+.edit-basic-info .save-btn {
+    background-color: #0a66c2; /* Primary blue color */
+    color: #fff; /* White text */
+    border: none; /* Remove default border */
 }
 
-.cancel-btn:hover {
-    background-color: rgba(0, 0, 0, 0.08);
+.edit-basic-info .save-btn:hover {
+    background-color: #084d92; /* Darker blue on hover */
 }
+
+.edit-basic-info .cancel-btn {
+    background-color: transparent; /* Transparent background */
+    color: rgba(0, 0, 0, 0.6); /* Gray text */
+    border: none; /* No border */
+}
+
+.edit-basic-info .cancel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08); /* Light gray background on hover */
+}
+
 
 /* Profile Sections */
 .profile-section {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
-    padding: 24px;
-    margin-bottom: 20px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    background-color: #fff; /* White background for clarity */
+    border-radius: 8px; /* Rounded edges for a clean look */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); /* Subtle shadow to elevate section */
+    padding: 24px; /* Inner spacing for content */
+    margin-bottom: 20px; /* Space below the section */
 }
 
 .profile-section h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.9);
-    margin: 0 0 16px 0;
+    font-size: 20px; /* Prominent heading size */
+    font-weight: 600; /* Bold text for importance */
+    color: rgba(0, 0, 0, 0.9); /* Dark color for readability */
+    margin-bottom: 16px; /* Space below the heading */
+}
+
+.about-content p {
+    font-size: 16px; /* Comfortable font size for readability */
+    color: rgba(0, 0, 0, 0.8); /* Dark text for contrast */
+    margin-bottom: 12px; /* Space below paragraph */
+    line-height: 1.5; /* Better text spacing */
+}
+
+.about-content .edit-btn {
+    display: flex; /* Align icon and text */
+    align-items: center; /* Vertically center content */
+    gap: 8px; /* Space between icon and text */
+    background-color: transparent; /* No background */
+    border: none; /* Remove border */
+    color: #0a66c2; /* Blue color for link-like appearance */
+    font-size: 14px; /* Smaller button text */
+    font-weight: 600; /* Bold for emphasis */
+    cursor: pointer; /* Pointer cursor for interaction */
+    padding: 6px 12px; /* Comfortable padding */
+    border-radius: 4px; /* Subtle rounding for hover effect */
+}
+
+.about-content .edit-btn:hover {
+    background-color: rgba(10, 102, 194, 0.1); /* Light blue background on hover */
+}
+
+.edit-about {
+    display: flex; /* Stack elements vertically */
+    flex-direction: column; /* Ensure vertical layout */
+    gap: 16px; /* Space between elements */
+}
+
+.edit-about .edit-textarea {
+    width: 100%; /* Full width of the container */
+    min-height: 120px; /* Minimum height for editing */
+    padding: 12px; /* Comfortable spacing inside the textarea */
+    border: 1px solid rgba(0, 0, 0, 0.2); /* Subtle border */
+    border-radius: 4px; /* Rounded edges for consistency */
+    font-size: 14px; /* Readable text size */
+    resize: vertical; /* Allow vertical resizing */
+    transition: border-color 0.3s; /* Smooth border interaction */
+}
+
+.edit-about .edit-textarea:focus {
+    outline: none; /* Remove default outline */
+    border-color: #0a66c2; /* Highlighted border */
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2); /* Subtle glow for focus */
+}
+
+.edit-actions {
+    display: flex; /* Place buttons side by side */
+    gap: 12px; /* Space between buttons */
+    justify-content: flex-end; /* Align buttons to the right */
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 8px 16px; /* Button padding for usability */
+    border-radius: 16px; /* Rounded buttons */
+    font-size: 14px; /* Consistent text size */
+    font-weight: 600; /* Bold for emphasis */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: background-color 0.3s, color 0.3s; /* Smooth hover effect */
+}
+
+.save-btn {
+    background-color: #0a66c2; /* Primary blue color */
+    color: #fff; /* White text */
+    border: none; /* Remove border */
+}
+
+.save-btn:hover {
+    background-color: #084d92; /* Darker blue on hover */
+}
+
+.cancel-btn {
+    background-color: transparent; /* Transparent background */
+    color: rgba(0, 0, 0, 0.6); /* Gray text */
+    border: none; /* No border */
+}
+
+.cancel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08); /* Light gray background on hover */
 }
 
 /* Experience Section */
