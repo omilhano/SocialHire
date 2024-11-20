@@ -16,6 +16,7 @@ import Credits from './pages/Credits';
 import JobSearch from './pages/JobSearch';
 import Profile from './pages/UserProfile';
 import Features from './pages/Features';
+import Main from './pages/MainPage';
 
 function App() {
   const currentLocation = useLocation(); // Use useLocation hook to get the current route
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Landing />} />
 
         {/* Other Routes */}
+        <Route path="/Main" element={<Main/>} />
         <Route path="/JobSearch" element={<JobSearch />} />
         <Route path="/UserProfile" element={<Profile />} />
         <Route path="/signin" element={<SignIn />} />

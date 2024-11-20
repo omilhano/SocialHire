@@ -15,6 +15,7 @@ import HambMenu from '../images/HambMenu.png';
 import Bell from '../images/Bell.png';
 import Chats from '../images/Chats.png';
 import JobSearch from '../images/JobSearch.png';
+import Main from '../pages/MainPage';
 
 const NavbarSocialhire = () => {
 
@@ -69,7 +70,7 @@ const NavbarSocialhire = () => {
         <>
             <Navbar style={{ backgroundColor: '#E2E2E2' }} expand="lg" id="nav-bar">
                 <Container fluid className="d-flex align-items-center justify-content-between">
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand href="/Main">
                         <img
                             alt="SocialHire"
                             src={brandLogo}
