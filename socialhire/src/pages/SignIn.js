@@ -94,7 +94,7 @@ const SignIn = () => {
             const userCredential = await signInWithPopup(auth, provider);
             
             // Check if user exists in Firestore
-            const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+            const userDoc = await getDoc(doc(db, "users", userCredential.user.uid)); //TODO change to hook maybe
             
             if (userDoc.exists()) {
                 // User exists, proceed with sign in
