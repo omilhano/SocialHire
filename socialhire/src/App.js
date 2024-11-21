@@ -1,10 +1,9 @@
-
 import React from 'react';
 import './App.css';
 import Footer from './components/Footer';
 import NavbarSocialhire from './components/Navbar';
-import LandingNavbar from './components/LandingNavbar'; // Import the different navbar
-import { Routes, Route, useLocation } from 'react-router-dom'; // Import useLocation
+import LandingNavbar from './components/LandingNavbar';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import NotFound from './pages/NotFound';
 import Landing from './pages/Landing';
 import SignIn from './pages/SignIn';
@@ -20,19 +19,28 @@ import Features from './pages/Features';
 import Main from './pages/MainPage';
 
 function App() {
-  const currentLocation = useLocation(); // Use useLocation hook to get the current route
+  const currentLocation = useLocation();
+
+  // Define routes where the LandingNavbar should be used
+  const landingNavbarRoutes = ['/', '/signin', '/signup'];
+
   return (
     <div className="App">
       {/* Conditional Navbar */}
-      {currentLocation.pathname === '/' ? <LandingNavbar /> : <NavbarSocialhire />}
+      {landingNavbarRoutes.includes(currentLocation.pathname) ? (
+        <LandingNavbar />
+      ) : (
+        <NavbarSocialhire />
+      )}
 
       <Routes>
-        {/* Define routes for created paths */}
+        {/* Define routes */}
         <Route path="/" element={<Landing />} />
-
-        {/* Other Routes */}
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch />} />
+        <Route path="/UserProfile" element={<Profile />} />
         <Route path="/aboutus" element={<About />} />
         <Route path="/features" element={<Features />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
@@ -40,12 +48,13 @@ function App() {
         <Route path="/Contacts" element={<Contacts />} />
         <Route path="/Credits" element={<Credits />} />
 
-        {/* Fallback 404 route for unknown paths */}
+        {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+
       <Footer />
     </div>
-  )
-};
+  );
+}
 
 export default App;

@@ -59,6 +59,7 @@ const UserProfile = () => {
         }
 
         const success = await updateDocument(auth.currentUser.uid, { [field]: value });
+        console.log(auth.currentUser.uid)
         if (success) {
             setState(prev => ({
                 ...prev,
