@@ -294,82 +294,113 @@
     background-color: rgba(0, 0, 0, 0.08); /* Light gray background on hover */
 }
 
-/* Experience Section */
-.experience-list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.experience-item {
-    display: flex;
-    gap: 16px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.experience-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.experience-icon {
-    color: #666;
-}
-
-.experience-details h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.9);
-    margin: 0 0 4px 0;
-}
-
-.experience-details .company {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.6);
-    margin: 0 0 4px 0;
-}
-
-.experience-details .date {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.6);
-    margin: 4px 0;
-}
-
-.experience-details .description {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.9);
-    margin: 8px 0 0 0;
-    line-height: 1.5;
-}
-
-/* Add Experience Form */
-.add-experience-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
-}
-
-.date-inputs {
-    display: flex;
-    gap: 16px;
-    margin: 8px 0;
-}
-
-.current-job {
+/* General styles */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .textarea-field {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+  }
+  
+  .checkbox-field {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 8px 0;
+    margin-bottom: 10px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .save-button,
+  .cancel-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .save-button {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .cancel-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  /* Experience list styles */
+  .experience-list {
+    margin-top: 20px;
+  }
+  
+  .experience-item {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .experience-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .icon {
+    color: #6b7280;
+  }
+  
+  .icon-small {
+    color: #9ca3af;
+    margin-right: 5px;
+  }
+  
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .company {
     font-size: 14px;
-    color: rgba(0, 0, 0, 0.6);
-}
-
+    color: #6b7280;
+  }
+  
+  .date {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-top: 4px;
+  }
+  
+  .description {
+    margin-top: 8px;
+    color: #4b5563;
+  }
+  
+  .empty-message {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 16px;
+  }
 /* Posts Section */
 .posts-container {
     margin-top: 16px;

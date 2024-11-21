@@ -13,13 +13,13 @@ const UserProfile = () => {
     // Custom hooks
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
-    const { updateDocument: updateExpirience } = useFirebaseDocument('expirience');
-
+    const { updateDocument: updateExperience } = useFirebaseDocument('experience');
     const { updateDocument: updatePost } = useFirebaseDocument('posts');
 
     // State
     const [state, setState] = useState({
         profileData: {},
+        experienceData:{},
         posts: [],
         loading: true,
         error: null,
@@ -27,7 +27,13 @@ const UserProfile = () => {
         editMode: { basic: false, about: false, experience: false }
     });
 
-    const { profileData, posts, loading, error, validation, editMode } = state;
+    const { profileData, experienceData, posts, loading, error, validation, editMode } = state;
+
+
+    //
+    // Profile (USERS TABLE)
+    //
+
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
@@ -79,11 +85,39 @@ const UserProfile = () => {
             await handleProfileUpdate('profilePicture', photoURL);
         }
     };
-
     // Effects
     useEffect(() => {
         fetchProfile();
     }, [fetchProfile]);
+
+
+    //
+    //Experience
+    //
+
+    // Handle Experience updates
+    const handleExperienceUpdate = useCallback(async (field, value) => {
+        // Validate data before update
+        const validationResult = validateExperience(value)
+        if (!validationResult.isValid) {
+            setState(prev => ({
+                ...prev,
+                validation: validationResult.errors
+            }));
+            return;
+        }
+
+        const success = await updateExperience(auth.currentUser.uid, { [field]: value });
+        if (success) {
+            setState(prev => ({
+                ...prev,
+                profiexperienceDataleData: { ...prev.experienceData, [field]: value },
+                editMode: { ...prev.editMode, [field]: false },
+                validation: {},
+            }));
+        }
+    }, [experienceData, updateExperience]);
+
 
     if (loading) {
         return <div className="loading">Loading profile...</div>;
@@ -108,8 +142,8 @@ const UserProfile = () => {
                     editMode: { ...prev.editMode, basic: mode }
                 }))}
                 onProfilePictureChange={handleProfilePictureChange}
-                onProfileDataChange={handleProfileUpdate} 
-                onSaveBasicInfo={(value) => handleProfileUpdate('about', value)}                />
+                onProfileDataChange={handleProfileUpdate}
+                onSaveBasicInfo={(value) => handleProfileUpdate('about', value)} />
             <AboutSection
                 about={profileData.about}
                 editMode={editMode.about}
@@ -120,8 +154,8 @@ const UserProfile = () => {
                 }))}
                 onSave={(value) => handleProfileUpdate('about', value)}
             />
-             <ExperienceSection
-                experience={profileData.experience}
+            <ExperienceSection
+                experience={experienceData}
                 editMode={editMode.experience}
                 validation={validation}
                 onEditModeChange={(mode) => setState(prev => ({
@@ -129,8 +163,8 @@ const UserProfile = () => {
                     editMode: { ...prev.editMode, experience: mode }
                 }))}
                 onAddExperience={(experience) => {
-                    const updatedExperience = [...(profileData.experience || []), experience];
-                    handleProfileUpdate('experience', updatedExperience);
+                    const updatedExperience = [...(experienceData || []), experience];
+                    handleExperienceUpdate('experience', updatedExperience);
                 }}
             />
         </div>

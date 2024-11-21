@@ -1,110 +1,111 @@
 import { Briefcase, Calendar } from 'lucide-react';
+import React, { useState, useEffect} from 'react';
 
 const ExperienceForm = ({ experience, onChange, onSave, onCancel }) => {
     const handleChange = (field, value) => {
-        onChange({ ...experience, [field]: value });
+      onChange({ ...experience, [field]: value });
     };
-
+  
     return (
-        <div className="add-experience-form space-y-4">
-            <input
-                type="text"
-                value={experience.title || ''}
-                onChange={(e) => handleChange('title', e.target.value)}
-                placeholder="Job Title"
-                className="edit-input w-full p-2 border rounded"
-            />
-            <input
-                type="text"
-                value={experience.company || ''}
-                onChange={(e) => handleChange('company', e.target.value)}
-                placeholder="Company"
-                className="edit-input w-full p-2 border rounded"
-            />
-            <div className="date-inputs flex gap-4">
-                <input
-                    type="date"
-                    value={experience.startDate || ''}
-                    onChange={(e) => handleChange('startDate', e.target.value)}
-                    className="edit-input flex-1 p-2 border rounded"
-                />
-                <input
-                    type="date"
-                    value={experience.endDate || ''}
-                    onChange={(e) => handleChange('endDate', e.target.value)}
-                    className="edit-input flex-1 p-2 border rounded"
-                    disabled={experience.current}
-                />
-            </div>
-            <label className="current-job flex items-center gap-2">
-                <input
-                    type="checkbox"
-                    checked={experience.current || false}
-                    onChange={(e) => handleChange('current', e.target.checked)}
-                    className="form-checkbox"
-                />
-                <span>I currently work here</span>
-            </label>
-            <textarea
-                value={experience.description || ''}
-                onChange={(e) => handleChange('description', e.target.value)}
-                placeholder="Description"
-                className="edit-textarea w-full p-2 border rounded h-32 resize-none"
-            />
-            <div className="edit-actions flex justify-end gap-2">
-                <button
-                    onClick={onSave}
-                    className="save-btn"
-                >
-                    Save
-                </button>
-                <button
-                    onClick={onCancel}
-                    className="cancel-btn"
-                >
-                    Cancel
-                </button>
-            </div>
+      <div className="experience-form">
+        <input
+          type="text"
+          value={experience.title || ""}
+          onChange={(e) => handleChange("title", e.target.value)}
+          placeholder="Job Title"
+          className="input-field"
+        />
+        <input
+          type="text"
+          value={experience.company || ""}
+          onChange={(e) => handleChange("company", e.target.value)}
+          placeholder="Company"
+          className="input-field"
+        />
+        <div className="date-inputs">
+          <input
+            type="date"
+            value={experience.startDate || ""}
+            onChange={(e) => handleChange("startDate", e.target.value)}
+            className="input-field"
+          />
+          <input
+            type="date"
+            value={experience.endDate || ""}
+            onChange={(e) => handleChange("endDate", e.target.value)}
+            className="input-field"
+            disabled={experience.current}
+          />
         </div>
+        <label className="checkbox-field">
+          <input
+            type="checkbox"
+            checked={experience.current || false}
+            onChange={(e) => handleChange("current", e.target.checked)}
+          />
+          I currently work here
+        </label>
+        <textarea
+          value={experience.description || ""}
+          onChange={(e) => handleChange("description", e.target.value)}
+          placeholder="Description"
+          className="textarea-field"
+        />
+        <div className="form-actions">
+          <button onClick={onSave} className="save-button">
+            Save
+          </button>
+          <button onClick={onCancel} className="cancel-button">
+            Cancel
+          </button>
+        </div>
+      </div>
     );
-};
-
-const ExperienceList = ({ items = [] }) => {
+  };
+  
+  const ExperienceList = ({ userId }) => {
+    const [experiences, setExperiences] = useState([]);
+  
+    useEffect(() => {
+      // Fetch experiences for the given userId
+      const fetchExperiences = async () => {
+        try {
+          const response = await fetch(`/api/experiences?userId=${userId}`);
+          const data = await response.json();
+          setExperiences(data);
+        } catch (error) {
+          console.error("Error fetching experiences:", error);
+        }
+      };
+  
+      fetchExperiences();
+    }, [userId]);
+  
     return (
-        <div className="experience-list space-y-4">
-            {items.map((exp, index) => (
-                <div key={index} className="experience-item bg-white p-4 rounded-lg shadow">
-                    <div className="flex gap-4">
-                        <div className="experience-icon p-2 bg-gray-100 rounded-full">
-                            <Briefcase size={24} className="text-gray-600" />
-                        </div>
-                        <div className="experience-details flex-1">
-                            <h3 className="font-semibold text-lg text-gray-900">
-                                {exp.title}
-                            </h3>
-                            <p className="company text-gray-700">
-                                {exp.company}
-                            </p>
-                            <p className="date flex items-center gap-1 text-gray-500 text-sm">
-                                <Calendar size={16} />
-                                <span>
-                                    {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
-                                </span>
-                            </p>
-                            <p className="description mt-2 text-gray-600">
-                                {exp.description}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            ))}
-            {items.length === 0 && (
-                <div className="text-center text-gray-500 py-8">
-                    No experience added yet
-                </div>
-            )}
-        </div>
+      <div className="experience-list">
+        {experiences.map((exp, index) => (
+          <div key={index} className="experience-item">
+            <div className="experience-header">
+              <Briefcase className="icon" />
+              <div>
+                <h3 className="title">{exp.title}</h3>
+                <p className="company">{exp.company}</p>
+              </div>
+            </div>
+            <div className="experience-details">
+              <p className="date">
+                <Calendar className="icon-small" />
+                {exp.startDate} - {exp.current ? "Present" : exp.endDate}
+              </p>
+              <p className="description">{exp.description}</p>
+            </div>
+          </div>
+        ))}
+        {experiences.length === 0 && (
+          <p className="empty-message">No experience added yet</p>
+        )}
+      </div>
     );
-};
-
-export { ExperienceForm, ExperienceList };
+  };
+  
+  export { ExperienceForm, ExperienceList };
