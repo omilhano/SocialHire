@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { db } from "../firebaseConfig"; // Ensure the path to firebaseConfig.js is correct
+import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const People = () => {
     const [users, setUsers] = useState([]); // State to store fetched users
@@ -11,16 +12,21 @@ const People = () => {
         const fetchUsers = async () => {
             try {
                 console.log("Fetching users from Firestore...");
+                const auth = getAuth(); // Initialize auth
+                const currentUserId = auth.currentUser?.uid; // Auth user's id to compare and prevent self from appearing
+                console.log(currentUserId)
                 const usersCollectionRef = collection(db, 'users'); // Reference to 'users' collection
                 const snapshot = await getDocs(usersCollectionRef); // Get all documents in the collection
 
-                console.log("Snapshot fetched:", snapshot.docs);
+                console.log("Snapshot fetched:", snapshot.docs); // Debug
 
-                // Map documents to array of user data
-                const usersData = snapshot.docs.map((doc) => ({
-                    id: doc.id, // Document ID
-                    ...doc.data(), // Document fields
-                }));
+                // Map documents to array of user data and exclude the authenticated user
+                const usersData = snapshot.docs
+                    .map((doc) => ({
+                        id: doc.id, // Document ID
+                        ...doc.data(), // Document fields
+                    }))
+                    .filter((user) => user.id !== currentUserId);
 
                 console.log("Users data:", usersData);
 
@@ -29,7 +35,7 @@ const People = () => {
                 console.error("Error fetching users:", err);
                 setError("Failed to fetch users. Please try again later.");
             } finally {
-                setLoading(false); // Set loading to false after fetch completes
+                setLoading(false); // Stop loading
             }
         };
 
@@ -42,7 +48,8 @@ const People = () => {
                     users.map((user) => (
                         <div key={user.id}>
                             <h3>{user.firstName} {user.lastName}</h3>
-                            <p>{user.accountType}</p>
+                            <p>{user.headline ? user.headline : "Add for more details!"}
+                            </p>
                         </div>
                     ))
                 ) : (

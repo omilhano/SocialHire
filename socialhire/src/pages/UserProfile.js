@@ -133,7 +133,6 @@ const UserProfile = () => {
                     handleProfileUpdate('experience', updatedExperience);
                 }}
             />
-
         </div>
     );
 };
