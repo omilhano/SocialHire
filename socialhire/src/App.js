@@ -33,9 +33,6 @@ function App() {
         {/* Other Routes */}
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch />} />
-        <Route path="/UserProfile" element={<Profile />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
         <Route path="/aboutus" element={<About />} />
         <Route path="/features" element={<Features />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />

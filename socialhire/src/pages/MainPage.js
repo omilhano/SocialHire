@@ -13,7 +13,7 @@ const Main = () => {
                 <div className="layout-sidebar">
                     <div className="sidebar-header">
                         <div className="header-top">
-                        <ProfileCard />
+                        {/* <ProfileCard /> */}
                         </div>
                     </div>
                 </div>
