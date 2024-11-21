@@ -64,13 +64,13 @@ const SignIn = () => {
 
             switch (error.code) {
                 case 'auth/user-not-found':
-                    errorMessage = 'No account found with this email.';
+                    errorMessage = 'Invalid e-mail/user or password.'; 
                     break;
                 case 'auth/wrong-password':
-                    errorMessage = 'Invalid password.';
+                    errorMessage = 'Invalid e-mail/user or password.'; 
                     break;
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address.';
+                    errorMessage = 'Invalid e-mail/user or password.'; 
                     break;
                 case 'auth/user-disabled':
                     errorMessage = 'This account has been disabled.';
