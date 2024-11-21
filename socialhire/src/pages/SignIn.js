@@ -64,13 +64,13 @@ const SignIn = () => {
 
             switch (error.code) {
                 case 'auth/user-not-found':
-                    errorMessage = 'No account found with this email.';
+                    errorMessage = 'Invalid e-mail/user or password.'; 
                     break;
                 case 'auth/wrong-password':
-                    errorMessage = 'Invalid password.';
+                    errorMessage = 'Invalid e-mail/user or password.'; 
                     break;
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address.';
+                    errorMessage = 'Invalid e-mail/user or password.'; 
                     break;
                 case 'auth/user-disabled':
                     errorMessage = 'This account has been disabled.';
@@ -94,7 +94,7 @@ const SignIn = () => {
             const userCredential = await signInWithPopup(auth, provider);
             
             // Check if user exists in Firestore
-            const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+            const userDoc = await getDoc(doc(db, "users", userCredential.user.uid)); //TODO change to hook maybe
             
             if (userDoc.exists()) {
                 // User exists, proceed with sign in

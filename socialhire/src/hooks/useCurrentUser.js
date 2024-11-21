@@ -1,9 +1,5 @@
-// Hook will check if user is loggend in
-// Fetch User's data
-// Return user data
-
-// src/hooks/useCurrentUser.js
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // For navigation
 import { auth, db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -11,21 +7,26 @@ const useCurrentUser = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Initialize the navigate function
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                // Check if user is logged in
+                if (!auth.currentUser) {
+                    setError('No user is logged in');
+                    navigate('/signin'); // Redirect to the login page
+                    return;
+                }
+
                 const user = auth.currentUser;
 
-                if (user) { /* TODO  check code*/
-                    const userDoc = await getDoc(doc(db, 'users', user.uid));
-                    if (userDoc.exists()) {
-                        setCurrentUser(userDoc.data());
-                    } else {
-                        setError('User not found in the database');
-                    }
+                // Fetch user data from Firestore
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    setCurrentUser(userDoc.data());
                 } else {
-                    setError('No user is logged in');
+                    setError('User not found in the database');
                 }
             } catch (err) {
                 setError('Error fetching user data');
@@ -36,7 +37,7 @@ const useCurrentUser = () => {
         };
 
         fetchUserData();
-    }, []);
+    }, [navigate]);
 
     return { currentUser, loading, error };
 };
