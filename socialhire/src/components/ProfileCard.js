@@ -1,23 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useCurrentUser from '../hooks/useCurrentUser';
 import placeholderPic from '../images/placeholderPic.jpg';
+import useAuthRedirect from '../hooks/useAuthRedirect';
 import '../styles/ProfileCard.css';
 
 const ProfileCard = () => {
-    const { currentUser, loading, error } = useCurrentUser();
-    const navigate = useNavigate();
-
-    // Redirect to login if there's an error or no user is logged in - does this make sense
-    React.useEffect(() => {
-        if (error || (!loading && !currentUser)) {
-            navigate('/signin');
-        }
-    }, [error, currentUser, loading, navigate]);
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    const { currentUser, loading, error } = useAuthRedirect();
 
     // Render profile card with user data
     return (
