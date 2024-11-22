@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Container } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import placeholderPic from '../images/placeholderPic.jpg';
 import '../styles/MainPage.css';
 import ProfileCard from '../components/ProfileCard';
@@ -8,16 +7,6 @@ import PeopleToBefriend from '../components/AddPeople';
 import useAuthRedirect from '../hooks/useAuthRedirect'; 
 
 const Main = () => {
-    const { currentUser, ploading, error } = useAuthRedirect(); // Check authentication
-    const navigate = useNavigate();
-
-    useEffect(() => { // Use effect to verify is user is loggen in
-        if (!ploading && !currentUser) { // If not loading AND no user is logged in
-            navigate('/signin'); // Redirect to sign-in if the user is not logged in
-        }
-    }, [currentUser, ploading, navigate]);
-
-    if (ploading) return <p>Loading...</p>;
 
     return (
         <Container fluid id="background" className="g-0">
