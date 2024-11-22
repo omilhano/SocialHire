@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { auth } from "../firebaseConfig";
 import { useFirebaseUpload, useFirebaseDocument } from '../hooks/useFirebase';
 import { validateProfileData, validateExperience } from '../utils/validation';
+import { useNavigate } from 'react-router-dom';
 import { ProfileHeader } from '../components/profile/ProfileHeader.js';
 import { Toast } from '../components/common/Toast';
 import { AboutSection } from '../components/profile/AboutSection.js';
@@ -11,12 +12,13 @@ import '../styles/UserProfile.css';
 
 // Ensure session persistence
 auth.setPersistence("session") // Options: "local", "session", "none"
-  .catch((error) => {
-    console.error("Error setting persistence:", error.message);
-  });
+    .catch((error) => {
+        console.error("Error setting persistence:", error.message);
+    });
 
 const UserProfile = () => {
     // Custom hooks
+    const navigate = useNavigate(); // Initialize the hook for navigation 
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
     const { updateDocument: updateExperience } = useFirebaseDocument('experience');
@@ -89,6 +91,17 @@ const UserProfile = () => {
         const photoURL = await uploadFile(file, 'profile-pictures');
         if (photoURL) {
             await handleProfileUpdate('profilePicture', photoURL);
+        }
+    };
+
+    // Handle logout
+    const handleLogout = async () => {
+        try {
+            await auth.signOut();
+            console.log("User logged out");
+            navigate('/signin'); // Redirect to the sign-in page
+        } catch (error) {
+            console.error("Error during logout:", error.message);
         }
     };
 
@@ -182,6 +195,9 @@ const UserProfile = () => {
                     handleExperienceUpdate('experience', updatedExperience);
                 }}
             />
+            <button className="logout" onClick={handleLogout}>
+                Logout
+            </button>
         </div>
     );
 };

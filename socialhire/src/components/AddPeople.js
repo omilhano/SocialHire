@@ -12,6 +12,7 @@ const People = () => {
         const fetchUsers = async () => {
             try {
                 console.log("Fetching users from Firestore...");
+                console.log(auth.currentUser.uid)
                 const auth = getAuth(); // Initialize auth
                 const currentUserId = auth.currentUser?.uid; // Auth user's id to compare and prevent self from appearing
                 console.log(currentUserId)
