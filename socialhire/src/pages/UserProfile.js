@@ -27,39 +27,39 @@ const UserProfile = () => {
     // State
     const [state, setState] = useState({
         profileData: {},
-        experienceData: {},
+        experienceData:{},
         posts: [],
         loading: true,
         error: null,
         validation: {},
-        editMode: { basic: false, about: false, experience: false },
-        isLoggedIn: false, // Track login state
+        editMode: { basic: false, about: false, experience: false }
     });
 
     const { profileData, experienceData, posts, loading, error, validation, editMode } = state;
+
 
     //
     // Profile (USERS TABLE)
     //
 
+
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
         if (!auth.currentUser) return;
-        console.log(auth.currentUser.uid);
 
         const data = await getDocument(auth.currentUser.uid);
         if (data) {
             setState(prev => ({
                 ...prev,
                 profileData: data,
-                loading: false,
-                isLoggedIn: true,
+                loading: false
             }));
         }
     }, [getDocument]);
 
     // Handle profile updates
     const handleProfileUpdate = useCallback(async (field, value) => {
+        // Validate data before update
         const validationResult = field === 'experience'
             ? validateExperience(value)
             : validateProfileData({ ...profileData, [field]: value });
@@ -73,6 +73,7 @@ const UserProfile = () => {
         }
 
         const success = await updateDocument(auth.currentUser.uid, { [field]: value });
+        console.log(auth.currentUser.uid)
         if (success) {
             setState(prev => ({
                 ...prev,
@@ -107,27 +108,18 @@ const UserProfile = () => {
 
     // Effects
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                fetchProfile();
-            } else {
-                setState(prev => ({
-                    ...prev,
-                    isLoggedIn: false,
-                    loading: false,
-                }));
-            }
-        });
-
-        return () => unsubscribe();
+        fetchProfile();
     }, [fetchProfile]);
+
 
     //
     //Experience
     //
 
+    // Handle Experience updates
     const handleExperienceUpdate = useCallback(async (field, value) => {
-        const validationResult = validateExperience(value);
+        // Validate data before update
+        const validationResult = validateExperience(value)
         if (!validationResult.isValid) {
             setState(prev => ({
                 ...prev,
@@ -140,12 +132,13 @@ const UserProfile = () => {
         if (success) {
             setState(prev => ({
                 ...prev,
-                experienceData: { ...prev.experienceData, [field]: value },
+                profiexperienceDataleData: { ...prev.experienceData, [field]: value },
                 editMode: { ...prev.editMode, [field]: false },
                 validation: {},
             }));
         }
     }, [experienceData, updateExperience]);
+
 
     if (loading) {
         return <div className="loading">Loading profile...</div>;
