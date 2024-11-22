@@ -12,7 +12,7 @@ const People = () => {
         const fetchUsers = async () => {
             try {
                 console.log("Fetching users from Firestore...");
-                console.log(auth.currentUser.uid)
+                // console.log(auth.currentUser.uid)
                 const auth = getAuth(); // Initialize auth
                 const currentUserId = auth.currentUser?.uid; // Auth user's id to compare and prevent self from appearing
                 console.log(currentUserId)
@@ -43,20 +43,22 @@ const People = () => {
         fetchUsers(); // Call the fetch function on component mount
     }, []); // Empty dependency array ensures the effect runs only once
     return (
-        <div>
-            <div>
-                {users.length > 0 ? (
-                    users.map((user) => (
-                        <div key={user.id}>
-                            <h3>{user.firstName} {user.lastName}</h3>
-                            <p>{user.headline ? user.headline : "Add for more details!"}
-                            </p>
+        <div className="add-people-space">
+            {users.length > 0 ? (
+                users.map((user) => (
+                    <div id="people-item" key={user.id}>
+                        <h3 id='people-name'>{user.firstName} {user.lastName}</h3>
+                        <p id='people-details'>{user.headline ? user.headline : "Add for more details!"}
+                        </p>
+                        <div className='connect-box'>
+                            <button id='connect-people'>+ Connect</button>
                         </div>
-                    ))
-                ) : (
-                    <p>Loading users...</p>
-                )}
-            </div>
+                        <hr></hr>
+                    </div>
+                ))
+            ) : (
+                <p>Loading users...</p>
+            )}
         </div>
     );
 };
