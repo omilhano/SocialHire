@@ -1,18 +1,27 @@
-import React, { useEffect } from 'react';
-import { Container } from 'react-bootstrap';
-import placeholderPic from '../images/placeholderPic.jpg';
+import React from 'react';
+import { Container, Spinner } from 'react-bootstrap';
 import '../styles/MainPage.css';
 import ProfileCard from '../components/ProfileCard';
 import PeopleToBefriend from '../components/AddPeople';
-import {useAuth} from '../hooks/useAuth'; 
+import { useAuth } from '../hooks/useAuth';
 
 const Main = () => {
     const { user, loading } = useAuth();
 
     if (loading) {
-        // Optionally, spinner or throbber
-        return <div>Loading...</div>;
+        return (
+            <div className="loading-container">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </div>
+        );
     }
+
+    if (!loading && !user) {
+        return <div>Redirecting...</div>; // Should never really be hit due to useAuth's redirect
+    }
+
     return (
         <Container fluid id="background" className="g-0">
             <div className="grid-layout">
@@ -20,8 +29,7 @@ const Main = () => {
                 <div className="layout-sidebar">
                     <div className="sidebar-header">
                         <div className="header-top">
-                            {/* <ProfileCard/> */}
-                            {/* You can use ProfileCard here if needed */}
+                            <ProfileCard user={user} />
                         </div>
                     </div>
                 </div>
@@ -29,14 +37,13 @@ const Main = () => {
                 {/* Main Content */}
                 <div className="layout-main">
                     <h1>Main Content</h1>
-                    {/* Display the main content when the user is logged in */}
                 </div>
 
                 {/* Aside */}
                 <div className="layout-aside">
-                    <div className='add-people'>
-                        <h2>Add people</h2>
-                        <PeopleToBefriend/>
+                    <div className="add-people">
+                        <h2>Add People</h2>
+                        <PeopleToBefriend />
                     </div>
                 </div>
             </div>
