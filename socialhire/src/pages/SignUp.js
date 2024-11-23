@@ -4,9 +4,11 @@ import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import '../styles/SignUp.css';
+import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 
-// TODO change nav
+
 const SignUp = () => {
+    useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstName: '',
