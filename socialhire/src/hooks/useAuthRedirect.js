@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+//Note: this shouldnt be used
+
+import { useState, useEffect } from 'react'; 
 import { useNavigate } from "react-router-dom";
 import { auth } from '../firebaseConfig';
 
