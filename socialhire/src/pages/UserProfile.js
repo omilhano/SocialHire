@@ -1,4 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import {
+    setPersistence,
+    browserSessionPersistence, onAuthStateChanged
+} from "firebase/auth"; // Simplified imports to use only what's needed
 import { auth } from "../firebaseConfig";
 import { useFirebaseUpload, useFirebaseDocument } from '../hooks/useFirebase';
 import { validateProfileData, validateExperience } from '../utils/validation';
@@ -7,62 +11,75 @@ import { ProfileHeader } from '../components/profile/ProfileHeader.js';
 import { Toast } from '../components/common/Toast';
 import { AboutSection } from '../components/profile/AboutSection.js';
 import { ExperienceSection } from '../components/profile/ExperienceSection.js';
-import { PostsSection } from '../components/profile/PostsSection.js';
 import '../styles/UserProfile.css';
 
-// Ensure session persistence
-auth.setPersistence("session") // Options: "local", "session", "none"
-    .catch((error) => {
-        console.error("Error setting persistence:", error.message);
-    });
-
 const UserProfile = () => {
-    // Custom hooks
-    const navigate = useNavigate(); // Initialize the hook for navigation 
+    const navigate = useNavigate();
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
     const { updateDocument: updateExperience } = useFirebaseDocument('experience');
-    const { updateDocument: updatePost } = useFirebaseDocument('posts');
 
     // State
     const [state, setState] = useState({
         profileData: {},
-        experienceData:{},
-        posts: [],
+        experienceData: [],
         loading: true,
         error: null,
         validation: {},
         editMode: { basic: false, about: false, experience: false }
     });
 
-    const { profileData, experienceData, posts, loading, error, validation, editMode } = state;
+    const { profileData, experienceData, loading, error, validation, editMode } = state;
 
-
-    //
-    // Profile (USERS TABLE)
-    //
+    // Configure session persistence to "Session"
+    useEffect(() => {
+        setPersistence(auth, browserSessionPersistence)
+            .then(() => console.log("Session persistence set successfully."))
+            .catch((error) => console.error("Error setting persistence:", error.message));
+    }, []);
 
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
         if (!auth.currentUser) return;
 
-        const data = await getDocument(auth.currentUser.uid);
-        if (data) {
+        try {
+            const data = await getDocument(auth.currentUser.uid);
+            if (data) {
+                setState(prev => ({
+                    ...prev,
+                    profileData: data,
+                    loading: false
+                }));
+            }
+        } catch (error) {
             setState(prev => ({
                 ...prev,
-                profileData: data,
+                error: "Failed to fetch profile data.",
                 loading: false
             }));
         }
     }, [getDocument]);
 
+    // When refreshes shows profile again
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                fetchProfile(); // Fetch the profile only when the user is authenticated
+            } else {
+                navigate('/signin'); // Redirect to sign-in if no user
+            }
+        });
+
+        return () => unsubscribe(); // Cleanup the listener on unmount
+    }, [fetchProfile, navigate]);
+
     // Handle profile updates
     const handleProfileUpdate = useCallback(async (field, value) => {
-        // Validate data before update
-        const validationResult = field === 'experience'
-            ? validateExperience(value)
-            : validateProfileData({ ...profileData, [field]: value });
+        const validationResult =
+            field === 'experience'
+                ? validateExperience(value)
+                : validateProfileData({ ...profileData, [field]: value });
 
         if (!validationResult.isValid) {
             setState(prev => ({
@@ -72,15 +89,18 @@ const UserProfile = () => {
             return;
         }
 
-        const success = await updateDocument(auth.currentUser.uid, { [field]: value });
-        console.log(auth.currentUser.uid)
-        if (success) {
-            setState(prev => ({
-                ...prev,
-                profileData: { ...prev.profileData, [field]: value },
-                editMode: { ...prev.editMode, [field]: false },
-                validation: {},
-            }));
+        try {
+            const success = await updateDocument(auth.currentUser.uid, { [field]: value });
+            if (success) {
+                setState(prev => ({
+                    ...prev,
+                    profileData: { ...prev.profileData, [field]: value },
+                    editMode: { ...prev.editMode, [field]: false },
+                    validation: {},
+                }));
+            }
+        } catch (error) {
+            console.error("Error updating profile:", error.message);
         }
     }, [profileData, updateDocument]);
 
@@ -89,9 +109,13 @@ const UserProfile = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const photoURL = await uploadFile(file, 'profile-pictures');
-        if (photoURL) {
-            await handleProfileUpdate('profilePicture', photoURL);
+        try {
+            const photoURL = await uploadFile(file, 'profile-pictures');
+            if (photoURL) {
+                await handleProfileUpdate('profilePicture', photoURL);
+            }
+        } catch (error) {
+            console.error("Error uploading profile picture:", error.message);
         }
     };
 
@@ -99,27 +123,16 @@ const UserProfile = () => {
     const handleLogout = async () => {
         try {
             await auth.signOut();
-            console.log("User logged out");
-            navigate('/signin'); // Redirect to the sign-in page
+            navigate('/signin');
         } catch (error) {
             console.error("Error during logout:", error.message);
         }
     };
 
-    // Effects
-    useEffect(() => {
-        fetchProfile();
-    }, [fetchProfile]);
+    // Handle experience updates
+    const handleExperienceUpdate = useCallback(async (updatedExperience) => {
+        const validationResult = validateExperience(updatedExperience);
 
-
-    //
-    //Experience
-    //
-
-    // Handle Experience updates
-    const handleExperienceUpdate = useCallback(async (field, value) => {
-        // Validate data before update
-        const validationResult = validateExperience(value)
         if (!validationResult.isValid) {
             setState(prev => ({
                 ...prev,
@@ -128,17 +141,25 @@ const UserProfile = () => {
             return;
         }
 
-        const success = await updateExperience(auth.currentUser.uid, { [field]: value });
-        if (success) {
-            setState(prev => ({
-                ...prev,
-                profiexperienceDataleData: { ...prev.experienceData, [field]: value },
-                editMode: { ...prev.editMode, [field]: false },
-                validation: {},
-            }));
+        try {
+            const success = await updateExperience(auth.currentUser.uid, { experience: updatedExperience });
+            if (success) {
+                setState(prev => ({
+                    ...prev,
+                    experienceData: updatedExperience,
+                    editMode: { ...prev.editMode, experience: false },
+                    validation: {},
+                }));
+            }
+        } catch (error) {
+            console.error("Error updating experience:", error.message);
         }
-    }, [experienceData, updateExperience]);
+    }, [updateExperience]);
 
+    // Fetch profile data on component mount
+    useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
 
     if (loading) {
         return <div className="loading">Loading profile...</div>;
@@ -153,18 +174,17 @@ const UserProfile = () => {
                     onClose={() => setState(prev => ({ ...prev, error: null }))}
                 />
             )}
-
             <ProfileHeader
                 profileData={profileData}
-                editMode={editMode?.basic || true}
+                editMode={editMode.basic}
                 validation={validation}
                 onEditModeChange={(mode) => setState(prev => ({
                     ...prev,
                     editMode: { ...prev.editMode, basic: mode }
                 }))}
                 onProfilePictureChange={handleProfilePictureChange}
-                onProfileDataChange={handleProfileUpdate}
-                onSaveBasicInfo={(value) => handleProfileUpdate('about', value)} />
+                onSaveBasicInfo={(value) => handleProfileUpdate('about', value)}
+            />
             <AboutSection
                 about={profileData.about}
                 editMode={editMode.about}
@@ -183,9 +203,9 @@ const UserProfile = () => {
                     ...prev,
                     editMode: { ...prev.editMode, experience: mode }
                 }))}
-                onAddExperience={(experience) => {
-                    const updatedExperience = [...(experienceData || []), experience];
-                    handleExperienceUpdate('experience', updatedExperience);
+                onAddExperience={(newExperience) => {
+                    const updatedExperience = [...experienceData, newExperience];
+                    handleExperienceUpdate(updatedExperience);
                 }}
             />
             <button className="logout" onClick={handleLogout}>
