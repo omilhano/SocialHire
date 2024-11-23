@@ -17,6 +17,7 @@ import JobSearch from './pages/JobSearch';
 import Profile from './pages/UserProfile';
 import Features from './pages/Features';
 import Main from './pages/MainPage';
+import ChatPage from './pages/ChatPage';
 
 function App() {
   const currentLocation = useLocation();
@@ -47,6 +48,7 @@ function App() {
         <Route path="/TOS" element={<TOS />} />
         <Route path="/Contacts" element={<Contacts />} />
         <Route path="/Credits" element={<Credits />} />
+        <Route path='/ChatPage' element={<ChatPage />} />
 
         {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />
