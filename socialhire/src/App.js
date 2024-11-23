@@ -23,12 +23,12 @@ function App() {
   const currentLocation = useLocation();
 
   // Define routes where the LandingNavbar should be used
-  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', 'aboutus'];
+  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', '/aboutus'];
 
   return (
     <div className="App">
       {/* Conditional Navbar */}
-      {landingNavbarRoutes.includes(currentLocation.pathname) ? (
+      {landingNavbarRoutes.includes(currentLocation.pathname.toLowerCase()) ? (
         <LandingNavbar />
       ) : (
         <NavbarSocialhire />
@@ -44,7 +44,11 @@ function App() {
         <Route path="/TOS" element={<TOS />} />
         <Route path="/Contacts" element={<Contacts />} />
         <Route path="/Credits" element={<Credits />} />
-        <Route path='/ChatPage' element={<ChatPage />} />
+        <Route path="/ChatPage" element={<ChatPage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/aboutus" element={<About />} />
 
         {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />
