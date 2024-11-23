@@ -9,6 +9,7 @@ const LandingNavbar = () => {
     return (
         <Navbar style={{ backgroundColor: 'transparent' }} expand="lg" id="nav-bar">
             <Container fluid id='navbar' className="d-flex align-items-center justify-content-center">
+                <Nav.Link as={Link} to="/">Landing Page</Nav.Link>
                 <Nav.Link as={Link} to="/features">Features</Nav.Link>
                 <Nav.Link as={Link} to="/signup">Join Now</Nav.Link>
                 <Nav.Link as={Link} to="/signin">Log In</Nav.Link>
