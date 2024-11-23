@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth, db, storage } from "../firebaseConfig";
 import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -8,6 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import '../styles/Navbar.css';
 import SearchModal from './FiltersModal';
+import NotificationModal from './NotificationsModal';
 import brandLogo from '../images/brandlogo.png';
 import lookGlass from '../images/lookglass.png';
 import placeholderPic from '../images/placeholderPic.jpg';
@@ -18,9 +19,10 @@ import JobSearch from '../images/JobSearch.png';
 import Main from '../pages/MainPage';
 
 const NavbarSocialhire = () => {
-
+    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
     const [showModal, setShowModal] = useState(false); // State for modal visibility
+    const [showNotificationModal, setShowNotificationModal] = useState(false);  // State for modal visibility
     const [userName, setUserName] = useState(null); // Store the user's profile name
 
     const handleSearchSubmit = (e) => {
@@ -110,13 +112,13 @@ const NavbarSocialhire = () => {
                             src={Chats}
                             alt="Chats"
                             className="navbar-icon"
-                            onClick={() => handleClick('Function not implemented yet')}
+                            onClick={() => navigate('/ChatPage')}
                         />
                         <img
                             src={Bell}
                             alt="Notifications"
                             className="navbar-icon"
-                            onClick={() => handleClick('Function not implemented yet')}
+                            onClick={() => setShowNotificationModal(true)} //open Notifications Modal
                         />
                         <img
                             src={HambMenu}
@@ -140,6 +142,7 @@ const NavbarSocialhire = () => {
 
             {/* Add the SearchModal component */}
             <SearchModal show={showModal} onClose={() => setShowModal(false)} />
+            <NotificationModal show= {showNotificationModal} onClose={() => setShowNotificationModal(false)} />
         </>
     );
 };

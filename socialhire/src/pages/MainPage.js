@@ -4,6 +4,7 @@ import '../styles/MainPage.css';
 import ProfileCard from '../components/ProfileCard';
 import PeopleToBefriend from '../components/AddPeople';
 import { useAuth } from '../hooks/useAuth';
+// import { auth } from "../firebaseConfig";
 
 const Main = () => {
     const { user, loading } = useAuth();
@@ -21,7 +22,7 @@ const Main = () => {
     if (!loading && !user) {
         return <div>Redirecting...</div>; // Should never really be hit due to useAuth's redirect
     }
-
+    // console.log(auth.currentUser.uid)
     return (
         <Container fluid id="background" className="g-0">
             <div className="grid-layout">
@@ -47,6 +48,7 @@ const Main = () => {
                     </div>
                 </div>
             </div>
+            
         </Container>
     );
 };
