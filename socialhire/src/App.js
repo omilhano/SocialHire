@@ -23,7 +23,7 @@ function App() {
   const currentLocation = useLocation();
 
   // Define routes where the LandingNavbar should be used
-  const landingNavbarRoutes = ['/', '/signin', '/signup'];
+  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', 'aboutus'];
 
   return (
     <div className="App">
@@ -37,13 +37,9 @@ function App() {
       <Routes>
         {/* Define routes */}
         <Route path="/" element={<Landing />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch />} />
         <Route path="/UserProfile" element={<Profile />} />
-        <Route path="/aboutus" element={<About />} />
-        <Route path="/features" element={<Features />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/TOS" element={<TOS />} />
         <Route path="/Contacts" element={<Contacts />} />
