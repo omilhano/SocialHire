@@ -23,9 +23,9 @@ const Landing = () => {
                             Ready to take the opportunity?
                         </p>
                         <div className='table-forms'>
-                            <button id='login' onClick={() => navigate('./SignIn')}>Log In</button>
+                            <button id='login' onClick={() => navigate('./signin')}>Log In</button>
                             <p className='decide'>OR</p>
-                            <button id='joinus' onClick={() => navigate('./SignUp')}>Join Now</button>
+                            <button id='joinus' onClick={() => navigate('./signup')}>Join Now</button>
                         </div>
                     </div>
                 </div>
