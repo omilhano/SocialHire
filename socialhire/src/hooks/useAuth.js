@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Use react-router-dom for navigation
+import { useNavigate } from "react-router-dom"; 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebaseConfig"; // Import auth from firebaseConfig.js
+import { auth } from "../firebaseConfig"; 
 
 export const useAuth = () => {
-  const [user, loading] = useAuthState(auth); // Check user state with firebase-hooks
+  const [user, loading] = useAuthState(auth); 
   const navigate = useNavigate();
 
   useEffect(() => {

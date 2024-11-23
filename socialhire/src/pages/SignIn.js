@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from "../firebaseConfig";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import '../styles/SignIn.css';
 
-
-// TODO change nav
 const SignIn = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -16,6 +14,19 @@ const SignIn = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Track authentication state
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is signed in:", user.uid);
+            } else {
+                console.log("No user is signed in.");
+            }
+        });
+
+        return () => unsubscribe(); // Cleanup listener on component unmount
+    }, []);
 
     const handleChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -42,17 +53,21 @@ const SignIn = () => {
 
             // Get user data from Firestore
             const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
-            
+
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                // You can store user data in local storage or context if needed
-                localStorage.setItem('userProfile', JSON.stringify(userData));
-                
+                // Store user data in local storage
+                localStorage.setItem('userProfile', JSON.stringify({
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    ...userData, // Include Firestore data
+                }));
+
                 // Redirect based on account type
                 if (userData.accountType === 'company') {
                     navigate('/company-profile');
                 } else {
-                    navigate('/UserProfile');
+                    navigate('/userProfile');
                 }
             } else {
                 throw new Error('User data not found');
@@ -64,13 +79,9 @@ const SignIn = () => {
 
             switch (error.code) {
                 case 'auth/user-not-found':
-                    errorMessage = 'Invalid e-mail/user or password.'; 
-                    break;
                 case 'auth/wrong-password':
-                    errorMessage = 'Invalid e-mail/user or password.'; 
-                    break;
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid e-mail/user or password.'; 
+                    errorMessage = 'Invalid email or password.';
                     break;
                 case 'auth/user-disabled':
                     errorMessage = 'This account has been disabled.';
@@ -89,23 +100,27 @@ const SignIn = () => {
     };
 
     const handleGoogleSignIn = async () => {
+        setIsLoading(true);
         try {
             const provider = new GoogleAuthProvider();
             const userCredential = await signInWithPopup(auth, provider);
-            
+
             // Check if user exists in Firestore
-            const userDoc = await getDoc(doc(db, "users", userCredential.user.uid)); //TODO change to hook maybe
-            
+            const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+
             if (userDoc.exists()) {
-                // User exists, proceed with sign in
                 const userData = userDoc.data();
-                localStorage.setItem('userProfile', JSON.stringify(userData));
-                
+                localStorage.setItem('userProfile', JSON.stringify({
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    ...userData,
+                }));
+
                 // Redirect based on account type
                 if (userData.accountType === 'company') {
-                    navigate('/CompanyProfile');
+                    navigate('/company-profile');
                 } else {
-                    navigate('/UserProfile');
+                    navigate('/userProfile');
                 }
             } else {
                 // New Google user, create profile in Firestore
@@ -115,7 +130,7 @@ const SignIn = () => {
                     email: userCredential.user.email,
                     accountType: 'user', // Default account type
                     createdAt: new Date().toISOString(),
-                    userId: userCredential.user.uid
+                    userId: userCredential.user.uid,
                 };
 
                 await setDoc(doc(db, "users", userCredential.user.uid), newUser);
@@ -125,6 +140,8 @@ const SignIn = () => {
         } catch (error) {
             console.error('Google sign in error:', error);
             setError('Failed to sign in with Google. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -175,36 +192,13 @@ const SignIn = () => {
                         </div>
                     )}
 
-                    <div className="form-options">
-                        <label className="remember-me-label">
-                            <input
-                                type="checkbox"
-                                name="rememberMe"
-                                checked={formData.rememberMe}
-                                onChange={handleChange}
-                                className="checkbox-input"
-                            />
-                            <span>Remember me</span>
-                        </label>
-
-                        <button
-                            type="button"
-                            className="forgot-password"
-                            onClick={() => navigate('/forgot-password')}
-                        >
-                            Forgot password?
-                        </button>
-                    </div>
-
                     <div className="auth-buttons">
                         <button
                             type="submit"
                             className="signin-button"
                             disabled={isLoading}
                         >
-                            <span className="signin-button-label">
-                                {isLoading ? 'Signing in...' : 'Sign in'}
-                            </span>
+                            {isLoading ? 'Signing in...' : 'Sign in'}
                         </button>
 
                         <button
@@ -213,27 +207,8 @@ const SignIn = () => {
                             onClick={handleGoogleSignIn}
                             disabled={isLoading}
                         >
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
-                                alt="Google logo"
-                                className="google-icon"
-                            />
                             Sign in with Google
                         </button>
-                    </div>
-
-                    <div className="signup-link">
-                        <span>Don't have an account? </span>
-                        <a
-                            href="#"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                navigate('/signup');
-                            }}
-                            className="register-link"
-                        >
-                            Register
-                        </a>
                     </div>
                 </form>
             </div>
