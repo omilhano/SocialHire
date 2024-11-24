@@ -1,0 +1,38 @@
+.request-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-text-p{
+    word-break: break-word;
+    text-align: left;
+    margin: 0;
+}
+.request-actions{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.accept-btn{
+    border: 2px solid #17497b;
+    border-radius: 30px;
+    background-color: transparent;
+}
+
+.accept-btn:hover{
+    background-color: #b7ddff;
+}
+
+.reject-btn{
+    border: none;
+    background-color: transparent;
+}
+
+.reject-btn:hover{
+    background-color: lightgray;
+}

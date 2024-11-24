@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import '../styles/RequestNotification.css';
 
 const RequestNotification = () => {
     const [incomingRequests, setIncomingRequests] = useState([]); // State to store incoming requests
@@ -81,7 +82,7 @@ const RequestNotification = () => {
             ) : incomingRequests.length > 0 ? (
                 incomingRequests.map((request) => (
                     <div key={request.id} className="request-item">
-                        <p>{request.userName} wants to connect with you</p> {/* Displaying user name */}
+                        <p className='notification-text-p'>{request.userName} wants to connect with you.</p> {/* Displaying user name */}
                         <div className="request-actions">
                             <button
                                 className="accept-btn"
