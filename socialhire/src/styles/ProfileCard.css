@@ -4,7 +4,8 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /*TODO suggestion change this color*/
+    box-shadow: none; /* Remove the shadow for no outline effect */
+    border: none; /* Ensure no border appears */
 }
 
 .header-profile-pic {
