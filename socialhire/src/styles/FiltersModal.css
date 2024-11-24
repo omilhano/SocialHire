@@ -50,15 +50,13 @@
 
 /* Focus state for dropdown items */
 .dropdown-item:focus, .dropdown-item:active {
-    background-color: #E5E5E5 !important; /* Light grey (no bright blue focus) */
-    color: #17497B !important; /* Keep text color blue (no green) */
+    background-color: #E5E5E5 !important; /* Light grey */
     outline: none; /* Removes default browser outline */
 }
 
 /* Active state for dropdown items (when selected) */
 .dropdown-item:active {
     background-color: #FF9F80; /* Coral color for active selection */
-    color: #17497B !important; /* Keep text color blue */
 }
 
 /* Apply Filter Button */
