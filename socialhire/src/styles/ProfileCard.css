@@ -4,8 +4,7 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: none; /* Remove the shadow for no outline effect */
-    border: none; /* Ensure no border appears */
+
 }
 
 .header-profile-pic {
