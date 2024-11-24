@@ -1,64 +1,69 @@
+/* Styles for the profile card container */
 .profile-card {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-
+    display: flex; /* Arranges child elements (image and info) in a row */
+    align-items: center; /* Vertically centers the child elements */
+    padding: 20px; /* Adds spacing inside the container */
+    background-color: #fff; /* Sets the background color to white */
+    border-radius: 8px; /* Gives the container rounded corners */
 }
 
+/* Styles for the profile picture container */
 .header-profile-pic {
-    margin-right: 15px;
+    margin-right: 15px; /* Adds space between the profile picture and text */
 }
 
+/* Styles for the profile picture itself */
 .profile-pic {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 60px; /* Sets the width of the profile picture */
+    height: 60px; /* Sets the height of the profile picture */
+    border-radius: 50%; /* Makes the picture circular */
+    object-fit: cover; /* Ensures the image covers the container without distortion */
 }
 
+/* Styles for the container holding profile information (name and profession) */
 .header-profile-info {
-    display: flex;
-    flex-direction: column;
+    display: flex; /* Arranges text elements in a vertical column */
+    flex-direction: column; /* Ensures elements are stacked vertically */
 }
 
+/* Styles for the profile name text */
 .profile-name {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #333;
+    margin: 0; /* Removes default margin */
+    font-size: 1.25rem; /* Sets the font size */
+    font-weight: bold; /* Makes the text bold */
+    color: #333; /* Sets the text color to dark gray */
 }
 
+/* Styles for the profession or additional information below the name */
 .profile-profession {
-    margin: 5px 0 0;
-    font-size: 1rem;
-    color: #777;
+    margin: 5px 0 0; /* Adds spacing above the text */
+    font-size: 1rem; /* Sets the font size */
+    color: #777; /* Sets the text color to a lighter gray */
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
+/* Styles for mobile responsiveness */
+@media (max-width: 768px) { /* Targets screen widths of 768px or less */
     .profile-card {
-        flex-direction: column;
-        align-items: flex-start;
-        text-align: center;
+        flex-direction: column; /* Stacks elements vertically */
+        align-items: flex-start; /* Aligns elements to the left */
+        text-align: center; /* Centers text in the container */
     }
 
     .header-profile-pic {
-        margin-right: 0;
-        margin-bottom: 10px;
+        margin-right: 0; /* Removes horizontal spacing */
+        margin-bottom: 10px; /* Adds vertical spacing below the picture */
     }
 
     .profile-pic {
-        width: 80px;
-        height: 80px;
+        width: 80px; /* Increases the profile picture size */
+        height: 80px; /* Matches the width for a square shape */
     }
 
     .profile-name {
-        font-size: 1.125rem;
+        font-size: 1.125rem; /* Reduces the font size for smaller screens */
     }
 
     .profile-profession {
-        font-size: 0.875rem;
+        font-size: 0.875rem; /* Reduces the font size for smaller screens */
     }
 }
