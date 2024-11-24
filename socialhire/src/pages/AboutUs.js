@@ -10,10 +10,12 @@ import Brenda from '../images/SocialHirebrenda.png';
 import Eli from '../images/SocialHireeli.png';
 import Dash from '../images/dashhalf.png';
 import Diamond from '../images/doublediamond.png';
+import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 
 
-// TODO change nav
+// TODO images
 const About = () => {
+    useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     return (
         <Container fluid id='background' className="g-0">
             <div className='aboutus-container-top'>
