@@ -67,10 +67,10 @@ const SearchModal = ({ show, onClose }) => {
                 </Dropdown>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={onClose}>
+                <Button variant="secondary" onClick={onClose} id="closeButton">
                     Close
                 </Button>
-                <Button variant="primary" onClick={onClose}>
+                <Button variant="primary" onClick={onClose} id="applyFilterButton">
                     Apply Filters
                 </Button>
             </Modal.Footer>
