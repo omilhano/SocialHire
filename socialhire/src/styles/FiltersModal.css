@@ -20,7 +20,7 @@
 
 /* Hover state for the dropdown toggle */
 .dropdown-toggle:hover {
-    background-color: #0056b3;
+    background-color: #177b7b;
 }
 
 /* Style the dropdown menu */
@@ -42,12 +42,12 @@
 
 /* Hover state for dropdown items */
 .dropdown-item:hover {
-    background-color: #007bff;
+    background-color: #177b7b;
     color: white;
 }
 
 /* Focus state for dropdown items */
 .dropdown-item:focus {
-    background-color: #0056b3;
+    background-color: #177b7b;
     color: white;
 }
