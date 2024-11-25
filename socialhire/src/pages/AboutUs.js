@@ -17,7 +17,7 @@ import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 const About = () => {
     useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     return (
-        <Container fluid id='background' className="g-0">
+        <Container fluid className="g-0">
             <div className='aboutus-container-top'>
                 <div className='image-left'>
                     <img src={Diversity}></img>
@@ -44,7 +44,7 @@ const About = () => {
                 </div>
                 <div className='founders-cards'>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src={Alex} style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Img variant="top" alt="Photo of Alexandre Francisco" style={{ 'maxHeight': '310px', 'width': '100%' }} />
                         <Card.Body style={{ 'background-color': '#177B7B' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Alexandre Francisco</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
@@ -54,7 +54,8 @@ const About = () => {
                         </Card.Body>
                     </Card>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src={Brenda} style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Img variant="top" src="holder.js/100px180" />
+                        {/* style={{ 'maxHeight': '310px', 'width': '100%' }} /> */}
                         <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.8)' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Brenda Lima</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
@@ -67,7 +68,8 @@ const About = () => {
                         </Card.Body>
                     </Card>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src={Eli} style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Img variant="top" src="holder.js/100px180" />
+                        {/* style={{ 'maxHeight': '310px', 'width': '100%' }} /> */}
                         <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.6)' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Eli Godinho</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
