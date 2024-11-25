@@ -1,31 +1,33 @@
 /* Style the dropdown toggle (button) */
 .dropdown-toggle {
-    background-color: #e5e5e5;
-    color: black;
+    background-color: #E5E5E5; /* Light grey */
+    color: #177B7B; /* Green */
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 16px;
     border: none;
 }
 
-.dropdown{
+.dropdown {
     margin-bottom: 2%;
 }
 
-#dropdown-basic{
-    background-color: #e5e5e5;
+/* Style the dropdown basic button */
+#dropdown-basic {
+    background-color: #E5E5E5; /* Light grey */
     border: none;
-    color: black;
+    color: #177B7B; /* Green */
 }
 
 /* Hover state for the dropdown toggle */
 .dropdown-toggle:hover {
-    background-color: #0056b3;
+    background-color: #177B7B; /* Green */
+    color: white;
 }
 
 /* Style the dropdown menu */
 .dropdown-menu {
-    background-color: #f8f9fa;
+    background-color: #F8F9FA; /* Very light grey */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px 0;
@@ -34,7 +36,7 @@
 /* Style individual dropdown items */
 .dropdown-item {
     font-size: 14px;
-    color: black;
+    color: #17497B; /* Blue */
     padding: 8px 20px;
     margin-bottom: 5px;
     /* Add margin to the bottom of each item for spacing */
@@ -42,12 +44,46 @@
 
 /* Hover state for dropdown items */
 .dropdown-item:hover {
-    background-color: #007bff;
+    background-color: #177B7B; /* Green */
     color: white;
 }
 
 /* Focus state for dropdown items */
-.dropdown-item:focus {
-    background-color: #0056b3;
+.dropdown-item:focus, .dropdown-item:active {
+    background-color: #E5E5E5 !important; /* Light grey */
+    outline: none; /* Removes default browser outline */
+}
+
+/* Active state for dropdown items (when selected) */
+.dropdown-item:active {
+    background-color: #FF9F80; /* Coral color for active selection */
+}
+
+/* Apply Filter Button */
+#applyFilterButton {
+    background-color: #FF9F80; /* Coral color */
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+}
+
+#applyFilterButton:hover {
+    background-color: #177B7B; /* Green */
+}
+
+/* Close Button */
+#closeButton {
+    background-color: #E5E5E5; /* Light grey */
+    color: #17497B; /* Blue */
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+}
+
+#closeButton:hover {
+    background-color: #177B7B; /* Green */
     color: white;
 }

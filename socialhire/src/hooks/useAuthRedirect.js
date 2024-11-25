@@ -1,29 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import { auth } from '../firebaseConfig';
+// //Note: this shouldnt be used
 
-const useAuthRedirect = () => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+// import { useState, useEffect } from 'react'; 
+// import { useNavigate } from "react-router-dom";
+// import { auth } from '../firebaseConfig';
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is logged in
-                setCurrentUser(user);
-            } else {
-                // No user is logged in
-                navigate("/SignIn", { replace: true });
-            }
-            setLoading(false);
-        });
+// const useAuthRedirect = () => {
+//     const [currentUser, setCurrentUser] = useState(null);
+//     const [loading, setLoading] = useState(true);
+//     const navigate = useNavigate();
 
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-    }, [navigate]); 
+//     useEffect(() => {
+//         const unsubscribe = auth.onAuthStateChanged((user) => {
+//             if (user) {
+//                 // User is logged in
+//                 setCurrentUser(user);
+//             } else {
+//                 // No user is logged in
+//                 navigate("/SignIn", { replace: true });
+//             }
+//             setLoading(false);
+//         });
 
-    return { currentUser, loading };
-};
+//         // Cleanup subscription on unmount
+//         return () => unsubscribe();
+//     }, [navigate]); 
 
-export default useAuthRedirect;
+//     return { currentUser, loading };
+// };
+
+// export default useAuthRedirect;

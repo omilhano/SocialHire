@@ -25,9 +25,11 @@ import ToTheMoonpng from '../images/tothemoon.png';
 import ToTheMoonwebp from '../images/tothemoon.webp';
 import WebsiteFeatureButton from '../components/WebsiteButton';
 import RightSidedFeature from '../components/RightSided';
+import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 
-//TODO change nav
+
 const Features = () => {
+    useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     return (
         <Container fluid id='background' className="g-0">
             <div className='features-header'>

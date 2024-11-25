@@ -1,75 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { auth, db, storage } from "../firebaseConfig";
-import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Form from 'react-bootstrap/Form';
-import '../styles/Navbar.css';
-import SearchModal from './FiltersModal';
-import brandLogo from '../images/brandlogo.png';
-import lookGlass from '../images/lookglass.png';
-import placeholderPic from '../images/placeholderPic.jpg';
-import HambMenu from '../images/HambMenu.png';
-import Bell from '../images/Bell.png';
-import Chats from '../images/Chats.png';
-import JobSearch from '../images/JobSearch.png';
-import Main from '../pages/MainPage';
+// Importing necessary libraries, components, and assets
+import React, { useState, useEffect } from 'react'; // React and hooks for state and lifecycle management
+import { Link, useNavigate } from 'react-router-dom'; // React Router for navigation and linking
+import { auth, db, storage } from "../firebaseConfig"; // Firebase configuration for authentication, Firestore, and storage
+import {
+    doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs
+} from "firebase/firestore"; // Firestore methods for database operations
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase Storage methods for file management
+import Container from 'react-bootstrap/Container'; // Bootstrap container for responsive layout
+import Navbar from 'react-bootstrap/Navbar'; // Bootstrap Navbar for navigation
+import Form from 'react-bootstrap/Form'; // Bootstrap Form for input and submission
+import '../styles/Navbar.css'; // Custom CSS for Navbar styling
+import SearchModal from './FiltersModal'; // Modal component for filters
+import NotificationModal from './NotificationsModal'; // Modal component for notifications
+import brandLogo from '../images/brandlogo.png'; // Branding logo
+import lookGlass from '../images/lookglass.png'; // Search icon
+import placeholderPic from '../images/placeholderPic.jpg'; // Placeholder profile picture
+import HambMenu from '../images/HambMenu.png'; // Hamburger menu icon
+import Bell from '../images/Bell.png'; // Notification bell icon
+import Chats from '../images/Chats.png'; // Chats icon
+import JobSearch from '../images/JobSearch.png'; // Job search icon
+import Main from '../pages/MainPage'; // Main page component
 
+// Navbar component for the SocialHire app
 const NavbarSocialhire = () => {
+    const navigate = useNavigate(); // Hook for programmatic navigation
+    const [searchInput, setSearchInput] = useState(''); // State to store the search query
+    const [showModal, setShowModal] = useState(false); // State to toggle the visibility of the filter modal
+    const [showNotificationModal, setShowNotificationModal] = useState(false); // State to toggle the visibility of the notification modal
+    const [userName, setUserName] = useState(null); // State to store the logged-in user's name
 
-    const [searchInput, setSearchInput] = useState('');
-    const [showModal, setShowModal] = useState(false); // State for modal visibility
-    const [userName, setUserName] = useState(null); // Store the user's profile name
-
+    // Handles form submission for search functionality
     const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        alert(`You typed: ${searchInput}. This function is not implemented yet`);
+        e.preventDefault(); // Prevent default form submission
+        alert(`You typed: ${searchInput}. This function is not implemented yet`); // Placeholder alert
     };
 
+    // Placeholder handler for unimplemented functions
     const handleClick = (message) => {
         alert(message);
     };
 
-
+    // Fetch the logged-in user's profile data from Firestore
     useEffect(() => {
         const fetchUserProfile = async () => {
-            const currentUser = auth.currentUser;
+            const currentUser = auth.currentUser; // Get the currently logged-in user
             if (currentUser) {
                 try {
+                    // Fetch the user's document from the "users" collection
                     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                     if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        setUserName(userData.firstName || "User"); // Replace with actual field for the name
+                        const userData = userDoc.data(); // Extract user data
+                        setUserName(userData.firstName || "User"); // Set user's first name or a default
                     }
                 } catch (error) {
                     console.error("Error fetching user profile:", error);
                 }
             } else {
-                setUserName(null); // User is not logged in
+                setUserName(null); // If no user is logged in, reset the name
             }
         };
 
-        fetchUserProfile();
+        fetchUserProfile(); // Fetch profile on component mount
 
-        // Listen to auth state changes (optional for real-time updates)
+        // Optional: Listen for real-time auth state changes
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
-                fetchUserProfile();
+                fetchUserProfile(); // Re-fetch profile if user logs in
             } else {
-                setUserName(null); // Reset if user logs out
+                setUserName(null); // Reset name if user logs out
             }
         });
 
-        return () => unsubscribe(); // Cleanup on unmount
+        return () => unsubscribe(); // Clean up the listener on unmount
     }, []);
-
 
     return (
         <>
+            {/* Navbar structure */}
             <Navbar style={{ backgroundColor: '#E2E2E2' }} expand="lg" id="nav-bar">
                 <Container fluid className="d-flex align-items-center justify-content-between">
+                    {/* Brand logo */}
                     <Navbar.Brand href="/Main">
                         <img
                             alt="SocialHire"
@@ -79,6 +89,8 @@ const NavbarSocialhire = () => {
                             className="d-inline-block align-top"
                         />
                     </Navbar.Brand>
+
+                    {/* Search bar with filters */}
                     <Form className="search-bar" onSubmit={handleSearchSubmit}>
                         <Form.Control
                             type="text"
@@ -90,7 +102,7 @@ const NavbarSocialhire = () => {
                         <button
                             type="button"
                             className="filter-toggle-button"
-                            onClick={() => setShowModal(true)} // Open the modal
+                            onClick={() => setShowModal(true)} // Show filter modal
                         >
                             Filters
                         </button>
@@ -102,6 +114,8 @@ const NavbarSocialhire = () => {
                             />
                         </button>
                     </Form>
+
+                    {/* Navbar icons */}
                     <div className="icons-container">
                         <Link to="/JobSearch">
                             <img src={JobSearch} alt="Job Search" className="navbar-icon" />
@@ -110,13 +124,13 @@ const NavbarSocialhire = () => {
                             src={Chats}
                             alt="Chats"
                             className="navbar-icon"
-                            onClick={() => handleClick('Function not implemented yet')}
+                            onClick={() => navigate('/ChatPage')}
                         />
                         <img
                             src={Bell}
                             alt="Notifications"
                             className="navbar-icon"
-                            onClick={() => handleClick('Function not implemented yet')}
+                            onClick={() => setShowNotificationModal(true)} // Show notification modal
                         />
                         <img
                             src={HambMenu}
@@ -125,6 +139,8 @@ const NavbarSocialhire = () => {
                             onClick={() => handleClick('Function not implemented yet')}
                         />
                     </div>
+
+                    {/* User profile picture and name */}
                     <div className="profile-picture-1">
                         <Link className="profile-picture-navbar" to="/UserProfile">
                             <img
@@ -138,8 +154,9 @@ const NavbarSocialhire = () => {
                 </Container>
             </Navbar>
 
-            {/* Add the SearchModal component */}
+            {/* Modals for filters and notifications */}
             <SearchModal show={showModal} onClose={() => setShowModal(false)} />
+            <NotificationModal show={showNotificationModal} onClose={() => setShowNotificationModal(false)} />
         </>
     );
 };

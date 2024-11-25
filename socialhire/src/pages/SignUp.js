@@ -4,9 +4,12 @@ import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import '../styles/SignUp.css';
+import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
+import sendWelcomeEmail from '../components/EmailSend';
 
-// TODO change nav
+
 const SignUp = () => {
+    useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstName: '',
@@ -92,6 +95,8 @@ const SignUp = () => {
                 // Get the user ID from authentication
                 const userId = userCredential.user.uid;
 
+
+                // User is created
                 // Create user document in Firestore
                 await setDoc(doc(db, "users", userId), {
                     firstName: formData.firstName,
@@ -103,6 +108,8 @@ const SignUp = () => {
                     // Note: We don't store the password in Firestore
                 });
 
+                sendWelcomeEmail(formData);
+                
                 console.log("User account created successfully!");
                 alert("Account created successfully! Please sign in.");
                 navigate('/signin');

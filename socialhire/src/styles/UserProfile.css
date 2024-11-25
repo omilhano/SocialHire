@@ -575,3 +575,10 @@
     color: #6b7280;
     cursor: pointer;
 }
+
+.logout{
+    padding: 5px 10px;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
