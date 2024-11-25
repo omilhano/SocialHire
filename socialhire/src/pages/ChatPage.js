@@ -1,75 +1,74 @@
-import React, { useState } from 'react';
-import { Container } from 'react-bootstrap';
-import Form from 'react-bootstrap/Form';
-import lookGlass from '../images/lookglass.png';
-import '../styles/ChatPage.css';
-import LastChat from '../components/LastChat';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import React, { useState } from 'react'; // React library
+import { Container, Form, InputGroup, Card } from 'react-bootstrap'; // Bootstrap components for layout and styling
+import '../styles/ChatPage.css'; // Custom CSS for the Chat page
 
 const ChatPage = () => {
-    const [searchInput, setSearchInput] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [selectedChat, setSelectedChat] = useState(null); // State to track the currently selected chat
+    const [searchQuery, setSearchQuery] = useState(''); // State to track search input
 
-    const handleSearchSubmit = async (e) => {
-        e.preventDefault();
-        const sanitizedInput = searchInput.trim();
+    // Mock data for past chats
+    const chats = [
+        { id: 1, name: 'John Doe', lastMessage: 'Hey, how are you?' },
+        { id: 2, name: 'Jane Smith', lastMessage: 'Meeting at 3 PM' },
+        { id: 3, name: 'Michael Brown', lastMessage: 'Let’s catch up later!' },
+        { id: 4, name: 'Emily White', lastMessage: 'Thanks for the update.' },
+    ];
 
-        if (!sanitizedInput) {
-            console.error('Input cannot be empty');
-            return;
-        }
-
-        try {
-            const usersCollection = collection(db, 'users');
-            const startText = sanitizedInput;
-            const endText = sanitizedInput + '\uf8ff';
-            const q = query(usersCollection, where('firstName', '>=', startText), where('firstName', '<', endText));
-            const querySnapshot = await getDocs(q);
-
-            const users = [];
-            querySnapshot.forEach((doc) => {
-                users.push({ id: doc.id, ...doc.data() });
-            });
-
-            setSearchResults(users);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-        }
-    };
+    // Filter chats based on search query
+    const filteredChats = chats.filter(chat =>
+        chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
-        <Container fluid id="background" className="g-0">
-            <div className="chat-page-body">
+        <Container fluid id="chat-background" className="g-0">
+            <div className="chat-grid-layout">
+                {/* Header Section */}
                 <div className="chat-header">
-                    <p id="header-text">Messaging</p>
-                    <Form className="search-bar" onSubmit={handleSearchSubmit}>
+                    <h1>Chatting</h1>
+                    <InputGroup className="search-bar">
                         <Form.Control
                             type="text"
-                            placeholder="Search"
-                            className="searchbar-header"
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
+                            placeholder="Search chats..."
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
                         />
-                        <button type="submit" className="search-button">
-                            <img src={lookGlass} alt="Search" className="search-icon" />
-                        </button>
-                    </Form>
+                    </InputGroup>
                 </div>
-                <div className="chat-body">
-                    <div className="chat-sidebar">
-                        {searchResults.length > 0 ? (
-                            searchResults.map((user) => (
-                                <div key={user.id} className="user-item">
-                                    <p>{user.firstName}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No users found</p>
-                        )}
+
+                {/* Sidebar - Past Chats */}
+                <div className="chat-sidebar">
+                    <h2>Past Chats</h2>
+                    <div className="chat-list">
+                        {filteredChats.map(chat => (
+                            <Card
+                                key={chat.id}
+                                className={`chat-card ${selectedChat === chat.id ? 'active' : ''}`}
+                                onClick={() => setSelectedChat(chat.id)}
+                            >
+                                <Card.Body>
+                                    <Card.Title>{chat.name}</Card.Title>
+                                    <Card.Text>{chat.lastMessage}</Card.Text>
+                                </Card.Body>
+                            </Card>
+                        ))}
                     </div>
-                    <LastChat />
-                    <div className="chat-focus"></div>
+                </div>
+
+                {/* Main Chat Section */}
+                <div className="chat-main">
+                    {selectedChat ? (
+                        <div>
+                            <h2>Chat with {chats.find(chat => chat.id === selectedChat)?.name}</h2>
+                            <div className="chat-box">
+                                {/* Placeholder for chat messages */}
+                                <p>Chat messages will appear here.</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="no-chat-selected">
+                            <h2>Select a chat to view the conversation</h2>
+                        </div>
+                    )}
                 </div>
             </div>
         </Container>
