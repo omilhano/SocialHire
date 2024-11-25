@@ -90,7 +90,7 @@ const ChatPage = () => {
     };
 
     return (
-        <Container fluid id="background" className="g-0">
+        <Container fluid id="background-chat" className="g-0">
             <div className="chat-page-body">
                 {/* Header with search bar */}
                 <div className="chat-header">
