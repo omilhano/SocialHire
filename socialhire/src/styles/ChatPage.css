@@ -1,18 +1,18 @@
 #chat-background {
-    background-color: #f8f9fa; /* Light background color */
-    height: 100vh; /* Full height */
+    background-color: #f8f9fa; 
+    height: 100vh; 
     display: flex;
     flex-direction: column;
 }
 
 .chat-grid-layout {
     display: grid;
-    grid-template-columns: 1fr 3fr; /* Sidebar 1/4 and Main Section 3/4 */
+    grid-template-columns: 1fr 3fr;
     height: 100%;
 }
 
 .chat-header {
-    grid-column: 1 / -1; /* Spans full width */
+    grid-column: 1 / -1;
     padding: 1rem;
     background-color: #fff;
     display: flex;
@@ -60,7 +60,7 @@
     border-radius: 8px;
     padding: 1rem;
     background-color: #fff;
-    height: 70vh; /* Fixed height for chat area */
+    height: 70vh;
     overflow-y: auto;
 }
 
