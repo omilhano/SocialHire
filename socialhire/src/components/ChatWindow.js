@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig';  // Import db from firebaseConfig
-import {getDoc, doc, collection, addDoc, updateDoc } from 'firebase/firestore';  // Import Firestore functions
+import { getDoc, doc, collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';  // Import Firestore functions
 import { useGetMessagesOrdered } from '../hooks/useGetMessagesOrdered';  // Import the new hook
 import './ChatWindow.css';  // Assuming the CSS file is in the same folder
 
@@ -9,7 +9,8 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [messageText, setMessageText] = useState('');  // State for the input text
 
     // Get messages using the new hook
-    const { messages, loading, error } = useGetMessagesOrdered(`${currentUserId}_${selectedChat}`);
+    const chatId = [currentUserId, selectedChat].sort().join('_');
+    const { messages, loading, error } = useGetMessagesOrdered(chatId);
 
     useEffect(() => {
         const fetchUserName = async () => {
@@ -33,31 +34,56 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
     }, [selectedChat]);
 
     const handleSendMessage = async () => {
-        if (!messageText || !selectedChat || !currentUserId) return;
-        
+        if (!messageText || !selectedChat || !currentUserId) {
+            console.error("Missing message text, selected chat, or current user ID.");
+            return;
+        }
+    
         const newMessage = {
             senderId: currentUserId,
             text: messageText,
             timestamp: new Date(),
         };
-
-        const chatId = `${currentUserId}_${selectedChat}`;
+    
+        // Normalize chat ID by sorting user IDs to ensure consistency
+        
+        console.log(`Sending message to chat ID: ${chatId}`);
+    
         try {
+            // Reference to the chat document
             const chatRef = doc(db, 'chats', chatId);
+    
+            // Check if the chat document exists
+            const chatDoc = await getDoc(chatRef);
+    
+            if (!chatDoc.exists()) {
+                // If chat document doesn't exist, create it
+                await setDoc(chatRef, {
+                    lastMessage: newMessage.text,
+                    lastMessageTimestamp: newMessage.timestamp,
+                });
+                console.log(`New chat created with ID: ${chatId}`);
+            } else {
+                // If chat exists, update the last message and timestamp
+                await updateDoc(chatRef, {
+                    lastMessage: newMessage.text,
+                    lastMessageTimestamp: newMessage.timestamp,
+                });
+            }
+    
+            // Add the new message to the 'messages' subcollection
             const messagesRef = collection(chatRef, 'messages');
-            await addDoc(messagesRef, newMessage);  // Add the new message to Firestore
-            
-            // Update the lastMessage and lastMessageTimestamp in the main chat document
-            await updateDoc(chatRef, {
-                lastMessage: newMessage.text,
-                lastMessageTimestamp: newMessage.timestamp,
-            });
-
-            setMessageText('');  // Clear the input field after sending the message
+            await addDoc(messagesRef, newMessage);
+            console.log(`Message sent: ${newMessage.text}`);
+    
+            // Clear the input field after sending the message
+            setMessageText('');
         } catch (err) {
             console.error('Error sending message:', err);
         }
     };
+    
+    
 
     if (loading) {
         return <p>Loading messages...</p>;  // Show loading message while fetching
@@ -78,15 +104,15 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
             <div className="chat-box">
                 {messages.length === 0 ? (
                     <p>No messages yet. A simple hello could lead to your next opportunity!</p>
-                ) : (
-                    messages.map((msg, index) => (
+                ) : (messages.map((msg, index) => (
                         <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
                             <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
                             <p>{msg.text}</p>
                         </div>
                     ))
                 )}
-            </div>
+</div>
+
 
             <div className="chat-input-box">
                 <input

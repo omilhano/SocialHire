@@ -4,7 +4,7 @@ import '../styles/ChatPage.css';
 import ChatHeader from '../components/ChatHeader';
 import ChatList from '../components/ChatList';
 import ChatWindow from '../components/ChatWindow';
-import { useAuth } from '../hooks/useAuth'; // Impor    t the custom useAuth hook
+import { useAuth } from '../hooks/useAuth'; // Import the custom useAuth hook
 
 const ChatPage = () => {
     const { user, loading } = useAuth(); // Get the authenticated user
