@@ -39,7 +39,7 @@ const ChatPage = () => {
                 />
 
                 {/* Main - Chat Window */}
-                <ChatWindow selectedChat={selectedChat} />
+                <ChatWindow selectedChat={selectedChat} currentUserId={currentUserId} />
             </div>
         </Container>
     );
