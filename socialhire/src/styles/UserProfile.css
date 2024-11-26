@@ -345,62 +345,223 @@
   
   /* Experience list styles */
   .experience-list {
-    margin-top: 20px;
-  }
-  
-  .experience-item {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 12px;
     display: flex;
     flex-direction: column;
+    gap: 16px; /* Spacing between cards */
+    margin: 20px 0;
+}
+
+.experience-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background-color: #ffffff; /* White background for cards */
+    border: 1px solid #e5e7eb; /* Light gray border */
+    border-radius: 12px; /* Rounded corners for a modern look */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effects */
+}
+  
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .experience-header {
+  .edit-button {
+    background: none; /* No default button styling */
+    border: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
+    padding: 4px;
+    transition: color 0.2s;
+}
+  
+  .edit-button:hover {
+    background-color: #f3f4f6;
   }
   
-  .icon {
+  .edit-icon {
+    width: 1.25rem;
+    height: 1.25rem;
     color: #6b7280;
   }
   
-  .icon-small {
-    color: #9ca3af;
-    margin-right: 5px;
+  
+  .form-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    border-color: transparent;
+  }
+  
+  .date-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .checkbox-input {
+    width: 1rem;
+    height: 1rem;
+    color: #3b82f6;
+    border-radius: 0.25rem;
+  }
+  
+  .form-textarea {
+    width: 100%;
+    height: 8rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    resize: none;
+    margin-bottom: 1rem;
+  }
+  
+  .form-textarea:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    border-color: transparent;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+  
+  .cancel-button {
+    padding: 0.5rem 1.5rem;
+    color: #4b5563;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+  }
+  
+  .cancel-button:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .save-button {
+    padding: 0.5rem 1.5rem;
+    color: white;
+    background-color: #2563eb;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+  }
+  
+  .save-button:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .save-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .error-text {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    color: #6b7280;
+  }
+  
+  .experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .experience-card:hover {
+    transform: translateY(-4px); /* Lift effect on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+  
+.card-header {
+    display: flex;
+    gap: 16px; /* Spacing between icon and content */
+    align-items: flex-start;
+}
+  
+.icon-container {
+    flex-shrink: 0; /* Ensures icon doesn't stretch */
+    background-color: #e0f2fe; /* Light blue background for the icon */
+    padding: 10px;
+    border-radius: 50%; /* Circle shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    color: #0284c7; /* Blue color for the icon */
+    font-size: 20px; /* Adjust icon size */
+}
+  
+  .header-content {
+    flex: 1;
   }
   
   .title {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
   }
   
   .company {
-    font-size: 14px;
-    color: #6b7280;
-  }
+    font-size: 14px; /* Smaller font size for secondary info */
+    font-weight: 500; /* Medium weight */
+    color: #4b5563; /* Muted gray */
+    margin: 4px 0; /* Space around the company name */
+}
   
-  .date {
-    font-size: 14px;
-    color: #9ca3af;
-    margin-top: 4px;
-  }
+.date-info {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Spacing between icon and date text */
+    font-size: 14px; /* Consistent font size */
+    color: #6b7280; /* Muted gray for subtlety */
+}
+
   
-  .description {
-    margin-top: 8px;
-    color: #4b5563;
-  }
+.calendar-icon {
+    color: #9ca3af; /* Lighter gray for the calendar icon */
+    font-size: 16px; /* Adjust icon size */
+}
   
-  .empty-message {
-    text-align: center;
-    color: #9ca3af;
-    font-size: 16px;
-  }
+.description {
+    font-size: 14px; /* Consistent font size */
+    color: #374151; /* Darker gray for better readability */
+    line-height: 1.6; /* Improved readability */
+    margin-top: 8px; /* Space above description */
+}
 /* Posts Section */
 .posts-container {
     margin-top: 16px;

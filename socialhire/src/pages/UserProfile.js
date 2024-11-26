@@ -17,7 +17,10 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
-    const { updateDocument: updateExperience } = useFirebaseDocument('experiences');
+    const { updateDocument: updateExperience, getDocumentsByUserId} = useFirebaseDocument('experiences');
+    const { addDocument: addExperience} = useFirebaseDocument('experiences');
+
+
     const { updateDocument: updatePost } = useFirebaseDocument('posts');
 
     // State
@@ -48,14 +51,16 @@ const UserProfile = () => {
         if (!auth.currentUser) return;
 
         try {
-            const data = await getDocument(auth.currentUser.uid);
-            if (data) {
-                setState(prev => ({
-                    ...prev,
-                    profileData: data,
-                    loading: false
-                }));
-            }
+            const profile = await getDocument('users', auth.currentUser.uid);
+            // Fetch experience data
+            const experiences = await getDocumentsByUserId('experience', auth.currentUser.uid);
+
+            setState(prev => ({
+                ...prev,
+                profileData: profile || {},
+                experienceData: experiences || [],
+                loading: false,
+            }));
         } catch (error) {
             setState(prev => ({
                 ...prev,
@@ -63,7 +68,7 @@ const UserProfile = () => {
                 loading: false
             }));
         }
-    }, [getDocument]);
+    }, [getDocument,getDocumentsByUserId]);
 
     // When refreshes shows profile again
     useEffect(() => {
@@ -80,7 +85,7 @@ const UserProfile = () => {
 
     // Handle profile updates
     const handleProfileUpdate = useCallback(async (field, value) => {
-        const validationResult = field === 'experience'
+        const validationResult = field === 'users'
             ? validateExperience(value)
             : validateProfileData({ ...profileData, [field]: value });
 
@@ -123,10 +128,15 @@ const UserProfile = () => {
         fetchProfile();
     }, [fetchProfile]);
 
+    //
     // Experience
+    //
 
-    const handleExperienceUpdate = useCallback(async (field, value) => {
-        const validationResult = validateExperience(value);
+    // Add a new experience or update an existing one
+    const handleExperienceUpdate = useCallback(async (experience) => {
+        const validationResult = validateExperience(experience);
+        console.log("Experience data being sent to handleExperienceUpdate"); // Debug log
+        console.log("Experience data is invalid?", !validationResult.isValid); // Debug log
         if (!validationResult.isValid) {
             setState(prev => ({
                 ...prev,
@@ -134,21 +144,30 @@ const UserProfile = () => {
             }));
             return;
         }
+        console.log("Experience data being sent to addDocument:", experienceData); // Debug log
+        console.log("Experience id", experienceData.id); // Debug log
+        const newExperienceId = experience.id || Date.now().toString();
+        const success = experience.id
+            ? await updateExperience('experience', experienceData.id, experience)
+            : await addExperience('experience', newExperienceId, { ...experience});
 
-        const success = await updateExperience(auth.currentUser.uid, { [field]: value });
         if (success) {
             setState(prev => ({
                 ...prev,
-                experienceData: { ...prev.experienceData, [field]: value },
-                editMode: { ...prev.editMode, [field]: false },
+                experienceData: experience.id
+                    ? prev.experienceData.map(exp => (exp.id === experience.id ? experience : exp))
+                    : [...prev.experienceData, { ...experience, id: newExperienceId }],
+                editMode: { ...prev.editMode, experience: false },
                 validation: {},
             }));
         }
-    }, [updateExperience]);
+    }, [updateExperience, addExperience]);
 
     if (loading) {
         return <div className="loading">Loading profile...</div>;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
 
     return (
         <div className="profile-container">
@@ -161,6 +180,7 @@ const UserProfile = () => {
             )}
             <ProfileHeader
                 profileData={profileData}
+
                 editMode={editMode.basic}
                 validation={validation}
                 onEditModeChange={(mode) => setState(prev => ({
@@ -181,17 +201,15 @@ const UserProfile = () => {
                 onSave={(value) => handleProfileUpdate('about', value)}
             />
             <ExperienceSection
-                experience={experienceData}
+                experiences={experienceData}
                 editMode={editMode.experience}
-                newExperience={newExperience}
-                userId={auth.currentUser ? auth.currentUser.uid : null} // Pass user ID here
                 onEditModeChange={(mode) => setState(prev => ({
                     ...prev,
                     editMode: { ...prev.editMode, experience: mode }
                 }))}
-                onAddExperience={(value) => handleExperienceUpdate('title', value)}
+                onAddExperience={(experience) => handleExperienceUpdate(experience)}
             />
-        <button className="logout">
+            <button className="logout">
                 Logout
             </button>
         </div>
