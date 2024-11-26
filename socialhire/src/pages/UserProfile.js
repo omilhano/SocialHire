@@ -17,8 +17,8 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
-    const { updateDocument: updateExperience, getDocumentsByUserId} = useFirebaseDocument('experiences');
-    const { addDocument: addExperience} = useFirebaseDocument('experiences');
+    const { updateDocument: updateExperience, getDocumentsByUserId } = useFirebaseDocument('experiences');
+    const { addDocument: addExperience } = useFirebaseDocument('experiences');
 
 
     const { updateDocument: updatePost } = useFirebaseDocument('posts');
@@ -68,7 +68,7 @@ const UserProfile = () => {
                 loading: false
             }));
         }
-    }, [getDocument,getDocumentsByUserId]);
+    }, [getDocument, getDocumentsByUserId]);
 
     // When refreshes shows profile again
     useEffect(() => {
@@ -107,6 +107,17 @@ const UserProfile = () => {
             }));
         }
     }, [profileData, updateDocument]);
+
+    const handleLogout = async () => {
+        try {
+            await auth.signOut();
+            console.log("User logged out");
+            navigate('/signin'); // Redirect to the sign-in page
+            navigate('/signin');
+        } catch (error) {
+            console.error("Error during logout:", error.message);
+        }
+    };
 
     // Handle profile picture update
     const handleProfilePictureChange = async (e) => {
@@ -149,7 +160,7 @@ const UserProfile = () => {
         const newExperienceId = experience.id || Date.now().toString();
         const success = experience.id
             ? await updateExperience('experience', experienceData.id, experience)
-            : await addExperience('experience', newExperienceId, { ...experience});
+            : await addExperience('experience', newExperienceId, { ...experience });
 
         if (success) {
             setState(prev => ({
@@ -209,7 +220,7 @@ const UserProfile = () => {
                 }))}
                 onAddExperience={(experience) => handleExperienceUpdate(experience)}
             />
-            <button className="logout">
+            <button className="logout" onClick={handleLogout}>
                 Logout
             </button>
         </div>

@@ -19,9 +19,10 @@ const ProfileCard = () => {
         // Async function to fetch the user's profile data from Firestore
         const fetchUserData = async () => {
             if (user?.uid) { // Ensure the user object and UID exist
-                const data = await getDocument(user.uid); // Retrieve document by UID
+                const data = await getDocument('users', user.uid); // Retrieve document by UID
                 if (data) {
-                    setUserData(data); // Update state with retrieved data
+                    setUserData(data);
+                    console.log(user.uid) // Update state with retrieved data
                 }
             }
         };
