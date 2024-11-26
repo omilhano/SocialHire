@@ -90,8 +90,6 @@ const People = () => {
         fetchUsers();
     }, []); // Runs only once
 
-
-
     const addfriend = async (connectedUserId) => {
         const auth = getAuth();
         const currentUserId = auth.currentUser?.uid; // Get the logged-in user's ID

@@ -96,6 +96,7 @@ const ExperienceForm = ({ experience, onSave, onCancel, onExpereinceDataChange }
                 : true;
 
             console.log("Is it going to on save? ", (success && onSave)); // Debug log
+            console.log(experienceData)
 
             if (success && onSave) {
                 onSave(experienceData);

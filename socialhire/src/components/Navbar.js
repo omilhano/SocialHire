@@ -9,7 +9,10 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase
 import Container from 'react-bootstrap/Container'; // Bootstrap container for responsive layout
 import Navbar from 'react-bootstrap/Navbar'; // Bootstrap Navbar for navigation
 import Form from 'react-bootstrap/Form'; // Bootstrap Form for input and submission
+
+// TODO Navbar
 import '../styles/Navbar.css'; // Custom CSS for Navbar styling
+
 import SearchModal from './FiltersModal'; // Modal component for filters
 import NotificationModal from './NotificationsModal'; // Modal component for notifications
 import brandLogo from '../images/brandlogo.png'; // Branding logo
