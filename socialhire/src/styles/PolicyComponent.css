@@ -1,32 +1,33 @@
-#date-TOS {
+#data-policy{
     font-size: 1.4rem;
     font-style: italic;
 }
 
-#TOS-intro {
+#policy-intro{
     font-size: 1.3rem;
 }
 
-.privacy-terms-list {
+.tos-terms-list{
     list-style-type: none;
 }
 
-.TOS-title {
+.privacy-title{
     font-size: 2rem
 }
 
-.term {
+.type{
     font-size: 1.3rem;
 }
 
-.description-style {
+.privacy-style{
     font-size: 1.2rem;
 }
 
-.policy-component-background {
+.terms-of-service-background{
     width: 80%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
 }
+
