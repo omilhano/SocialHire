@@ -1,26 +1,29 @@
 import React, { useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import '../styles/ChatPage.css';
 import ChatHeader from '../components/ChatHeader';
 import ChatList from '../components/ChatList';
 import ChatWindow from '../components/ChatWindow';
+import { useAuth } from '../hooks/useAuth'; // Impor    t the custom useAuth hook
 
 const ChatPage = () => {
-    const [selectedChat, setSelectedChat] = useState(null); // Tracks the currently selected chat
-    const [searchQuery, setSearchQuery] = useState(''); // Tracks search input
+    const { user, loading } = useAuth(); // Get the authenticated user
+    const [selectedChat, setSelectedChat] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Mock data for chats
-    const chats = [
-        { id: 1, name: 'John Doe', lastMessage: 'Hey, how are you?' },
-        { id: 2, name: 'Jane Smith', lastMessage: 'Meeting at 3 PM' },
-        { id: 3, name: 'Michael Brown', lastMessage: 'Let’s catch up later!' },
-        { id: 4, name: 'Emily White', lastMessage: 'Thanks for the update.' },
-    ];
+    // Show a loading spinner while the authentication state is loading
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </div>
+        );
+    }
 
-    // Filter chats based on search query
-    const filteredChats = chats.filter(chat =>
-        chat.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Extract the user ID from the authenticated user
+    const currentUserId = user?.uid;
 
     return (
         <Container fluid id="chat-background" className="g-0">
@@ -30,13 +33,13 @@ const ChatPage = () => {
 
                 {/* Sidebar - Chat List */}
                 <ChatList
-                    chats={filteredChats}
+                    currentUserId={currentUserId} // Pass the authenticated user ID
                     selectedChat={selectedChat}
                     setSelectedChat={setSelectedChat}
                 />
 
                 {/* Main - Chat Window */}
-                <ChatWindow chats={chats} selectedChat={selectedChat} />
+                <ChatWindow selectedChat={selectedChat} />
             </div>
         </Container>
     );
