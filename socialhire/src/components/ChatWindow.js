@@ -1,67 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useFirebaseDocument } from '../hooks/useFirebase'; // Ensure correct imports
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebaseConfig';  // Import db from firebaseConfig
+import {getDoc, doc, collection, addDoc, updateDoc } from 'firebase/firestore';  // Import Firestore functions
+import { useGetMessagesOrdered } from '../hooks/useGetMessagesOrdered';  // Import the new hook
+import './ChatWindow.css';  // Assuming the CSS file is in the same folder
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {
-    const [chat, setChat] = useState(null); // State for the current chat
-    const [chatUserName, setChatUserName] = useState(''); // State for the other user's name
-    const [messages, setMessages] = useState([]); // State for the chat messages
-    const { getDocument, getDocumentsByUserId, addDocument } = useFirebaseDocument('chats'); // Firebase hooks
+    const [chatUserName, setChatUserName] = useState('');  // State for the other user's name
+    const [messageText, setMessageText] = useState('');  // State for the input text
 
-    useEffect(() => {
-        const fetchOrCreateChat = async () => {
-            if (!selectedChat || !currentUserId) {
-                console.warn('Chat cannot be fetched or created because user ID or chat ID is missing.');
-                setChat(null); // No chat available
-                return;
-            }
-
-            const chatId = `${currentUserId}_${selectedChat}`;
-            console.log(`Fetching chat for ${chatId}`);
-
-            try {
-                // Check if the chat exists
-                const existingChat = await getDocument('chats', chatId);
-                if (existingChat) {
-                    console.log('Existing chat found:', existingChat);
-                    setChat({ id: chatId, ...existingChat });
-                } else if (!chat) { // Create only if a chat doesn't exist
-                    console.log('No existing chat. Creating new one.');
-                    const newChatData = {
-                        participants: [currentUserId, selectedChat],
-                        lastMessage: '',
-                        lastMessageTimestamp: null,
-                    };
-                    const { success, id } = await addDocument('chats', chatId, newChatData);
-
-                    if (success) {
-                        console.log('New chat created with ID:', id);
-                        setChat({ id, ...newChatData });
-                    } else {
-                        console.error('Failed to create chat.');
-                    }
-                }
-            } catch (err) {
-                console.error('Error fetching or creating chat:', err);
-            }
-        };
-
-        fetchOrCreateChat();
-    }, [selectedChat, currentUserId, getDocument, addDocument, chat]);
+    // Get messages using the new hook
+    const { messages, loading, error } = useGetMessagesOrdered(`${currentUserId}_${selectedChat}`);
 
     useEffect(() => {
         const fetchUserName = async () => {
             if (!selectedChat) return;
             try {
-                console.log(`Fetching name for user ID: ${selectedChat}`);
-                const userData = await getDocument('users', selectedChat); // Check users collection
-                console.log('Fetched user data:', userData);
-
+                // Fetch user data (assuming you have a `users` collection)
+                const userData = await getDoc(doc(db, 'users', selectedChat));  // Fetch user document by user ID
                 if (userData && userData.firstName && userData.lastName) {
-                    // Combine firstName and lastName
                     const fullName = `${userData.firstName} ${userData.lastName}`;
                     setChatUserName(fullName);
                 } else {
-                    console.warn('User data incomplete. Using fallback name.');
                     setChatUserName('Unknown User');
                 }
             } catch (err) {
@@ -71,44 +30,72 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
         };
 
         fetchUserName();
-    }, [selectedChat, getDocument]);
+    }, [selectedChat]);
 
-    useEffect(() => {
-        const fetchMessages = async () => {
-            if (!selectedChat || !currentUserId) return;
-            const chatId = `${currentUserId}_${selectedChat}`;
-            try {
-                // Fetch messages for this chat from the 'chats/{chatId}/messages' subcollection
-                const chatMessages = await getDocumentsByUserId('chats', chatId);
-                setMessages(chatMessages || []); // Store the messages in the state
-            } catch (err) {
-                console.error('Error fetching chat messages:', err);
-                setMessages([]);
-            }
+    const handleSendMessage = async () => {
+        if (!messageText || !selectedChat || !currentUserId) return;
+        
+        const newMessage = {
+            senderId: currentUserId,
+            text: messageText,
+            timestamp: new Date(),
         };
 
-        fetchMessages();
-    }, [selectedChat, currentUserId, getDocumentsByUserId]);
+        const chatId = `${currentUserId}_${selectedChat}`;
+        try {
+            const chatRef = doc(db, 'chats', chatId);
+            const messagesRef = collection(chatRef, 'messages');
+            await addDoc(messagesRef, newMessage);  // Add the new message to Firestore
+            
+            // Update the lastMessage and lastMessageTimestamp in the main chat document
+            await updateDoc(chatRef, {
+                lastMessage: newMessage.text,
+                lastMessageTimestamp: newMessage.timestamp,
+            });
+
+            setMessageText('');  // Clear the input field after sending the message
+        } catch (err) {
+            console.error('Error sending message:', err);
+        }
+    };
+
+    if (loading) {
+        return <p>Loading messages...</p>;  // Show loading message while fetching
+    }
+
+    if (error) {
+        return <p>Error loading messages: {error.message}</p>;  // Show error message if any
+    }
 
     if (!selectedChat) {
         return <div className="no-chat-selected"><h2>Select a chat to view the conversation</h2></div>;
     }
 
-    if (!chat) {
-        return <p>Loading chat...</p>;
-    }
-
     return (
         <div className="chat-main">
             <h2>Chat with {chatUserName}</h2>
+
             <div className="chat-box">
                 {messages.length === 0 ? (
                     <p>No messages yet. A simple hello could lead to your next opportunity!</p>
                 ) : (
                     messages.map((msg, index) => (
-                        <p key={index}>{msg.text}</p> // Assuming each message has a 'text' property
+                        <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
+                            <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
+                            <p>{msg.text}</p>
+                        </div>
                     ))
                 )}
+            </div>
+
+            <div className="chat-input-box">
+                <input
+                    type="text"
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    placeholder="Type your message..."
+                />
+                <button onClick={handleSendMessage}>Send</button>
             </div>
         </div>
     );

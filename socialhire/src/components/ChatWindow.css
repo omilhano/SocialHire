@@ -1,0 +1,50 @@
+/* Chatbox Styles */
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+}
+
+.sent {
+    align-self: flex-end;
+    background-color: #dcf8c6; /* Light green for sent messages */
+}
+
+.received {
+    align-self: flex-start;
+    background-color: #fff; /* White for received messages */
+}
+
+.chat-input-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+input {
+    width: 80%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
