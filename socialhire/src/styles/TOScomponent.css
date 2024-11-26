@@ -1,0 +1,33 @@
+#date-TOS{
+    font-size: 1.4rem;
+    font-style: italic;
+}
+
+#TOS-intro{
+    font-size: 1.3rem;
+}
+
+.tos-terms-list{
+    list-style-type: none;
+}
+
+.TOS-title{
+    font-size: 2rem
+}
+
+.term{
+    font-size: 1.3rem;
+}
+
+.description-style{
+    font-size: 1.2rem;
+}
+
+.terms-of-service-background{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
