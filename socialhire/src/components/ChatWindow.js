@@ -4,7 +4,8 @@ import { useFirebaseDocument } from '../hooks/useFirebase'; // Ensure correct im
 const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [chat, setChat] = useState(null); // State for the current chat
     const [chatUserName, setChatUserName] = useState(''); // State for the other user's name
-    const { getDocument, addDocument } = useFirebaseDocument('chats'); // Firebase hooks
+    const [messages, setMessages] = useState([]); // State for the chat messages
+    const { getDocument, getDocumentsByUserId, addDocument } = useFirebaseDocument('chats'); // Firebase hooks
 
     useEffect(() => {
         const fetchOrCreateChat = async () => {
@@ -48,29 +49,46 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
     }, [selectedChat, currentUserId, getDocument, addDocument, chat]);
 
     useEffect(() => {
-    const fetchUserName = async () => {
-        if (!selectedChat) return;
-        try {
-            console.log(`Fetching name for user ID: ${selectedChat}`);
-            const userData = await getDocument('users', selectedChat); // Check users collection
-            console.log('Fetched user data:', userData);
+        const fetchUserName = async () => {
+            if (!selectedChat) return;
+            try {
+                console.log(`Fetching name for user ID: ${selectedChat}`);
+                const userData = await getDocument('users', selectedChat); // Check users collection
+                console.log('Fetched user data:', userData);
 
-            if (userData && userData.firstName && userData.lastName) {
-                // Combine firstName and lastName
-                const fullName = `${userData.firstName} ${userData.lastName}`;
-                setChatUserName(fullName);
-            } else {
-                console.warn('User data incomplete. Using fallback name.');
+                if (userData && userData.firstName && userData.lastName) {
+                    // Combine firstName and lastName
+                    const fullName = `${userData.firstName} ${userData.lastName}`;
+                    setChatUserName(fullName);
+                } else {
+                    console.warn('User data incomplete. Using fallback name.');
+                    setChatUserName('Unknown User');
+                }
+            } catch (err) {
+                console.error('Error fetching user name:', err);
                 setChatUserName('Unknown User');
             }
-        } catch (err) {
-            console.error('Error fetching user name:', err);
-            setChatUserName('Unknown User');
-        }
-    };
+        };
 
-    fetchUserName();
-}, [selectedChat, getDocument]);
+        fetchUserName();
+    }, [selectedChat, getDocument]);
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            if (!selectedChat || !currentUserId) return;
+            const chatId = `${currentUserId}_${selectedChat}`;
+            try {
+                // Fetch messages for this chat from the 'chats/{chatId}/messages' subcollection
+                const chatMessages = await getDocumentsByUserId('chats', chatId);
+                setMessages(chatMessages || []); // Store the messages in the state
+            } catch (err) {
+                console.error('Error fetching chat messages:', err);
+                setMessages([]);
+            }
+        };
+
+        fetchMessages();
+    }, [selectedChat, currentUserId, getDocumentsByUserId]);
 
     if (!selectedChat) {
         return <div className="no-chat-selected"><h2>Select a chat to view the conversation</h2></div>;
@@ -84,7 +102,13 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
         <div className="chat-main">
             <h2>Chat with {chatUserName}</h2>
             <div className="chat-box">
-                <p>Chat messages will appear here for {chatUserName}.</p>
+                {messages.length === 0 ? (
+                    <p>No messages yet. A simple hello could lead to your next opportunity!</p>
+                ) : (
+                    messages.map((msg, index) => (
+                        <p key={index}>{msg.text}</p> // Assuming each message has a 'text' property
+                    ))
+                )}
             </div>
         </div>
     );
