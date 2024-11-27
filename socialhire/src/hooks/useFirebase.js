@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { auth, db, storage } from "../firebaseConfig";
-import { doc, setDoc, getDoc, collection, addDoc, updateDoc, query, where, getDocs, deleteDoc} from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, addDoc, updateDoc, query, where, getDocs, deleteDoc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const useFirebaseUpload = () => {
@@ -82,33 +82,32 @@ export const useFirebaseDocument = (collectionName) => {
     const getDocumentsByUserId = useCallback(
         async (collectionName, userId) => {
             if (!userId) return null;
-
+    
             try {
                 setLoading(true);
                 setError(null);
-
-                // Create a reference to the collection and apply the query filter
+    
                 const collectionRef = collection(db, collectionName);
                 const q = query(collectionRef, where("userId", "==", userId));
-
-                // Execute the query
                 const querySnapshot = await getDocs(q);
-
-                // Map through the query results and retrieve data from each document
-            const documents = querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                console.log("Document data:", data); // Debug log
-                return {
-                    id: doc.id,
-                    ...data,
-                    startDate: data.startDate ? data.startDate.toDate() : null,
-                    endDate: data.endDate ? data.endDate.toDate() : null,
-                };
-            });
-
-                console.log("Experiences:", documents); // Debug log
-
-                return documents; // Returns an array of documents that match the userId
+    
+                const documents = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+    
+                    return {
+                        ...data,
+                        id: doc.id,
+                        // Handle startDate and endDate safely
+                        startDate: data.startDate instanceof Timestamp 
+                            ? data.startDate.toDate() 
+                            : data.startDate || null,
+                        endDate: data.endDate instanceof Timestamp 
+                            ? data.endDate.toDate() 
+                            : data.endDate || null,
+                    };
+                });
+    
+                return documents;
             } catch (err) {
                 setError("Failed to fetch documents");
                 console.error("Fetch error:", err);
@@ -119,6 +118,7 @@ export const useFirebaseDocument = (collectionName) => {
         },
         [collectionName]
     );
+    
 
     const addDocument = async (collectionName, docId = null, data) => {
         if (typeof data !== 'object' || data === null) {

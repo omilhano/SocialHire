@@ -55,7 +55,7 @@ export const ExperienceSection = ({
 
             {editMode && (
                 <ExperienceForm
-                    experience={selectedExperience || newExperience}
+                    experience={selectedExperience || {}}
                     onExpereinceDataChange={onExpereinceDataChange}
                     onSave={(expData) => {
                         onAddExperience(expData);
@@ -75,34 +75,48 @@ export const ExperienceSection = ({
     );
 };
 
-const ExperienceForm = ({ experience = {}, onSave, onCancel, onExpereinceDataChange }) => {
+// ExperienceForm Component
+const ExperienceForm = ({ experience, onSave, onCancel }) => {
     const [formData, setFormData] = useState(() => ({
-        ...experience,
-        startDate: experience.startDate || '',
-        endDate: experience.endDate || ''
+        title: '',
+        company: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        description: '',
+        ...experience, // Override with provided experience data if it exists
     }));
-    const { updateDocument, addDocument, loading, error } = useFirebaseDocument('experiences');
+
+    const { loading, error } = useFirebaseDocument('experience');
+    useEffect(() => {
+        setFormData({
+            title: '',
+            company: '',
+            startDate: '',
+            endDate: '',
+            current: false,
+            description: '',
+            ...experience, // Use experience data if available
+        });
+    }, [experience]);
 
     useEffect(() => {
         setFormData({
             ...experience,
-            startDate: experience.startDate || '',
-            endDate: experience.endDate || ''
+            startDate: experience.startDate instanceof Date 
+                ? experience.startDate.toISOString().split('T')[0]
+                : '',
+            endDate: experience.endDate instanceof Date 
+                ? experience.endDate.toISOString().split('T')[0]
+                : ''
         });
     }, [experience]);
 
     const handleInputChange = (field, value) => {
-        if (field === 'startDate' || field === 'endDate') {
-            setFormData((prev) => ({
-                ...prev,
-                [field]: value
-            }));
-        } else {
-            setFormData((prev) => ({
-                ...prev,
-                [field]: value,
-            }));
-        }
+        setFormData((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
     };
 
     const handleSave = async () => {
@@ -111,14 +125,14 @@ const ExperienceForm = ({ experience = {}, onSave, onCancel, onExpereinceDataCha
         const experienceData = {
             title: formData.title || '',
             company: formData.company || '',
-            startDate: formData.startDate ? new Date(formData.startDate) : null, // Convert to Date
-            endDate: formData.endDate ? new Date(formData.endDate) : null,       // Convert to Date
+            startDate: formData.startDate ? new Date(formData.startDate) : null,
+            endDate: formData.endDate ? new Date(formData.endDate) : null,
             current: formData.current || false,
             description: formData.description || '',
             userId: auth.currentUser.uid,
-            id: formData.id || `${auth.currentUser.uid}_${Date.now()}`
+            id: formData.id || ''
         };
-    
+        console.log("Expirience Data in Handle Save: ", experienceData)
         try {
             if (onSave) {
                 onSave(experienceData);
@@ -127,6 +141,7 @@ const ExperienceForm = ({ experience = {}, onSave, onCancel, onExpereinceDataCha
             console.error("Error saving experience:", error);
         }
     };
+
     return (
         <div className="experience-form">
             <input
@@ -184,6 +199,7 @@ const ExperienceForm = ({ experience = {}, onSave, onCancel, onExpereinceDataCha
     );
 };
 
+// ExperienceList Component
 const ExperienceList = ({ experiences, onEdit, onDelete }) => {
     const { deleteDocument } = useFirebaseDocument('experience');
 
@@ -192,22 +208,31 @@ const ExperienceList = ({ experiences, onEdit, onDelete }) => {
 
         try {
             // Handle Firebase Timestamp
-            if (date.seconds) {
-                date = new Date(date.seconds * 1000);
+            if (date?.seconds) {
+                return new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                }).format(new Date(date.seconds * 1000));
             }
-            // Handle Date object or string
-            else if (!(date instanceof Date)) {
-                date = new Date(date);
+            
+            // Handle Date object
+            if (date instanceof Date) {
+                return new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                }).format(date);
             }
 
-            if (isNaN(date.getTime())) {
-                return 'Invalid Date';
+            // Handle string date
+            const parsedDate = new Date(date);
+            if (!isNaN(parsedDate.getTime())) {
+                return new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                }).format(parsedDate);
             }
 
-            return new Intl.DateTimeFormat('en-US', {
-                year: 'numeric',
-                month: 'long'
-            }).format(date);
+            return 'Invalid Date';
         } catch (error) {
             console.error('Error formatting date:', error);
             return 'N/A';
@@ -232,7 +257,7 @@ const ExperienceList = ({ experiences, onEdit, onDelete }) => {
         }
     };
 
-    if (experiences.length === 0) {
+    if (!Array.isArray(experiences) || experiences.length === 0) {
         return <p className="empty-message">No experience added yet</p>;
     }
 
