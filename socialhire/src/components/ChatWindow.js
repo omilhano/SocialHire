@@ -8,27 +8,33 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [chatUserName, setChatUserName] = useState('');  // State for the other user's name
     const [messageText, setMessageText] = useState('');  // State for the input text
 
+
     // Get messages using the new hook
     const chatId = [currentUserId, selectedChat].sort().join('_');
     const { messages, loading, error } = useGetMessagesOrdered(chatId);
 
     useEffect(() => {
         const fetchUserName = async () => {
-            if (!selectedChat) return;
+            if (!selectedChat) {
+                return;
+            }
+        
             try {
-                // Fetch user data (assuming you have a `users` collection)
-                const userData = await getDoc(doc(db, 'users', selectedChat));  // Fetch user document by user ID
-                if (userData && userData.firstName && userData.lastName) {
-                    const fullName = `${userData.firstName} ${userData.lastName}`;
-                    setChatUserName(fullName);
+                console.log("Fetching user data for chat ID:", selectedChat); // Log the selectedChat value
+        
+                const userDoc = await getDoc(doc(db, 'users', selectedChat)); // Attempt to fetch user document
+                if (userDoc.exists()) {
+                    const userData = userDoc.data(); // Extract the data
+                    const fullName = `${userData.firstName} ${userData.lastName}`; // Combine name fields
+                    setChatUserName(fullName); // Set the chat user name
                 } else {
                     setChatUserName('Unknown User');
                 }
             } catch (err) {
-                console.error('Error fetching user name:', err);
                 setChatUserName('Unknown User');
             }
         };
+        
 
         fetchUserName();
     }, [selectedChat]);
