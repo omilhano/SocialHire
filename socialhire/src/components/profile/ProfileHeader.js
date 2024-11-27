@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Pencil, MapPin } from 'lucide-react';
 import DefaultProfilePic from '../../images/placeholderPic.jpg';
+import { auth, db, storage } from "../../firebaseConfig"; // Adjust path based on location
+import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 
 export const ProfileHeader = ({
     profileData,
@@ -50,7 +52,6 @@ export const ProfileHeader = ({
 // BasicInfoForm.js
 const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) => {
     const [formData, setFormData] = useState({ ...profileData });
-    console.log("Profile", profileData); // Debug log
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({
@@ -115,9 +116,10 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
     );
 };
 
+
 // BasicInfoDisplay.js
 const BasicInfoDisplay = ({ profileData, onEdit }) => (
-    
+
     <div className="info-display">
         <h1>{profileData.firstName} {profileData.lastName}</h1>
         <p className="headline">{profileData.headline}</p>

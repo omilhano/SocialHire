@@ -174,3 +174,13 @@
 .register-link:hover {
     text-decoration: underline;
 }
+
+#forgor-password{
+    color: #17497b;
+    text-decoration: none;
+}
+
+#forgor-password:hover{
+    text-decoration: underline;
+    pointer-events: auto ;
+}

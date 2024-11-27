@@ -45,18 +45,19 @@
 @media (max-width: 768px) { /* Targets screen widths of 768px or less */
     .profile-card {
         flex-direction: column; /* Stacks elements vertically */
-        align-items: flex-start; /* Aligns elements to the left */
+         /* Aligns elements to the left */
         text-align: center; /* Centers text in the container */
+        max-height: 150px;
     }
 
     .header-profile-pic {
         margin-right: 0; /* Removes horizontal spacing */
-        margin-bottom: 10px; /* Adds vertical spacing below the picture */
+        margin-bottom: 5px; /* Adds vertical spacing below the picture */
     }
 
     .profile-pic {
-        width: 80px; /* Increases the profile picture size */
-        height: 80px; /* Matches the width for a square shape */
+        width: 60px !important; /* Increases the profile picture size */
+        height: 60px !important; /* Matches the width for a square shape */
     }
 
     .profile-name {
@@ -66,4 +67,6 @@
     .profile-profession {
         font-size: 0.875rem; /* Reduces the font size for smaller screens */
     }
+
+
 }

@@ -1,7 +1,10 @@
+.background-main-page {
+    width: 100%;
+}
+
 .grid-layout {
     display: grid;
     grid-template-columns: 1fr 1.5fr 1fr;
-    height: 100vh;
 }
 
 .layout-sidebar {
@@ -19,7 +22,8 @@
     padding: 20px;
 }
 
-.sidebar-header, .add-people {
+.sidebar-header,
+.add-people {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,6 +32,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 
 .header-profile-pic img {
     width: 100px;
@@ -54,7 +59,32 @@
 }
 
 
-#connect-people{
+#connect-people {
     border: none;
     border-radius: 20px;
+}
+
+@media (max-width: 690px) {
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        /* Single column layout */
+        grid-template-rows: auto;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .layout-sidebar {
+        display: flex;
+        /* Use flexbox for centering */
+        justify-content: center;
+        /* Centers horizontally */
+        align-items: center;
+        /* Centers vertically */
+    }
+
+    .sidebar-header {
+        width: 60%;
+        text-align: center;
+    }
 }

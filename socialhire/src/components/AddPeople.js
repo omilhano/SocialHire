@@ -9,75 +9,86 @@ const People = () => {
     const [error, setError] = useState(null); // State to store error messages
     const [pendingRequests, setPendingRequests] = useState({}); // Store pending requests for each user
 
+    // TODO: SET_LIMIT number of users fetched
+
     useEffect(() => {
         const fetchUsers = async () => {
+            setLoading(true); // Set loading state
             try {
-                console.log("Fetching users from Firestore...");
-                const auth = getAuth(); // Initialize auth
-                const currentUserId = auth.currentUser?.uid; // Auth user's id to compare and prevent self from appearing
+                console.log("Fetching non-friend users...");
+                const auth = getAuth();
+                const currentUserId = auth.currentUser?.uid;
 
+                // If there is no user
                 if (!currentUserId) {
                     console.error("No user is logged in.");
+                    setError("User not logged in.");
                     return;
                 }
 
-                console.log("Current User ID:", currentUserId);
+                // Fetch all connections where currentUserId is involved
+                const connectionsCollectionRef = collection(db, 'Connections');
 
-                const usersCollectionRef = collection(db, 'users'); // Reference to 'users' collection
-                const connectionsCollectionRef = collection(db, 'Connections'); // Reference to 'connections' collection
-
-                // Fetch all users
-                const usersSnapshot = await getDocs(usersCollectionRef);
-
-                console.log("Users snapshot fetched:", usersSnapshot.docs);
-
-                // Map users to array of user data
-                let allUsers = usersSnapshot.docs.map((doc) => ({
-                    id: doc.id, // Document ID
-                    ...doc.data(), // Document fields
-                }));
-
-                // Fetch all connections where currentUserId is involved and status is "accepted"
-                const connectionsQuery = query(
+                // Query for cases where currentUserId added someone
+                const connectionsQuery1 = query(
                     connectionsCollectionRef,
-                    where("user_id", "==", currentUserId) // Current user initiated the connection
+                    where("user_id", "==", currentUserId), // Self user
+                    where("status", "==", "friends") // Status of the connection is friends
                 );
 
-                const connectionsSnapshot = await getDocs(connectionsQuery);
-
-                console.log("Connections snapshot fetched:", connectionsSnapshot.docs);
-
-                // Get a set of IDs of users with "friends" status
-                const acceptedUserIds = new Set(
-                    connectionsSnapshot.docs
-                        .filter((doc) => doc.data().status === "friends")
-                        .map((doc) => doc.data().connected_user_id)
+                // Query for cases where currentUserId was added by someone
+                const connectionsQuery2 = query(
+                    connectionsCollectionRef,
+                    where("connected_user_id", "==", currentUserId),
+                    where("status", "==", "friends")
                 );
 
-                console.log("Friends User IDs:", acceptedUserIds);
+                // Execute both queries
+                const [connectionsSnapshot1, connectionsSnapshot2] = await Promise.all([
+                    getDocs(connectionsQuery1),
+                    getDocs(connectionsQuery2),
+                ]);
 
-                // Filter out the authenticated user and users with "friends" connections
-                allUsers = allUsers.filter(
-                    (user) => user.id !== currentUserId && !acceptedUserIds.has(user.id)
-                );
 
-                // Shuffle the array randomly
-                allUsers = allUsers.sort(() => Math.random() - 0.5);
+                // Extract connected user IDs from both queries
+                const connectedUserIds = new Set([
+                    ...connectionsSnapshot1.docs.map((doc) => doc.data().connected_user_id),
+                    ...connectionsSnapshot2.docs.map((doc) => doc.data().user_id),
+                ]);
 
-                console.log("Filtered and randomized users data:", allUsers);
+                console.log("Connected User IDs:", connectedUserIds);
 
-                setUsers(allUsers); // Update state with filtered data
+                // Query users excluding the current user and connected users
+                const usersCollectionRef = collection(db, 'users');
+                const usersQuery = query(usersCollectionRef); // Query all users initially
+                const usersSnapshot = await getDocs(usersQuery);
+
+                // Users fetched
+                const allUsers = usersSnapshot.docs
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                    .filter(
+                        (user) =>
+                            user.id !== currentUserId && // Exclude the current user
+                            !connectedUserIds.has(user.id) // Exclude already connected users
+                    );
+
+                // Shuffle the users for randomness
+                const shuffledUsers = allUsers.sort(() => Math.random() - 0.5);
+
+                setUsers(shuffledUsers); // Update state
             } catch (err) {
                 console.error("Error fetching users:", err);
                 setError("Failed to fetch users. Please try again later.");
             } finally {
-                setLoading(false);
+                setLoading(false); // Reset loading state
             }
         };
 
         fetchUsers();
-    }, []); // Empty dependency array ensures the effect runs only once
-
+    }, []); // Runs only once
 
     const addfriend = async (connectedUserId) => {
         const auth = getAuth();

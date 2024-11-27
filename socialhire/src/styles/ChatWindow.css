@@ -1,0 +1,66 @@
+/* Chatbox Styles */
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #e5e5e5; /* Light gray for the background */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #17497b; /* Dark blue border for the chat box */
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    font-size: 14px;
+}
+
+.sent {
+    align-self: flex-end;
+    background-color: #177b7b; /* Main teal color for sent messages */
+    color: white;
+    border: 1px solid #17497b; /* Dark blue border for sent messages */
+}
+
+.received {
+    align-self: flex-start;
+    background-color: #ff9f80; /* Light coral for received messages */
+    color: white;
+    border: 1px solid #17497b; /* Dark blue border for received messages */
+}
+
+.chat-input-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+input {
+    width: 80%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #17497b; /* Dark blue for the input border */
+    background-color: #e5e5e5; /* Light gray for input background */
+    color: #17497b; /* Dark blue for input text */
+}
+
+input::placeholder {
+    color: #17497b; /* Dark blue for placeholder text */
+}
+
+#send-message-button {
+    padding: 8px 12px;
+    background-color: #177b7b; /* Main teal for the button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#send-message-button:hover {
+    background-color: #17497b; /* Dark blue for hover state */
+}

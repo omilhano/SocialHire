@@ -18,12 +18,13 @@ import Profile from './pages/UserProfile';
 import Features from './pages/Features';
 import Main from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
+import Checkout from './pages/checkoutTest';
 
 function App() {
   const currentLocation = useLocation();
 
   // Define routes where the LandingNavbar should be used
-  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', '/aboutus'];
+  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', '/aboutus', '/tos','/privacypolicy', '/contacts', '/credits'];
 
   return (
     <div className="App">
@@ -40,15 +41,16 @@ function App() {
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch />} />
         <Route path="/UserProfile" element={<Profile />} />
-        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-        <Route path="/TOS" element={<TOS />} />
-        <Route path="/Contacts" element={<Contacts />} />
-        <Route path="/Credits" element={<Credits />} />
+        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/tos" element={<TOS />} />
+        <Route path="/contacts" element={<Contacts />} />
+        <Route path="/credits" element={<Credits />} />
         <Route path="/ChatPage" element={<ChatPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/features" element={<Features />} />
         <Route path="/aboutus" element={<About />} />
+        <Route path='/checkout' element={<Checkout/>} />
 
         {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />

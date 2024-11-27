@@ -1,5 +1,4 @@
 import React from 'react';
-import UnderConstruction from '../components/UnderConstruction';
 import Container from 'react-bootstrap/Container';
 import TOScomponent from '../components/TOScomponent';
 import '../styles/TOScomponent.css';
@@ -213,7 +212,7 @@ const TOS = () => {
   const contactAndAcknowledgmentTerms = [
     {
       term: "Contact Information",
-      description: "If you have any questions or concerns about these Terms, please contact us at:\nEmail: hello@socialhire.pt"
+      description: "If you have any questions or concerns about these Terms, please contact us at:\nEmail: socialhireims@gmail.com"
     },
     {
       term: "Acknowledgment of Terms",
