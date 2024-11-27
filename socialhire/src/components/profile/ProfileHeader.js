@@ -54,15 +54,15 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({
-            ...prev,
             [field]: value,
         }));
     };
 
     const handleSave = () => {
+        console.log("Handle save function:" )
         if (onProfileDataChange) {
             Object.keys(formData).forEach((field) =>
-                onProfileDataChange(field, formData[field])
+            onProfileDataChange(field, formData[field])
             );
         }
         if (onSave) {

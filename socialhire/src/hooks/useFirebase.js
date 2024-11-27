@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { auth, db, storage } from "../firebaseConfig";
-import { doc, setDoc, getDoc, collection, addDoc, updateDoc, query, where, getDocs  } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, addDoc, updateDoc, query, where, getDocs, deleteDoc} from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const useFirebaseUpload = () => {
@@ -95,12 +95,18 @@ export const useFirebaseDocument = (collectionName) => {
                 const querySnapshot = await getDocs(q);
 
                 // Map through the query results and retrieve data from each document
-                const documents = querySnapshot.docs.map(doc => ({
+            const documents = querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                console.log("Document data:", data); // Debug log
+                return {
                     id: doc.id,
-                    ...doc.data(),
-                    startDate: doc.data.startDate ? doc.data.startDate.toDate() : null,
-                    endDate: doc.data.endDate ? doc.data.endDate.toDate() : null,
-                }));
+                    ...data,
+                    startDate: data.startDate ? data.startDate.toDate() : null,
+                    endDate: data.endDate ? data.endDate.toDate() : null,
+                };
+            });
+
+                console.log("Experiences:", documents); // Debug log
 
                 return documents; // Returns an array of documents that match the userId
             } catch (err) {
@@ -139,5 +145,23 @@ export const useFirebaseDocument = (collectionName) => {
         }
     };
 
-    return { updateDocument, getDocument, getDocumentsByUserId, addDocument,  loading, error };
+    const deleteDocument = async (collectionName, docId) => {
+        if (!docId || typeof docId !== 'string') {
+            console.error("Invalid document ID provided. A non-empty string ID is required.");
+            return { success: false, error: "A valid document ID is required" };
+        }
+    
+        try {
+            const docRef = doc(db, collectionName, docId);
+            console.log("Deleting document at:", docRef.path);
+            await deleteDoc(docRef);
+            console.log("Document successfully deleted with ID:", docId);
+            return { success: true };
+        } catch (error) {
+            console.error("Error deleting document:", error.code, error.message);
+            return { success: false, error: error.message };
+        }
+    };
+
+    return { updateDocument, getDocument, getDocumentsByUserId, addDocument, deleteDocument, loading, error };
 };

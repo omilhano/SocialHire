@@ -54,7 +54,7 @@ const UserProfile = () => {
             const profile = await getDocument('users', auth.currentUser.uid);
             // Fetch experience data
             const experiences = await getDocumentsByUserId('experience', auth.currentUser.uid);
-
+            console.log("Expirianes: ", experiences)
             setState(prev => ({
                 ...prev,
                 profileData: profile || {},
@@ -85,9 +85,13 @@ const UserProfile = () => {
 
     // Handle profile updates
     const handleProfileUpdate = useCallback(async (field, value) => {
+        console.log("User trying to updaye in user Profile", auth.currentUser.uid, { [field]: value });
+
         const validationResult = field === 'users'
             ? validateExperience(value)
             : validateProfileData({ ...profileData, [field]: value });
+        
+        console.log("User trying to updaye in user Profile", auth.currentUser.uid, { [field]: value });
 
         if (!validationResult.isValid) {
             setState(prev => ({
@@ -96,8 +100,9 @@ const UserProfile = () => {
             }));
             return;
         }
+        console.log("iS VALID? ", !validationResult.isValid);
 
-        const success = await updateDocument(auth.currentUser.uid, { [field]: value });
+        const success = await updateDocument('users', auth.currentUser.uid, { [field]: value });
         if (success) {
             setState(prev => ({
                 ...prev,
@@ -155,11 +160,11 @@ const UserProfile = () => {
             }));
             return;
         }
-        console.log("Experience data being sent to addDocument:", experienceData); // Debug log
-        console.log("Experience id", experienceData.id); // Debug log
+        console.log("Experience data being sent to addDocument:", experience); // Debug log
+        console.log("Experience id", experience.id); // Debug log
         const newExperienceId = experience.id || Date.now().toString();
         const success = experience.id
-            ? await updateExperience('experience', experienceData.id, experience)
+            ? await updateExperience('experience', experience.id, experience)
             : await addExperience('experience', newExperienceId, { ...experience });
 
         if (success) {
@@ -199,7 +204,7 @@ const UserProfile = () => {
                     editMode: { ...prev.editMode, basic: mode }
                 }))}
                 onProfilePictureChange={handleProfilePictureChange}
-                onSaveBasicInfo={(value) => handleProfileUpdate('about', value)}
+                onProfileDataChange={(field, value) => handleProfileUpdate(field, value)}
             />
             <AboutSection
                 about={profileData.about}
