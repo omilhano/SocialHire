@@ -1,5 +1,4 @@
 import React from 'react';
-import UnderConstruction from '../components/UnderConstruction';
 import Container from 'react-bootstrap/Container';
 import TOScomponent from '../components/TOScomponent';
 import '../styles/TOScomponent.css';

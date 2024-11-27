@@ -22,6 +22,7 @@ const SignUp = () => {
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false); // Track terms acceptance
 
     const validateForm = () => {
         const newErrors = {};
@@ -78,6 +79,10 @@ const SignUp = () => {
                 [name]: ''
             }));
         }
+    };
+
+    const handleTermsChange = (e) => {
+        setTermsAccepted(e.target.checked);
     };
 
     const handleSubmit = async (e) => {
@@ -262,10 +267,27 @@ const SignUp = () => {
                         </div>
                     )}
 
+                    <div className="form-group">
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={termsAccepted}
+                                onChange={handleTermsChange}
+                                disabled={isSubmitting}
+                            />
+                            <span>
+                                I agree to the
+                                <a href="/TOS" target="_blank" rel="noopener noreferrer"> Terms and Conditions </a>
+                                and
+                                <a href="/PrivacyPolicy" target="_blank" rel="noopener noreferrer"> Privacy Policy</a>.
+                            </span>
+                        </label>
+                    </div>
+
                     <button 
                         type="submit" 
                         className="signup-button"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !termsAccepted}
                     >
                         {isSubmitting ? 'Creating Account...' : 'Create Account'}
                     </button>
