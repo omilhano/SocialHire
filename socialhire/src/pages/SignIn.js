@@ -211,6 +211,8 @@ const SignIn = () => {
                         >
                             Sign in with Google
                         </button>
+
+                        <a id='forgot-password' href='/forgotpassword'>Forgot my password</a>
                     </div>
                 </form>
             </div>

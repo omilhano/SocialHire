@@ -10,6 +10,7 @@ const ChatPage = () => {
     const { user, loading } = useAuth(); // Get the authenticated user
     const [selectedChat, setSelectedChat] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [filteredFriends, setFilteredFriends] = useState([]); // New state to hold filtered friends
 
     // Show a loading spinner while the authentication state is loading
     if (loading) {
@@ -27,15 +28,21 @@ const ChatPage = () => {
 
     return (
         <Container fluid id="chat-background" className="g-0">
-            <div className="chat-grid-layout">
-                {/* Header */}
+            {/* Chat Header */}
+            <div className="chat-header-container">
                 <ChatHeader
-                    searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    setFilteredFriends={setFilteredFriends} // Pass a function to update filtered friends
                 />
+            </div>
 
+            {/* Chat Grid Layout for Sidebar and Main Content */}
+            <div className="chat-grid-layout">
                 {/* Sidebar - Chat List */}
                 <ChatList
                     currentUserId={currentUserId} // Pass the authenticated user ID
+                    filteredFriends={filteredFriends} // Pass the filtered friends to ChatList
                     selectedChat={selectedChat}
                     setSelectedChat={setSelectedChat}
                 />

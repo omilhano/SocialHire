@@ -5,8 +5,8 @@ import emailjs from '@emailjs/browser';
 export const sendWelcomeEmail = (formData) => {
     emailjs
         .send(
-            process.env.REACT_APP_EMAILJS_SERVICE_ID,     // Replace with your Email.js service ID
-            process.env.REACT_APP_EMAILJS_TEMPLATE_ID, // Replace with your Email.js template ID
+            process.env.REACT_APP_EMAILJS_SERVICE_ID,
+            process.env.REACT_APP_EMAILJS_TEMPLATE_ID, 
             {
                 from_name: 'SocialHire',
                 to_email: formData.email,
