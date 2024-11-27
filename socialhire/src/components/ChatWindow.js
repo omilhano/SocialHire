@@ -1,40 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../firebaseConfig';  // Import db from firebaseConfig
-import { getDoc, doc, collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';  // Import Firestore functions
-import { useGetMessagesOrdered } from '../hooks/useGetMessagesOrdered';  // Import the new hook
-import '../styles/ChatWindow.css';  // Assuming the CSS file is in the same folder
+import React, { useState, useEffect, useRef } from 'react';
+import { db } from '../firebaseConfig';  
+import { getDoc, doc, collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';  
+import { useGetMessagesOrdered } from '../hooks/useGetMessagesOrdered';  
+import '../styles/ChatWindow.css';
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {
-    const [chatUserName, setChatUserName] = useState('');  // State for the other user's name
-    const [messageText, setMessageText] = useState('');  // State for the input text
+    const [chatUserName, setChatUserName] = useState('');
+    const [messageText, setMessageText] = useState('');
+    const chatBoxRef = useRef(null); // Ref for the chat-box
 
-
-    // Get messages using the new hook
     const chatId = [currentUserId, selectedChat].sort().join('_');
     const { messages, loading, error } = useGetMessagesOrdered(chatId);
 
     useEffect(() => {
         const fetchUserName = async () => {
-            if (!selectedChat) {
-                return;
-            }
-        
+            if (!selectedChat) return;
             try {
-                console.log("Fetching user data for chat ID:", selectedChat); // Log the selectedChat value
-        
-                const userDoc = await getDoc(doc(db, 'users', selectedChat)); // Attempt to fetch user document
+                const userDoc = await getDoc(doc(db, 'users', selectedChat));
                 if (userDoc.exists()) {
-                    const userData = userDoc.data(); // Extract the data
-                    const fullName = `${userData.firstName} ${userData.lastName}`; // Combine name fields
-                    setChatUserName(fullName); // Set the chat user name
+                    const userData = userDoc.data();
+                    const fullName = `${userData.firstName} ${userData.lastName}`;
+                    setChatUserName(fullName);
                 } else {
                     setChatUserName('Unknown User');
                 }
             } catch (err) {
+                console.error('Error fetching user name:', err);
                 setChatUserName('Unknown User');
             }
         };
-        
 
         fetchUserName();
     }, [selectedChat]);
@@ -51,52 +45,43 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
             timestamp: new Date(),
         };
 
-        // Normalize chat ID by sorting user IDs to ensure consistency
-
-        console.log(`Sending message to chat ID: ${chatId}`);
-
         try {
-            // Reference to the chat document
             const chatRef = doc(db, 'chats', chatId);
-
-            // Check if the chat document exists
             const chatDoc = await getDoc(chatRef);
 
             if (!chatDoc.exists()) {
-                // If chat document doesn't exist, create it
                 await setDoc(chatRef, {
                     lastMessage: newMessage.text,
                     lastMessageTimestamp: newMessage.timestamp,
                 });
-                console.log(`New chat created with ID: ${chatId}`);
             } else {
-                // If chat exists, update the last message and timestamp
                 await updateDoc(chatRef, {
                     lastMessage: newMessage.text,
                     lastMessageTimestamp: newMessage.timestamp,
                 });
             }
 
-            // Add the new message to the 'messages' subcollection
             const messagesRef = collection(chatRef, 'messages');
             await addDoc(messagesRef, newMessage);
-            console.log(`Message sent: ${newMessage.text}`);
-
-            // Clear the input field after sending the message
             setMessageText('');
         } catch (err) {
             console.error('Error sending message:', err);
         }
     };
 
-
+    // Scroll to the bottom of the chat-box whenever messages change
+    useEffect(() => {
+        if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     if (loading) {
-        return <p>Loading messages...</p>;  // Show loading message while fetching
+        return <p>Loading messages...</p>;
     }
 
     if (error) {
-        return <p>Error loading messages: {error.message}</p>;  // Show error message if any
+        return <p>Error loading messages: {error.message}</p>;
     }
 
     if (!selectedChat) {
@@ -107,18 +92,18 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
         <div className="chat-main">
             <h2>Chat with {chatUserName}</h2>
 
-            <div className="chat-box">
+            <div className="chat-box" ref={chatBoxRef}>
                 {messages.length === 0 ? (
                     <p>No messages yet. A simple hello could lead to your next opportunity!</p>
-                ) : (messages.map((msg, index) => (
-                    <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
-                        <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
-                        <p>{msg.text}</p>
-                    </div>
-                ))
+                ) : (
+                    messages.map((msg, index) => (
+                        <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
+                            <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
+                            <p>{msg.text}</p>
+                        </div>
+                    ))
                 )}
             </div>
-
 
             <div className="chat-input-box">
                 <input
