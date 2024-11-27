@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; // maybe need a hook instead of this
 import '../styles/SignUp.css';
 import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 import sendWelcomeEmail from '../components/EmailSend';
@@ -17,6 +17,7 @@ const SignUp = () => {
         email: '',
         password: '',
         confirmPassword: '',
+        username: '',
         accountType: 'user'
     });
 
@@ -40,6 +41,7 @@ const SignUp = () => {
         } else if (formData.lastName.length < 2) {
             newErrors.lastName = 'Last name must be at least 2 characters';
         }
+        
 
         // Validate Email
         if (!formData.email.trim()) {
@@ -62,9 +64,25 @@ const SignUp = () => {
             newErrors.confirmPassword = 'Passwords do not match';
         }
 
+        // Validate Username (length only, as uniqueness is checked separately)
+        if (!formData.username.trim()) {
+            newErrors.username = 'Username is required';
+        } else if (formData.username.length < 3) {
+            newErrors.username = 'Username must be at least 3 characters long';
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+
+    const checkUsernameExists = async (username) => {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("username", "==", username));
+        const querySnapshot = await getDocs(q);
+    
+        return !querySnapshot.empty; // True if a user with the username exists
+    };
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -87,6 +105,13 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Check if username is unique first
+        const usernameExists = await checkUsernameExists(formData.username);
+        if (usernameExists) {
+            setErrors(prev => ({ ...prev, username: 'Username is already taken' }));
+            return; // Stop further execution if username is not unique
+        }
+
         if (validateForm()) {
             setIsSubmitting(true);
             try {
@@ -106,6 +131,7 @@ const SignUp = () => {
                 await setDoc(doc(db, "users", userId), {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
+                    username: formData.username,
                     email: formData.email,
                     accountType: formData.accountType,
                     createdAt: new Date().toISOString(),
@@ -210,6 +236,22 @@ const SignUp = () => {
                             disabled={isSubmitting}
                         />
                         {errors.email && <span className="error-message">{errors.email}</span>}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="username" className="form-label">
+                            Username
+                        </label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            value={formData.username}
+                            onChange={handleChange}
+                            className={`form-input ${errors.username ? 'error' : ''}`}
+                            disabled={isSubmitting}
+                        />
+                        {errors.username && <span className="error-message">{errors.username}</span>}
                     </div>
 
                     <div className="form-group">
