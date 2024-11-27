@@ -277,9 +277,9 @@ const SignUp = () => {
                             />
                             <span>
                                 I agree to the
-                                <a href="/TOS" target="_blank" rel="noopener noreferrer"> Terms and Conditions </a>
+                                <a href="/tos" target="_blank" rel="noopener noreferrer"> Terms and Conditions </a>
                                 and
-                                <a href="/PrivacyPolicy" target="_blank" rel="noopener noreferrer"> Privacy Policy</a>.
+                                <a href="/privacypolicy" target="_blank" rel="noopener noreferrer"> Privacy Policy</a>.
                             </span>
                         </label>
                     </div>
