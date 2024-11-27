@@ -18,6 +18,7 @@ import Profile from './pages/UserProfile';
 import Features from './pages/Features';
 import Main from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
+import Checkout from './pages/checkoutTest';
 
 function App() {
   const currentLocation = useLocation();
@@ -49,6 +50,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/features" element={<Features />} />
         <Route path="/aboutus" element={<About />} />
+        <Route path='/checkout' element={<Checkout/>} />
 
         {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />
