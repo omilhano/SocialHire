@@ -5,48 +5,42 @@ import {
 } from "firebase/auth"; // Simplified imports to use only what's needed
 import { auth } from "../firebaseConfig";
 import { useFirebaseUpload, useFirebaseDocument } from '../hooks/useFirebase';
-import { validateProfileData, validateExperience } from '../utils/validation';
+import { validateProfileData, validateExperience, validatePost } from '../utils/validation';
 import { useNavigate } from 'react-router-dom';
 import { ProfileHeader } from '../components/profile/ProfileHeader.js';
 import { Toast } from '../components/common/Toast';
 import { AboutSection } from '../components/profile/AboutSection.js';
 import { ExperienceSection } from '../components/profile/ExperienceSection.js';
+import { PostSection } from '../components/profile/PostsSection.js';
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
     const navigate = useNavigate();
     const { uploadFile } = useFirebaseUpload();
     const { updateDocument, getDocument } = useFirebaseDocument('users');
-    const { updateDocument: updateExperience, getDocumentsByUserId } = useFirebaseDocument('experiences');
-    const { addDocument: addExperience } = useFirebaseDocument('experiences');
+    const { updateDocument: updateExperience, getDocumentsByUserId } = useFirebaseDocument('experience');
+    const { addDocument: addExperience } = useFirebaseDocument('experience');
 
-
-    const { updateDocument: updatePost } = useFirebaseDocument('posts');
-
+    const { updateDocument: updatePost, getDocumentsByUserId: getPostsByUserId} = useFirebaseDocument('posts');
+    const { addDocument: addPost } = useFirebaseDocument('posts');
+    
     // State
     const [state, setState] = useState({
         profileData: {},
         experienceData: {},
-        posts: [],
+        postData: [],
         loading: true,
         error: null,
         validation: {},
-        editMode: { basic: false, about: false, experience: false }
+        editMode: { basic: false, about: false, experience: false, post: false }
     });
 
-    const { profileData, experienceData, posts, loading, error, validation, editMode } = state;
-    const newExperience = {
-        title: "",
-        company: "",
-        startDate: "",
-        endDate: "",
-        current: false,
-        description: ""
-    };
+    const { profileData, experienceData, postData, loading, error, validation, editMode } = state;
+
 
     // Profile (USERS TABLE)
 
-    // Fetch profile data
+    // Fetch data
     const fetchProfile = useCallback(async () => {
         if (!auth.currentUser) return;
 
@@ -54,11 +48,15 @@ const UserProfile = () => {
             const profile = await getDocument('users', auth.currentUser.uid);
             // Fetch experience data
             const experiences = await getDocumentsByUserId('experience', auth.currentUser.uid);
+            const posts = await getPostsByUserId('posts', auth.currentUser.uid);
+
             console.log("Expirianes: ", experiences)
             setState(prev => ({
                 ...prev,
                 profileData: profile || {},
                 experienceData: experiences || [],
+                postData: posts || [],
+
                 loading: false,
             }));
         } catch (error) {
@@ -68,7 +66,7 @@ const UserProfile = () => {
                 loading: false
             }));
         }
-    }, [getDocument, getDocumentsByUserId]);
+    }, [getDocument, getDocumentsByUserId, getPostsByUserId]);
 
     // When refreshes shows profile again
     useEffect(() => {
@@ -179,6 +177,44 @@ const UserProfile = () => {
         }
     }, [updateExperience, addExperience]);
 
+
+
+    //
+    // Posts
+    //
+
+    // Add a new Post or update an existing one
+    const handlePostUpdate = useCallback(async (post) => {
+        const validationResult = validatePost(post);
+        console.log("Post data being sent to handlePostUpdate", post); // Debug log
+        console.log("Post data is invalid?", !validationResult.isValid); // Debug log
+        if (!validationResult.isValid) {
+            setState(prev => ({
+                ...prev,
+                validation: validationResult.errors
+            }));
+            return;
+        }
+        console.log("Post data being sent to addDocument:", post); // Debug log
+        console.log("Post id", post.id); // Debug log
+        const newPostId = post.id || Date.now().toString();
+        const success = post.id
+            ? await updatePost('posts', post.id, post)
+            : await addPost('posts', newPostId, { ...post });
+
+        if (success) {
+            setState(prev => ({
+                ...prev,
+                postData: post.id
+                    ? prev.postData.map(exp => (exp.id === post.id ? post : exp))
+                    : [...prev.postData, { ...post, id: newPostId }],
+                editMode: { ...prev.editMode, post: false },
+                validation: {},
+            }));
+        }
+    }, [updatePost, addPost]);
+
+
     if (loading) {
         return <div className="loading">Loading profile...</div>;
     }
@@ -224,6 +260,15 @@ const UserProfile = () => {
                     editMode: { ...prev.editMode, experience: mode }
                 }))}
                 onAddExperience={(experience) => handleExperienceUpdate(experience)}
+            />
+             <PostSection
+                posts={postData}
+                editMode={editMode.post}
+                onEditModeChange={(mode) => setState(prev => ({
+                    ...prev,
+                    editMode: { ...prev.editMode, post: mode }
+                }))}
+                onAddPost={(post) => handlePostUpdate(post)}
             />
             <button className="logout" onClick={handleLogout}>
                 Logout

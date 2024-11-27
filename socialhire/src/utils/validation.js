@@ -52,3 +52,32 @@ export const validateExperience = (experience) => {
         errors
     };
 };
+
+export const validatePost = (post) => {
+    const errors = {};
+
+    // Title is required and should not be empty
+    if (!post.title?.trim()) {
+        errors.title = 'Title is required';
+    }
+
+    // Content is required and should not be empty
+    if (!post.content?.trim()) {
+        errors.content = 'Content is required';
+    }
+
+    // commentCount must be a non-negative number
+    if (typeof post.commentCount !== 'number' || post.commentCount < 0) {
+        errors.commentCount = 'Comment count must be a non-negative number';
+    }
+
+    // likeCount must be a non-negative number
+    if (typeof post.likeCount !== 'number' || post.likeCount < 0) {
+        errors.likeCount = 'Like count must be a non-negative number';
+    }
+
+    return {
+        isValid: Object.keys(errors).length === 0,
+        errors
+    };
+};
