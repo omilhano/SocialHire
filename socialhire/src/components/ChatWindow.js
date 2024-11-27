@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig';  // Import db from firebaseConfig
 import { getDoc, doc, collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';  // Import Firestore functions
 import { useGetMessagesOrdered } from '../hooks/useGetMessagesOrdered';  // Import the new hook
-import './ChatWindow.css';  // Assuming the CSS file is in the same folder
+import '../styles/ChatWindow.css';  // Assuming the CSS file is in the same folder
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [chatUserName, setChatUserName] = useState('');  // State for the other user's name
@@ -38,24 +38,24 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
             console.error("Missing message text, selected chat, or current user ID.");
             return;
         }
-    
+
         const newMessage = {
             senderId: currentUserId,
             text: messageText,
             timestamp: new Date(),
         };
-    
+
         // Normalize chat ID by sorting user IDs to ensure consistency
-        
+
         console.log(`Sending message to chat ID: ${chatId}`);
-    
+
         try {
             // Reference to the chat document
             const chatRef = doc(db, 'chats', chatId);
-    
+
             // Check if the chat document exists
             const chatDoc = await getDoc(chatRef);
-    
+
             if (!chatDoc.exists()) {
                 // If chat document doesn't exist, create it
                 await setDoc(chatRef, {
@@ -70,20 +70,20 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
                     lastMessageTimestamp: newMessage.timestamp,
                 });
             }
-    
+
             // Add the new message to the 'messages' subcollection
             const messagesRef = collection(chatRef, 'messages');
             await addDoc(messagesRef, newMessage);
             console.log(`Message sent: ${newMessage.text}`);
-    
+
             // Clear the input field after sending the message
             setMessageText('');
         } catch (err) {
             console.error('Error sending message:', err);
         }
     };
-    
-    
+
+
 
     if (loading) {
         return <p>Loading messages...</p>;  // Show loading message while fetching
@@ -105,13 +105,13 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
                 {messages.length === 0 ? (
                     <p>No messages yet. A simple hello could lead to your next opportunity!</p>
                 ) : (messages.map((msg, index) => (
-                        <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
-                            <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
-                            <p>{msg.text}</p>
-                        </div>
-                    ))
+                    <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
+                        <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
+                        <p>{msg.text}</p>
+                    </div>
+                ))
                 )}
-</div>
+            </div>
 
 
             <div className="chat-input-box">
@@ -121,7 +121,7 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
                     onChange={(e) => setMessageText(e.target.value)}
                     placeholder="Type your message..."
                 />
-                <button onClick={handleSendMessage}>Send</button>
+                <button id="send-message-button" onClick={handleSendMessage}>Send</button>
             </div>
         </div>
     );

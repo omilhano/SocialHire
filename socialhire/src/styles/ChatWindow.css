@@ -36,7 +36,7 @@ input {
     border: 1px solid #ccc;
 }
 
-button {
+#send-message-button {
     padding: 8px 12px;
     background-color: #007bff;
     color: white;
@@ -45,6 +45,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+#send-message-button:hover {
     background-color: #0056b3;
 }
