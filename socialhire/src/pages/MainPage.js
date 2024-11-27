@@ -27,7 +27,7 @@ const Main = () => {
 
     // Main page layout once the user is authenticated
     return (
-        <Container fluid id="background" className="g-0">
+        <Container fluid id="background-main-page" className="g-0">
             <div className="grid-layout">
                 {/* Sidebar */}
                 <div className="layout-sidebar">

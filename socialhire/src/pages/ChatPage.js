@@ -29,7 +29,9 @@ const ChatPage = () => {
         <Container fluid id="chat-background" className="g-0">
             <div className="chat-grid-layout">
                 {/* Header */}
-                <ChatHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                <ChatHeader
+                    searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+                />
 
                 {/* Sidebar - Chat List */}
                 <ChatList
