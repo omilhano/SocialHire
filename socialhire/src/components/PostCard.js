@@ -48,7 +48,7 @@ const PostCard = ({ post }) => {
       <div className="post-content">
         <div className="post-header">
           <h3>{post.title || 'Untitled Post'}</h3>
-          <span>Created At: {formatDate(post.createdAt)}</span>
+          <span id='date-post'>{formatDate(post.createdAt)}</span>
         </div>
 
         <p className="post-text">

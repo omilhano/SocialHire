@@ -76,7 +76,7 @@ const Main = () => {
                 <div className="layout-main">
                     <h1>Main Content</h1>
                     {/* Render PostList component */}
-                    <PostList posts={posts} loading={postsLoading} />
+                    <PostList posts={posts} loading={postsLoading} className="Main-page" />
                 </div>
 
                 {/* Aside Section */}
