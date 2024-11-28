@@ -1,20 +1,53 @@
-// Importing necessary libraries, components, and custom hooks
-import React from 'react'; // React library for building components
+import React, { useEffect, useState } from 'react'; // React library for building components
 import { Container, Spinner } from 'react-bootstrap'; // Bootstrap Container and Spinner for layout and loading indicator
 import '../styles/MainPage.css'; // Custom CSS for the Main page
 import ProfileCard from '../components/ProfileCard'; // Component for displaying the user's profile information
 import PeopleToBefriend from '../components/AddPeople'; // Component for displaying suggestions to connect with people
 import { useAuth } from '../hooks/useAuth'; // Custom hook to handle user authentication state
+import { PostList } from '../components/PostCard';
+import { db } from "../firebaseConfig"; // Firebase configuration for accessing Firestore
+import {collection, query, getDocs } from "firebase/firestore"; // Firestore functions
 
 const Main = () => {
     const { user, loading } = useAuth(); // Destructuring user and loading state from the authentication hook
+
+    // State for managing posts and loading status
+    const [posts, setPosts] = useState([]);
+    const [postsLoading, setPostsLoading] = useState(true);
+
+    // Fetch posts data from Firestore once the user is authenticated
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                // Assuming there's a 'posts' collection in Firestore
+                const postsQuery = query(collection(db, "posts"));
+                const querySnapshot = await getDocs(postsQuery);
+
+                // Map through the documents and get the data
+                const postsData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                setPosts(postsData);
+                setPostsLoading(false); // Set loading to false once data is fetched
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+                setPostsLoading(false); // Set loading to false even if there's an error
+            }
+        };
+
+        if (user) {
+            fetchPosts(); // Fetch posts only if the user is authenticated
+        }
+    }, [user]); // Run the effect when user is authenticated
 
     // Display a loading spinner while authentication status is being determined
     if (loading) {
         return (
             <div className="loading-container">
                 <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span> {/* Accessibility for screen readers */}
+                    <span className="visually-hidden">Loading...</span>
                 </Spinner>
             </div>
         );
@@ -22,7 +55,7 @@ const Main = () => {
 
     // Handle the case where no user is authenticated (edge case since useAuth might handle redirection)
     if (!loading && !user) {
-        return <div>Redirecting...</div>; // Placeholder for a redirect scenario
+        return <div>Redirecting...</div>;
     }
 
     // Main page layout once the user is authenticated
@@ -42,7 +75,8 @@ const Main = () => {
                 {/* Main Content Section */}
                 <div className="layout-main">
                     <h1>Main Content</h1>
-                    {/* Placeholder for the main content area */}
+                    {/* Render PostList component */}
+                    <PostList posts={posts} loading={postsLoading} />
                 </div>
 
                 {/* Aside Section */}

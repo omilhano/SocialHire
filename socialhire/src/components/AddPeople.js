@@ -15,7 +15,6 @@ const People = () => {
         const fetchUsers = async () => {
             setLoading(true); // Set loading state
             try {
-                console.log("Fetching non-friend users...");
                 const auth = getAuth();
                 const currentUserId = auth.currentUser?.uid;
 
@@ -56,7 +55,6 @@ const People = () => {
                     ...connectionsSnapshot2.docs.map((doc) => doc.data().user_id),
                 ]);
 
-                console.log("Connected User IDs:", connectedUserIds);
 
                 // Query users excluding the current user and connected users
                 const usersCollectionRef = collection(db, 'users');
@@ -111,7 +109,7 @@ const People = () => {
 
             const snapshot = await getDocs(q);
             if (!snapshot.empty) {
-                console.log("Connection request already exists.");
+
                 // Update pendingRequest state for this user
                 setPendingRequests((prevState) => ({
                     ...prevState,
@@ -130,8 +128,6 @@ const People = () => {
 
             // Add the new connection to the Firestore collection
             await addDoc(connectionsCollectionRef, newConnection);
-
-            console.log("Connection request sent successfully");
 
             // Update pendingRequest state to reflect the new pending request
             setPendingRequests((prevState) => ({

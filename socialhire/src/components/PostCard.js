@@ -5,13 +5,22 @@ import '../styles/PostCard.css';
 // Individual PostCard Component
 const PostCard = ({ post }) => {
   const formatDate = (timestamp) => {
+    if (!timestamp) {
+      return "N/A";  // If timestamp is undefined or null, return "N/A"
+    }
+
+    // Check if the timestamp is a Firebase Timestamp, then convert it to a Date object
     const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
+
+    // Format the Date object
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
+
+
 
   const truncateText = (text, maxLength = 100) => {
     if (!text) return '';
@@ -23,9 +32,9 @@ const PostCard = ({ post }) => {
       {/* Image Section */}
       <div className="post-image-container">
         {post.imageUrl ? (
-          <img 
-            src={post.imageUrl} 
-            alt="Post" 
+          <img
+            src={post.imageUrl}
+            alt="Post"
             className="post-image"
           />
         ) : (
@@ -39,7 +48,7 @@ const PostCard = ({ post }) => {
       <div className="post-content">
         <div className="post-header">
           <h3>{post.title || 'Untitled Post'}</h3>
-          <span className="post-date">{formatDate(post.timestamp)}</span>
+          <span>Created At: {formatDate(post.createdAt)}</span>
         </div>
 
         <p className="post-text">

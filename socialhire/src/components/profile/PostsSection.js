@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, PencilIcon, TrashIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { auth } from "../../firebaseConfig";
+import { Timestamp } from 'firebase/firestore';
 
 export const PostSection = ({
     posts: initialPosts,
@@ -26,7 +27,7 @@ export const PostSection = ({
             if (container) {
                 // Check if we can scroll left
                 setCanScrollLeft(container.scrollLeft > 0);
-                
+
                 // Check if we can scroll right
                 const canScroll = container.scrollWidth > container.clientWidth;
                 const isAtEnd = Math.ceil(container.scrollLeft + container.clientWidth) >= container.scrollWidth;
@@ -73,10 +74,10 @@ export const PostSection = ({
         const container = document.querySelector('.posts-scroll-container');
         const scrollAmount = 300; // Adjust this value based on your needs
         if (container) {
-            const newPosition = direction === 'left' 
+            const newPosition = direction === 'left'
                 ? Math.max(0, scrollPosition - scrollAmount)
                 : scrollPosition + scrollAmount;
-            
+
             container.scrollTo({
                 left: newPosition,
                 behavior: 'smooth'
@@ -122,7 +123,7 @@ export const PostSection = ({
                     />
                 </div>
 
-                <button 
+                <button
                     className={`scroll-button scroll-left ${canScrollLeft ? 'visible' : ''}`}
                     onClick={() => handleScroll('left')}
                     aria-hidden={!canScrollLeft}
@@ -130,7 +131,7 @@ export const PostSection = ({
                     <ChevronLeft size={24} />
                 </button>
 
-                <button 
+                <button
                     className={`scroll-button scroll-right ${canScrollRight ? 'visible' : ''}`}
                     onClick={() => handleScroll('right')}
                     aria-hidden={!canScrollRight}
@@ -157,9 +158,17 @@ const PostForm = ({ post, onSave, onCancel }) => {
     };
 
     const handleSave = async () => {
+        // Check the value of formData.endDate before creating the Timestamp
+        const createdAt = Timestamp.now().toDate();
+
+        // Debug time but its since 1970
+        // Further converted to readable time
+        console.log('createdAt:', createdAt);
+
+        // Construct postData object
         const postData = {
             ...formData,
-            createdAt: formData.endDate ? new Date(formData.endDate) : null,
+            createdAt: createdAt,  // Using the createdAt that was just logged
             commentCount: formData.commentCount || 0,
             likeCount: formData.likeCount || 0,
             userId: auth.currentUser.uid,
