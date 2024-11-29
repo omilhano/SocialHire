@@ -20,7 +20,6 @@ const UserProfile = () => {
     const { updateDocument, getDocument } = useFirebaseDocument('users');
     const { updateDocument: updateExperience, getDocumentsByUserId } = useFirebaseDocument('experience');
     const { addDocument: addExperience } = useFirebaseDocument('experience');
-
     const { updateDocument: updatePost, getDocumentsByUserId: getPostsByUserId} = useFirebaseDocument('posts');
     const { addDocument: addPost } = useFirebaseDocument('posts');
     
