@@ -9,10 +9,10 @@ const PostCard = ({ post }) => {
       return "N/A";  // If timestamp is undefined or null, return "N/A"
     }
 
-    // Check if the timestamp is a Firebase Timestamp, then convert it to a Date object
+    // Check instance of timestamp
     const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
 
-    // Format the Date object
+    // Format the  date
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',

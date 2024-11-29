@@ -47,7 +47,8 @@
         flex-direction: column; /* Stacks elements vertically */
          /* Aligns elements to the left */
         text-align: center; /* Centers text in the container */
-        max-height: 150px;
+        max-height: fit-content;
+        padding: 0;
     }
 
     .header-profile-pic {

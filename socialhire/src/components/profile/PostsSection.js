@@ -158,7 +158,7 @@ const PostForm = ({ post, onSave, onCancel }) => {
     };
 
     const handleSave = async () => {
-        // Check the value of formData.endDate before creating the Timestamp
+        // Check the value of formData.endDate before creating the Timestamp 
         const createdAt = Timestamp.now().toDate();
 
         // Debug time but its since 1970

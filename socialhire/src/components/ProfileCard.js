@@ -22,7 +22,6 @@ const ProfileCard = () => {
                 const data = await getDocument('users', user.uid); // Retrieve document by UID
                 if (data) {
                     setUserData(data);
-                    console.log(user.uid) // Update state with retrieved data
                 }
             }
         };
