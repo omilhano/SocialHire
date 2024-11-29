@@ -6,7 +6,11 @@ import PeopleToBefriend from '../components/AddPeople'; // Component for display
 import { useAuth } from '../hooks/useAuth'; // Custom hook to handle user authentication state
 import { PostList } from '../components/PostCard';
 import { db } from "../firebaseConfig"; // Firebase configuration for accessing Firestore
-import {collection, query, getDocs } from "firebase/firestore"; // Firestore functions
+import {collection, query, where, getDocs } from "firebase/firestore"; // Firestore functions
+
+//tryng users
+import UserCard from '../components/UserCard'; 
+
 
 const Main = () => {
     const { user, loading } = useAuth(); // Destructuring user and loading state from the authentication hook
@@ -14,6 +18,10 @@ const Main = () => {
     // State for managing posts and loading status
     const [posts, setPosts] = useState([]);
     const [postsLoading, setPostsLoading] = useState(true);
+
+    //trying users
+    const [alice, setAlice] = useState(null); // State for Alice's data
+    const [aliceLoading, setAliceLoading] = useState(true); // Loading state for Alice
 
     // Fetch posts data from Firestore once the user is authenticated
     useEffect(() => {
@@ -42,6 +50,35 @@ const Main = () => {
         }
     }, [user]); // Run the effect when user is authenticated
 
+    //trying users
+    // Fetch Alice's data
+    useEffect(() => {
+        const fetchAlice = async () => {
+            try {
+                // Query Alice by username in Firestore
+                const aliceQuery = query(
+                    collection(db, "users"),
+                    where("username", "==", "Alice")
+                );
+                const querySnapshot = await getDocs(aliceQuery);
+
+                if (!querySnapshot.empty) {
+                    // Assuming 'username' is unique and we get one result
+                    const aliceData = querySnapshot.docs[0].data();
+                    setAlice(aliceData);
+                } else {
+                    console.error("Alice not found in database.");
+                }
+            } catch (error) {
+                console.error("Error fetching Alice's data:", error);
+            } finally {
+                setAliceLoading(false);
+            }
+        };
+
+        fetchAlice();
+    }, []);
+
     // Display a loading spinner while authentication status is being determined
     if (loading) {
         return (
@@ -69,6 +106,20 @@ const Main = () => {
                             {/* ProfileCard displays user information */}
                             <ProfileCard user={user} />
                         </div>
+                    </div>
+                    {/* trying users  */}
+                    {/* Alice's UserCard */}
+                    <div className="alice-usercard">
+                        <h3>Featured User</h3>
+                        {aliceLoading ? (
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        ) : alice ? (
+                            <UserCard user={alice} />
+                        ) : (
+                            <p>Alice's profile could not be loaded.</p>
+                        )}
                     </div>
                 </div>
 
