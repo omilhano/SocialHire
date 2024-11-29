@@ -19,6 +19,8 @@ import Features from './pages/Features';
 import Main from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
 import Checkout from './pages/checkoutTest';
+import ProfilePage from './pages/ProfilePage';
+
 
 function App() {
   const currentLocation = useLocation();
@@ -41,6 +43,7 @@ function App() {
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch />} />
         <Route path="/UserProfile" element={<Profile />} />
+        <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/tos" element={<TOS />} />
         <Route path="/contacts" element={<Contacts />} />
