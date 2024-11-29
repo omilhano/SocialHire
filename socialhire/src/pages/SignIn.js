@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from "../firebaseConfig";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, query, where, getDocs, collection } from "firebase/firestore";
 import '../styles/SignIn.css';
 import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 
@@ -10,7 +10,7 @@ const SignIn = () => {
     useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        email: '',
+        identifier: '', // This can be either email or username
         password: '',
         rememberMe: false
     });
@@ -46,12 +46,26 @@ const SignIn = () => {
         setError('');
 
         try {
-            // Sign in with Firebase Authentication
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                formData.email,
-                formData.password
-            );
+            let email = formData.identifier;
+
+            // Check if the identifier is a username
+            if (!formData.identifier.includes('@')) {
+                const q = query(
+                    collection(db, "users"),
+                    where("username", "==", formData.identifier)
+                );
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const userDoc = querySnapshot.docs[0].data();
+                    email = userDoc.email; // Retrieve the email associated with the username
+                } else {
+                    throw new Error("Invalid username or password.");
+                }
+            }
+
+            // Sign in with Firebase Authentication using email
+            const userCredential = await signInWithEmailAndPassword(auth, email, formData.password);
 
             // Get user data from Firestore
             const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
@@ -83,7 +97,7 @@ const SignIn = () => {
                 case 'auth/user-not-found':
                 case 'auth/wrong-password':
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid email or password.';
+                    errorMessage = 'Invalid username, email, or password.';
                     break;
                 case 'auth/user-disabled':
                     errorMessage = 'This account has been disabled.';
@@ -157,18 +171,18 @@ const SignIn = () => {
 
                 <form className="signin-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email" className="form-label">
-                            Email address
+                        <label htmlFor="identifier" className="form-label">
+                            Username or Email
                         </label>
                         <input
-                            id="email"
-                            name="email"
-                            type="email"
+                            id="identifier"
+                            name="identifier"
+                            type="text"
                             required
-                            value={formData.email}
+                            value={formData.identifier}
                             onChange={handleChange}
                             className={`form-input ${error ? 'error' : ''}`}
-                            placeholder="Enter your email"
+                            placeholder="Enter your username or email"
                         />
                     </div>
 
