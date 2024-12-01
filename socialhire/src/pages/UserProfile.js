@@ -49,7 +49,7 @@ const UserProfile = () => {
             const experiences = await getDocumentsByUserId('experience', auth.currentUser.uid);
             const posts = await getPostsByUserId('posts', auth.currentUser.uid);
 
-            console.log("Expirianes: ", experiences)
+            console.log("Experiences: ", experiences)
             setState(prev => ({
                 ...prev,
                 profileData: profile || {},

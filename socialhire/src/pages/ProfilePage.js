@@ -86,14 +86,16 @@ const ProfilePage = () => {
                         {profileData.about}
                     </Card.Text>
                 </Card.Body>
+                {/* Follow Button */}
+                <Button 
+                    className="follow-button mt-3"
+                    onClick={() => console.log('Follow button clicked!')} >
+                    Follow
+                </Button>
             </Card>
-
-            {/* Follow Button */}
-            <Button 
-                className="follow-button mt-3"
-                onClick={() => console.log('Follow button clicked!')} >
-                Follow
-            </Button>
+            <Card className="experiences mt-3 shadow-sm">
+                Test
+            </Card> 
         </Container>
     );
 };
