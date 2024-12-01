@@ -1,96 +1,109 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../firebaseConfig";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
-import '../styles/ProfilePage.css';
+import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
     const { username } = useParams();
     const [profileData, setProfileData] = useState(null);
-    const [experiences, setExperiences] = useState([]);
-    const [jobPosts, setJobPosts] = useState([]);
-    const [socialPosts, setSocialPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [friendStatus, setFriendStatus] = useState("none"); // "none", "pending", "friends"
+    const [connectionId, setConnectionId] = useState(null); // ID of the connection for "Remove Friend"
+
+    const auth = getAuth();
+    const currentUserId = auth.currentUser?.uid;
 
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchProfileAndConnection = async () => {
             try {
+                // Fetch profile data
                 const userQuery = query(
                     collection(db, "users"),
                     where("username", "==", username)
                 );
-                const querySnapshot = await getDocs(userQuery);
+                const userSnapshot = await getDocs(userQuery);
 
-                if (!querySnapshot.empty) {
-                    const profile = querySnapshot.docs[0].data();
-                    setProfileData(profile);
-                    fetchExperiences(profile.userId);
-                    fetchJobPosts(profile.userId);
-                    fetchSocialPosts(profile.userId);
-                } else {
+                if (userSnapshot.empty) {
                     throw new Error("User not found");
                 }
+
+                const profile = userSnapshot.docs[0].data();
+                setProfileData(profile);
+
+                // Check friendship status
+                await checkFriendshipStatus(profile.userId);
             } catch (err) {
-                console.error("Error fetching profile:", err);
+                console.error("Error fetching profile or connection:", err);
                 setError(err.message);
-                setLoading(false);
-            }
-        };
-
-        const fetchExperiences = async (userId) => {
-            try {
-                const experiencesQuery = query(
-                    collection(db, "experience"),
-                    where("userId", "==", userId)
-                );
-                const querySnapshot = await getDocs(experiencesQuery);
-
-                const experiencesData = querySnapshot.docs.map(doc => doc.data());
-                setExperiences(experiencesData);
-            } catch (err) {
-                console.error("Error fetching experiences:", err);
-                setError("Could not fetch experiences.");
-            }
-        };
-
-        const fetchJobPosts = async (userId) => {
-            try {
-                const jobsQuery = query(
-                    collection(db, "jobs"),
-                    where("userId", "==", userId)
-                );
-                const querySnapshot = await getDocs(jobsQuery);
-
-                const jobsData = querySnapshot.docs.map(doc => doc.data());
-                setJobPosts(jobsData);
-            } catch (err) {
-                console.error("Error fetching job posts:", err);
-                setError("Could not fetch job posts.");
-            }
-        };
-
-        const fetchSocialPosts = async (userId) => {
-            try {
-                const postsQuery = query(
-                    collection(db, "posts"),
-                    where("userId", "==", userId)
-                );
-                const querySnapshot = await getDocs(postsQuery);
-
-                const postsData = querySnapshot.docs.map(doc => doc.data());
-                setSocialPosts(postsData);
-            } catch (err) {
-                console.error("Error fetching social posts:", err);
-                setError("Could not fetch social posts.");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProfile();
-    }, [username]);
+        const checkFriendshipStatus = async (profileUserId) => {
+            try {
+                const connectionsRef = collection(db, "Connections");
+
+                // Query for existing connections between the current user and the profile user
+                const connectionQuery = query(
+                    connectionsRef,
+                    where("user_id", "in", [currentUserId, profileUserId]),
+                    where("connected_user_id", "in", [currentUserId, profileUserId])
+                );
+
+                const connectionSnapshot = await getDocs(connectionQuery);
+
+                if (!connectionSnapshot.empty) {
+                    const connectionData = connectionSnapshot.docs[0].data();
+                    setConnectionId(connectionSnapshot.docs[0].id);
+
+                    if (connectionData.status === "friends") {
+                        setFriendStatus("friends");
+                    } else if (connectionData.status === "pending") {
+                        setFriendStatus("pending");
+                    }
+                } else {
+                    setFriendStatus("none");
+                }
+            } catch (err) {
+                console.error("Error checking friendship status:", err);
+            }
+        };
+
+        fetchProfileAndConnection();
+    }, [username, currentUserId]);
+
+    const handleAddFriend = async () => {
+        try {
+            const connectionsRef = collection(db, "Connections");
+
+            await addDoc(connectionsRef, {
+                user_id: currentUserId,
+                connected_user_id: profileData.userId,
+                status: "pending",
+                created_at: new Date(),
+            });
+
+            setFriendStatus("pending");
+        } catch (err) {
+            console.error("Error sending friend request:", err);
+        }
+    };
+
+    const handleRemoveFriend = async () => {
+        try {
+            if (connectionId) {
+                await deleteDoc(doc(db, "Connections", connectionId));
+                setFriendStatus("none");
+            }
+        } catch (err) {
+            console.error("Error removing friend:", err);
+        }
+    };
 
     if (loading) {
         return (
@@ -123,12 +136,12 @@ const ProfilePage = () => {
             {/* Profile Picture */}
             <div className="profile-image-wrapper">
                 <img
-                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`} 
+                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`}
                     alt={`${profileData.firstName} ${profileData.lastName}`}
                     className="profile-image"
                 />
             </div>
-            
+
             {/* User Card */}
             <Card className="profile-card mt-3 shadow-sm">
                 <Card.Body>
@@ -142,76 +155,22 @@ const ProfilePage = () => {
                         {profileData.about}
                     </Card.Text>
                 </Card.Body>
-                {/* Follow Button */}
-                <Button 
-                    className="follow-button mt-3"
-                    onClick={() => console.log('Follow button clicked!')} >
-                    Follow
-                </Button>
-            </Card>
-
-            {/* Experiences Section */}
-            <Card className="experiences mt-3 shadow-sm w-100">
-                <Card.Body>
-                    <Card.Title className="text-center">Experiences</Card.Title>
-                    {experiences.length === 0 ? (
-                        <p className="text-center text-muted">No experiences to display.</p>
-                    ) : (
-                        experiences.map((experience) => (
-                            <div key={experience.id} className="experience-item mb-3">
-                                <h5>{experience.title} at {experience.company}</h5>
-                                <p className="text-muted">
-                                    {new Date(experience.startDate.seconds * 1000).toLocaleDateString()} -{" "}
-                                    {experience.current 
-                                        ? "Present" 
-                                        : new Date(experience.endDate.seconds * 1000).toLocaleDateString()}
-                                </p>
-                                <p>{experience.description}</p>
-                            </div>
-                        ))
-                    )}
-                </Card.Body>
-            </Card>
-
-            {/* Job Posts Section */}
-            <Card className="job-posts mt-3 shadow-sm w-100">
-                <Card.Body>
-                    <Card.Title className="text-center">Job Posts</Card.Title>
-                    {jobPosts.length === 0 ? (
-                        <p className="text-center text-muted">No job posts available.</p>
-                    ) : (
-                        jobPosts.map((job) => (
-                            <div key={job.jobTitle} className="job-post-item mb-3">
-                                <h5>{job.jobTitle}</h5>
-                                <p className="text-muted">{job.location}</p>
-                                <p>Type: {job.jobType}</p>
-                                <p>Pay Range: ${job.payRange.min} - ${job.payRange.max}</p>
-                                <p>Number of Workers Needed: {job.numOfWorkers}</p>
-                            </div>
-                        ))
-                    )}
-                </Card.Body>
-            </Card>
-
-            {/* Social Posts Section */}
-            <Card className="social-posts mt-3 shadow-sm w-100">
-                <Card.Body>
-                    <Card.Title className="text-center">Social Posts</Card.Title>
-                    {socialPosts.length === 0 ? (
-                        <p className="text-center text-muted">No social posts available.</p>
-                    ) : (
-                        socialPosts.map((post) => (
-                            <div key={post.id} className="social-post-item mb-3">
-                                <h5>{post.title}</h5>
-                                <p>{post.content}</p>
-                                <p className="text-muted">
-                                    {new Date(post.createdAt.seconds * 1000).toLocaleDateString()} |{" "}
-                                    {post.likeCount} Likes | {post.commentCount} Comments
-                                </p>
-                            </div>
-                        ))
-                    )}
-                </Card.Body>
+                {/* Friend Button */}
+                {friendStatus === "none" && (
+                    <Button className="add-friend-button mt-3" onClick={handleAddFriend}>
+                        Add Friend
+                    </Button>
+                )}
+                {friendStatus === "pending" && (
+                    <Button className="add-friend-button mt-3" disabled>
+                        Request Pending
+                    </Button>
+                )}
+                {friendStatus === "friends" && (
+                    <Button className="remove-friend-button mt-3" onClick={handleRemoveFriend}>
+                        Remove Friend
+                    </Button>
+                )}
             </Card>
         </Container>
     );
