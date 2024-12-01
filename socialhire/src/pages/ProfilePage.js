@@ -9,6 +9,7 @@ const ProfilePage = () => {
     const { username } = useParams();
     const [profileData, setProfileData] = useState(null);
     const [experiences, setExperiences] = useState([]);
+    const [jobPosts, setJobPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -25,6 +26,7 @@ const ProfilePage = () => {
                     const profile = querySnapshot.docs[0].data();
                     setProfileData(profile);
                     fetchExperiences(profile.userId); // Fetch experiences using the userId
+                    fetchJobPosts(profile.userId); // Fetch job posts using the userId
                 } else {
                     throw new Error("User not found");
                 }
@@ -48,6 +50,22 @@ const ProfilePage = () => {
             } catch (err) {
                 console.error("Error fetching experiences:", err);
                 setError("Could not fetch experiences.");
+            }
+        };
+
+        const fetchJobPosts = async (userId) => {
+            try {
+                const jobsQuery = query(
+                    collection(db, "jobs"),
+                    where("userId", "==", userId)
+                );
+                const querySnapshot = await getDocs(jobsQuery);
+
+                const jobsData = querySnapshot.docs.map(doc => doc.data());
+                setJobPosts(jobsData);
+            } catch (err) {
+                console.error("Error fetching job posts:", err);
+                setError("Could not fetch job posts.");
             } finally {
                 setLoading(false);
             }
@@ -131,6 +149,26 @@ const ProfilePage = () => {
                                         : new Date(experience.endDate.seconds * 1000).toLocaleDateString()}
                                 </p>
                                 <p>{experience.description}</p>
+                            </div>
+                        ))
+                    )}
+                </Card.Body>
+            </Card>
+
+            {/* Job Posts Section */}
+            <Card className="job-posts mt-3 shadow-sm w-100">
+                <Card.Body>
+                    <Card.Title className="text-center">Job Posts</Card.Title>
+                    {jobPosts.length === 0 ? (
+                        <p className="text-center text-muted">No job posts available.</p>
+                    ) : (
+                        jobPosts.map((job) => (
+                            <div key={job.jobTitle} className="job-post-item mb-3">
+                                <h5>{job.jobTitle}</h5>
+                                <p className="text-muted">{job.location}</p>
+                                <p>Type: {job.jobType}</p>
+                                <p>Pay Range: ${job.payRange.min} - ${job.payRange.max}</p>
+                                <p>Number of Workers Needed: {job.numOfWorkers}</p>
                             </div>
                         ))
                     )}
