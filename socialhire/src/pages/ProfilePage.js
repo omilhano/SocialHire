@@ -8,6 +8,7 @@ import '../styles/ProfilePage.css';
 const ProfilePage = () => {
     const { username } = useParams();
     const [profileData, setProfileData] = useState(null);
+    const [experiences, setExperiences] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -21,13 +22,32 @@ const ProfilePage = () => {
                 const querySnapshot = await getDocs(userQuery);
 
                 if (!querySnapshot.empty) {
-                    setProfileData(querySnapshot.docs[0].data());
+                    const profile = querySnapshot.docs[0].data();
+                    setProfileData(profile);
+                    fetchExperiences(profile.userId); // Fetch experiences using the userId
                 } else {
                     throw new Error("User not found");
                 }
             } catch (err) {
                 console.error("Error fetching profile:", err);
                 setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        const fetchExperiences = async (userId) => {
+            try {
+                const experiencesQuery = query(
+                    collection(db, "experience"),
+                    where("userId", "==", userId)
+                );
+                const querySnapshot = await getDocs(experiencesQuery);
+
+                const experiencesData = querySnapshot.docs.map(doc => doc.data());
+                setExperiences(experiencesData);
+            } catch (err) {
+                console.error("Error fetching experiences:", err);
+                setError("Could not fetch experiences.");
             } finally {
                 setLoading(false);
             }
@@ -93,9 +113,29 @@ const ProfilePage = () => {
                     Follow
                 </Button>
             </Card>
-            <Card className="experiences mt-3 shadow-sm">
-                Test
-            </Card> 
+
+            {/* Experiences Section */}
+            <Card className="experiences mt-3 shadow-sm w-100">
+                <Card.Body>
+                    <Card.Title className="text-center">Experiences</Card.Title>
+                    {experiences.length === 0 ? (
+                        <p className="text-center text-muted">No experiences to display.</p>
+                    ) : (
+                        experiences.map((experience) => (
+                            <div key={experience.id} className="experience-item mb-3">
+                                <h5>{experience.title} at {experience.company}</h5>
+                                <p className="text-muted">
+                                    {new Date(experience.startDate.seconds * 1000).toLocaleDateString()} -{" "}
+                                    {experience.current 
+                                        ? "Present" 
+                                        : new Date(experience.endDate.seconds * 1000).toLocaleDateString()}
+                                </p>
+                                <p>{experience.description}</p>
+                            </div>
+                        ))
+                    )}
+                </Card.Body>
+            </Card>
         </Container>
     );
 };
