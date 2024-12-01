@@ -10,6 +10,7 @@ const ProfilePage = () => {
     const [profileData, setProfileData] = useState(null);
     const [experiences, setExperiences] = useState([]);
     const [jobPosts, setJobPosts] = useState([]);
+    const [socialPosts, setSocialPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -25,8 +26,9 @@ const ProfilePage = () => {
                 if (!querySnapshot.empty) {
                     const profile = querySnapshot.docs[0].data();
                     setProfileData(profile);
-                    fetchExperiences(profile.userId); // Fetch experiences using the userId
-                    fetchJobPosts(profile.userId); // Fetch job posts using the userId
+                    fetchExperiences(profile.userId);
+                    fetchJobPosts(profile.userId);
+                    fetchSocialPosts(profile.userId);
                 } else {
                     throw new Error("User not found");
                 }
@@ -66,6 +68,22 @@ const ProfilePage = () => {
             } catch (err) {
                 console.error("Error fetching job posts:", err);
                 setError("Could not fetch job posts.");
+            }
+        };
+
+        const fetchSocialPosts = async (userId) => {
+            try {
+                const postsQuery = query(
+                    collection(db, "posts"),
+                    where("userId", "==", userId)
+                );
+                const querySnapshot = await getDocs(postsQuery);
+
+                const postsData = querySnapshot.docs.map(doc => doc.data());
+                setSocialPosts(postsData);
+            } catch (err) {
+                console.error("Error fetching social posts:", err);
+                setError("Could not fetch social posts.");
             } finally {
                 setLoading(false);
             }
@@ -169,6 +187,27 @@ const ProfilePage = () => {
                                 <p>Type: {job.jobType}</p>
                                 <p>Pay Range: ${job.payRange.min} - ${job.payRange.max}</p>
                                 <p>Number of Workers Needed: {job.numOfWorkers}</p>
+                            </div>
+                        ))
+                    )}
+                </Card.Body>
+            </Card>
+
+            {/* Social Posts Section */}
+            <Card className="social-posts mt-3 shadow-sm w-100">
+                <Card.Body>
+                    <Card.Title className="text-center">Social Posts</Card.Title>
+                    {socialPosts.length === 0 ? (
+                        <p className="text-center text-muted">No social posts available.</p>
+                    ) : (
+                        socialPosts.map((post) => (
+                            <div key={post.id} className="social-post-item mb-3">
+                                <h5>{post.title}</h5>
+                                <p>{post.content}</p>
+                                <p className="text-muted">
+                                    {new Date(post.createdAt.seconds * 1000).toLocaleDateString()} |{" "}
+                                    {post.likeCount} Likes | {post.commentCount} Comments
+                                </p>
                             </div>
                         ))
                     )}
