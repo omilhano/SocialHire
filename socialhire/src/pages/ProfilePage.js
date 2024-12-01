@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { Container, Row, Col, Card, Spinner, Alert } from "react-bootstrap"; // Bootstrap components
-import '../styles/ProfilePage.css'; // Custom styles
+import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
+import '../styles/ProfilePage.css';
 
 const ProfilePage = () => {
-    const { username } = useParams(); // Extract username from URL
-    const [profileData, setProfileData] = useState(null); // State for profile data
-    const [loading, setLoading] = useState(true); // Loading state
-    const [error, setError] = useState(null); // Error state
+    const { username } = useParams();
+    const [profileData, setProfileData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -38,7 +38,7 @@ const ProfilePage = () => {
 
     if (loading) {
         return (
-            <Container className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+            <Container className="d-flex justify-content-center align-items-center vh-100">
                 <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
@@ -48,7 +48,7 @@ const ProfilePage = () => {
 
     if (error) {
         return (
-            <Container className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+            <Container className="d-flex justify-content-center align-items-center vh-100">
                 <Alert variant="danger">{error}</Alert>
             </Container>
         );
@@ -56,46 +56,44 @@ const ProfilePage = () => {
 
     if (!profileData) {
         return (
-            <Container className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+            <Container className="d-flex justify-content-center align-items-center vh-100">
                 <Alert variant="warning">Profile not found</Alert>
             </Container>
         );
     }
 
     return (
-        <Container className="py-5">
-            <Row className="justify-content-center">
-                <Col md={8}>
-                    <Card className="shadow-sm">
-                        <Card.Body>
-                            <Row>
-                                {/* Profile Image */}
-                                <Col xs={12} md={4} className="d-flex justify-content-center align-items-center mb-3 mb-md-0">
-                                    <div className="profile-img-wrapper">
-                                        <img
-                                            src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=random`} // Dynamic placeholder image
-                                            alt={`${profileData.firstName} ${profileData.lastName}`}
-                                            className="rounded-circle img-fluid profile-img"
-                                        />
-                                    </div>
-                                </Col>
-                                {/* Profile Info */}
-                                <Col xs={12} md={8}>
-                                    <h2 className="text-primary">{profileData.firstName} {profileData.lastName}</h2>
-                                    <p className="text-muted mb-1"><strong>Username:</strong> {profileData.username}</p>
-                                    <p className="text-muted mb-1"><strong>Email:</strong> {profileData.email}</p>
-                                    <p className="text-muted mb-1">
-                                        <strong>Account Type:</strong> {profileData.accountType}
-                                    </p>
-                                    <p className="text-muted mb-1">
-                                        <strong>Joined:</strong> {new Date(profileData.createdAt).toLocaleDateString()}
-                                    </p>
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
+        <Container className="profile-container d-flex flex-column justify-content-center align-items-center vh-100">
+            {/* Profile Picture */}
+            <div className="profile-image-wrapper">
+                <img
+                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`} 
+                    alt={`${profileData.firstName} ${profileData.lastName}`}
+                    className="profile-image"
+                />
+            </div>
+            
+            {/* User Card */}
+            <Card className="profile-card mt-3 shadow-sm">
+                <Card.Body>
+                    <Card.Title className="text-center profile-card-title">
+                        {profileData.firstName} {profileData.lastName}
+                    </Card.Title>
+                    <Card.Subtitle className="text-muted text-center profile-card-subtitle">
+                        {profileData.location}
+                    </Card.Subtitle>
+                    <Card.Text className="mt-3 text-center profile-card-text">
+                        {profileData.about}
+                    </Card.Text>
+                </Card.Body>
+            </Card>
+
+            {/* Follow Button */}
+            <Button 
+                className="follow-button mt-3"
+                onClick={() => console.log('Follow button clicked!')} >
+                Follow
+            </Button>
         </Container>
     );
 };
