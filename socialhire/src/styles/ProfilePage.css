@@ -46,18 +46,4 @@
     font-size: 1rem;
 }
 
-/* Follow button styles */
-.follow-button {
-    background-color: #ff9f80; /* Accent color */
-    color: #ffffff;
-    font-weight: bold;
-    border: none;
-    border-radius: 25px;
-    width: 150px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
 
-.follow-button:hover {
-    background-color: #e68b72; /* Slightly darker accent color */
-}
