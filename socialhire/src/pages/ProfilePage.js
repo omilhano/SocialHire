@@ -4,91 +4,81 @@ import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
-import "../styles/ProfilePage.css";
+import '../styles/ProfilePage.css';
 
 const ProfilePage = () => {
     const { username } = useParams();
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [friendStatus, setFriendStatus] = useState("none"); // "none", "pending", "friends"
-    const [connectionId, setConnectionId] = useState(null); // ID of the connection for "Remove Friend"
-
-    const auth = getAuth();
-    const currentUserId = auth.currentUser?.uid;
+    const [friendshipStatus, setFriendshipStatus] = useState(null); // "friends", "pending", or null
+    const [currentUserId, setCurrentUserId] = useState(null); // Current logged-in user's ID
 
     useEffect(() => {
-        const fetchProfileAndConnection = async () => {
+        const fetchProfile = async () => {
             try {
-                // Fetch profile data
+                const auth = getAuth();
+                const loggedInUserId = auth.currentUser?.uid;
+                setCurrentUserId(loggedInUserId); // Store current user's ID
+
                 const userQuery = query(
                     collection(db, "users"),
                     where("username", "==", username)
                 );
-                const userSnapshot = await getDocs(userQuery);
+                const querySnapshot = await getDocs(userQuery);
 
-                if (userSnapshot.empty) {
+                if (!querySnapshot.empty) {
+                    const profile = querySnapshot.docs[0].data();
+                    setProfileData(profile);
+                    checkFriendshipStatus(loggedInUserId, profile.userId); // Check friendship status
+                } else {
                     throw new Error("User not found");
                 }
-
-                const profile = userSnapshot.docs[0].data();
-                setProfileData(profile);
-
-                // Check friendship status
-                await checkFriendshipStatus(profile.userId);
             } catch (err) {
-                console.error("Error fetching profile or connection:", err);
+                console.error("Error fetching profile:", err);
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
-        const checkFriendshipStatus = async (profileUserId) => {
+        const checkFriendshipStatus = async (loggedInUserId, profileUserId) => {
             try {
-                const connectionsRef = collection(db, "Connections");
+                if (loggedInUserId === profileUserId) {
+                    return; // No need to check friendship status for yourself
+                }
 
-                // Query for existing connections between the current user and the profile user
-                const connectionQuery = query(
-                    connectionsRef,
-                    where("user_id", "in", [currentUserId, profileUserId]),
-                    where("connected_user_id", "in", [currentUserId, profileUserId])
+                const connectionsQuery = query(
+                    collection(db, "Connections"),
+                    where("user_id", "in", [loggedInUserId, profileUserId]),
+                    where("connected_user_id", "in", [loggedInUserId, profileUserId])
                 );
 
-                const connectionSnapshot = await getDocs(connectionQuery);
-
-                if (!connectionSnapshot.empty) {
-                    const connectionData = connectionSnapshot.docs[0].data();
-                    setConnectionId(connectionSnapshot.docs[0].id);
-
-                    if (connectionData.status === "friends") {
-                        setFriendStatus("friends");
-                    } else if (connectionData.status === "pending") {
-                        setFriendStatus("pending");
-                    }
-                } else {
-                    setFriendStatus("none");
+                const snapshot = await getDocs(connectionsQuery);
+                if (!snapshot.empty) {
+                    const connection = snapshot.docs[0].data();
+                    setFriendshipStatus(connection.status); // "friends" or "pending"
                 }
             } catch (err) {
                 console.error("Error checking friendship status:", err);
             }
         };
 
-        fetchProfileAndConnection();
-    }, [username, currentUserId]);
+        fetchProfile();
+    }, [username]);
 
     const handleAddFriend = async () => {
         try {
-            const connectionsRef = collection(db, "Connections");
-
-            await addDoc(connectionsRef, {
+            const connectionsCollectionRef = collection(db, "Connections");
+            const newConnection = {
                 user_id: currentUserId,
                 connected_user_id: profileData.userId,
                 status: "pending",
-                created_at: new Date(),
-            });
+                created_at: new Date()
+            };
 
-            setFriendStatus("pending");
+            await addDoc(connectionsCollectionRef, newConnection);
+            setFriendshipStatus("pending");
         } catch (err) {
             console.error("Error sending friend request:", err);
         }
@@ -96,9 +86,17 @@ const ProfilePage = () => {
 
     const handleRemoveFriend = async () => {
         try {
-            if (connectionId) {
-                await deleteDoc(doc(db, "Connections", connectionId));
-                setFriendStatus("none");
+            const connectionsQuery = query(
+                collection(db, "Connections"),
+                where("user_id", "in", [currentUserId, profileData.userId]),
+                where("connected_user_id", "in", [currentUserId, profileData.userId])
+            );
+
+            const snapshot = await getDocs(connectionsQuery);
+            if (!snapshot.empty) {
+                const docId = snapshot.docs[0].id;
+                await deleteDoc(doc(db, "Connections", docId));
+                setFriendshipStatus(null); // Reset friendship status
             }
         } catch (err) {
             console.error("Error removing friend:", err);
@@ -131,17 +129,19 @@ const ProfilePage = () => {
         );
     }
 
+    const isCurrentUserProfile = currentUserId === profileData.userId;
+
     return (
         <Container className="profile-container d-flex flex-column justify-content-center align-items-center vh-100">
             {/* Profile Picture */}
             <div className="profile-image-wrapper">
                 <img
-                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`}
+                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`} 
                     alt={`${profileData.firstName} ${profileData.lastName}`}
                     className="profile-image"
                 />
             </div>
-
+            
             {/* User Card */}
             <Card className="profile-card mt-3 shadow-sm">
                 <Card.Body>
@@ -155,20 +155,22 @@ const ProfilePage = () => {
                         {profileData.about}
                     </Card.Text>
                 </Card.Body>
-                {/* Friend Button */}
-                {friendStatus === "none" && (
-                    <Button className="add-friend-button mt-3" onClick={handleAddFriend}>
-                        Add Friend
-                    </Button>
-                )}
-                {friendStatus === "pending" && (
-                    <Button className="add-friend-button mt-3" disabled>
-                        Request Pending
-                    </Button>
-                )}
-                {friendStatus === "friends" && (
-                    <Button className="remove-friend-button mt-3" onClick={handleRemoveFriend}>
-                        Remove Friend
+                {/* Add Friend Button */}
+                {!isCurrentUserProfile && (
+                    <Button 
+                        className="follow-button mt-3"
+                        onClick={() => {
+                            if (friendshipStatus === "friends") {
+                                handleRemoveFriend();
+                            } else if (friendshipStatus === null) {
+                                handleAddFriend();
+                            }
+                        }}
+                        disabled={friendshipStatus === "pending"}
+                    >
+                        {friendshipStatus === "friends" && "Remove Friend"}
+                        {friendshipStatus === "pending" && "Request Pending"}
+                        {friendshipStatus === null && "Add Friend"}
                     </Button>
                 )}
             </Card>
