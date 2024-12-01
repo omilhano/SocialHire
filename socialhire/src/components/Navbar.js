@@ -25,12 +25,14 @@ import JobSearch from '../images/JobSearch.png'; // Job search icon
 import Main from '../pages/MainPage'; // Main page component
 
 // Navbar component for the SocialHire app
-const NavbarSocialhire = () => {
+// "Takes in filters to pass to parent component: App.Js"
+const NavbarSocialhire = ({ filters, setFilters }) => {
     const navigate = useNavigate(); // Hook for programmatic navigation
     const [searchInput, setSearchInput] = useState(''); // State to store the search query
     const [showModal, setShowModal] = useState(false); // State to toggle the visibility of the filter modal
     const [showNotificationModal, setShowNotificationModal] = useState(false); // State to toggle the visibility of the notification modal
     const [userName, setUserName] = useState(null); // State to store the logged-in user's name
+
 
     // Handles form submission for search functionality
     const handleSearchSubmit = (e) => {
@@ -158,7 +160,7 @@ const NavbarSocialhire = () => {
             </Navbar>
 
             {/* Modals for filters and notifications */}
-            <SearchModal show={showModal} onClose={() => setShowModal(false)} />
+            <SearchModal show={showModal} onClose={() => setShowModal(false)} filters={filters} setFilters={setFilters} />
             <NotificationModal show={showNotificationModal} onClose={() => setShowNotificationModal(false)} />
         </>
     );
