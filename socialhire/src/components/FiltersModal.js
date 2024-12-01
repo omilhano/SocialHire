@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Dropdown, Form } from 'react-bootstrap';
 import '../styles/FiltersModal.css';
 
+// Change render according to job type
+// Hustling doesnt have pay range just price/hour
+
 // Pass on filters for parent component
 const SearchModal = ({ show, onClose, filters, setFilters }) => {
     // Destructure filters for easier access and set defaults if not provided
