@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
+import { Container, Spinner, Alert, Card, Button, Modal } from "react-bootstrap";
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
@@ -13,9 +13,10 @@ const ProfilePage = () => {
     const [error, setError] = useState(null);
     const [friendshipStatus, setFriendshipStatus] = useState(null);
     const [currentUserId, setCurrentUserId] = useState(null);
-    const [experienceData, setExperienceData] = useState([]); // State for experience data
-    const [jobPosts, setJobPosts] = useState([]); // State for job posts
-    const [socialPosts, setSocialPosts] = useState([]); // State for social posts
+    const [experienceData, setExperienceData] = useState([]);
+    const [jobPosts, setJobPosts] = useState([]);
+    const [socialPosts, setSocialPosts] = useState([]);
+    const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -24,19 +25,16 @@ const ProfilePage = () => {
                 const loggedInUserId = auth.currentUser?.uid;
                 setCurrentUserId(loggedInUserId);
 
-                const userQuery = query(
-                    collection(db, "users"),
-                    where("username", "==", username)
-                );
+                const userQuery = query(collection(db, "users"), where("username", "==", username));
                 const querySnapshot = await getDocs(userQuery);
 
                 if (!querySnapshot.empty) {
                     const profile = querySnapshot.docs[0].data();
                     setProfileData(profile);
                     checkFriendshipStatus(loggedInUserId, profile.userId);
-                    fetchExperiences(profile.userId); // Fetch experience data
-                    fetchJobPosts(profile.userId); // Fetch job post data
-                    fetchSocialPosts(profile.userId); // Fetch social post data
+                    fetchExperiences(profile.userId);
+                    fetchJobPosts(profile.userId);
+                    fetchSocialPosts(profile.userId);
                 } else {
                     throw new Error("User not found");
                 }
@@ -50,16 +48,9 @@ const ProfilePage = () => {
 
         const fetchExperiences = async (profileUserId) => {
             try {
-                const experienceQuery = query(
-                    collection(db, "experience"),
-                    where("userId", "==", profileUserId)
-                );
+                const experienceQuery = query(collection(db, "experience"), where("userId", "==", profileUserId));
                 const experienceSnapshot = await getDocs(experienceQuery);
-
-                const experiences = experienceSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const experiences = experienceSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
                 setExperienceData(experiences);
             } catch (err) {
                 console.error("Error fetching experiences:", err);
@@ -68,16 +59,9 @@ const ProfilePage = () => {
 
         const fetchJobPosts = async (profileUserId) => {
             try {
-                const jobsQuery = query(
-                    collection(db, "jobs"),
-                    where("userId", "==", profileUserId)
-                );
+                const jobsQuery = query(collection(db, "jobs"), where("userId", "==", profileUserId));
                 const jobsSnapshot = await getDocs(jobsQuery);
-
-                const jobs = jobsSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const jobs = jobsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
                 setJobPosts(jobs);
             } catch (err) {
                 console.error("Error fetching job posts:", err);
@@ -86,16 +70,9 @@ const ProfilePage = () => {
 
         const fetchSocialPosts = async (profileUserId) => {
             try {
-                const postsQuery = query(
-                    collection(db, "posts"),
-                    where("userId", "==", profileUserId)
-                );
+                const postsQuery = query(collection(db, "posts"), where("userId", "==", profileUserId));
                 const postsSnapshot = await getDocs(postsQuery);
-
-                const posts = postsSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const posts = postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
                 setSocialPosts(posts);
             } catch (err) {
                 console.error("Error fetching social posts:", err);
@@ -104,16 +81,12 @@ const ProfilePage = () => {
 
         const checkFriendshipStatus = async (loggedInUserId, profileUserId) => {
             try {
-                if (loggedInUserId === profileUserId) {
-                    return;
-                }
-
+                if (loggedInUserId === profileUserId) return;
                 const connectionsQuery = query(
                     collection(db, "Connections"),
                     where("user_id", "in", [loggedInUserId, profileUserId]),
                     where("connected_user_id", "in", [loggedInUserId, profileUserId])
                 );
-
                 const snapshot = await getDocs(connectionsQuery);
                 if (!snapshot.empty) {
                     const connection = snapshot.docs[0].data();
@@ -136,7 +109,6 @@ const ProfilePage = () => {
                 status: "pending",
                 created_at: new Date(),
             };
-
             await addDoc(connectionsCollectionRef, newConnection);
             setFriendshipStatus("pending");
         } catch (err) {
@@ -151,12 +123,11 @@ const ProfilePage = () => {
                 where("user_id", "in", [currentUserId, profileData.userId]),
                 where("connected_user_id", "in", [currentUserId, profileData.userId])
             );
-
             const snapshot = await getDocs(connectionsQuery);
             if (!snapshot.empty) {
                 const docId = snapshot.docs[0].id;
                 await deleteDoc(doc(db, "Connections", docId));
-                setFriendshipStatus(null);
+                setFriendshipStatus(null); // Reset friendship status
             }
         } catch (err) {
             console.error("Error removing friend:", err);
@@ -196,7 +167,7 @@ const ProfilePage = () => {
             {/* Profile Picture */}
             <div className="profile-image-wrapper">
                 <img
-                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`}
+                    src={profileData.profileImageUrl || `https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`}
                     alt={`${profileData.firstName} ${profileData.lastName}`}
                     className="profile-image"
                 />
@@ -218,13 +189,7 @@ const ProfilePage = () => {
                 {currentUserId && profileData && !isCurrentUserProfile && (
                     <Button
                         className="follow-button mt-3"
-                        onClick={() => {
-                            if (friendshipStatus === "friends") {
-                                handleRemoveFriend();
-                            } else if (friendshipStatus === null) {
-                                handleAddFriend();
-                            }
-                        }}
+                        onClick={() => setShowRemoveFriendModal(true)}
                         disabled={friendshipStatus === "pending"}
                     >
                         {friendshipStatus === "friends" && "Remove Friend"}
@@ -232,7 +197,36 @@ const ProfilePage = () => {
                         {friendshipStatus === null && "Add Friend"}
                     </Button>
                 )}
-         </Card>
+                {/* Remove Friend Modal */}
+                <Modal
+                    show={showRemoveFriendModal}
+                    onHide={() => setShowRemoveFriendModal(false)}
+                    centered
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm Remove Friend</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to remove <strong>{profileData.firstName} {profileData.lastName}</strong> as a friend?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowRemoveFriendModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="danger" 
+                            onClick={() => {
+                                handleRemoveFriend();
+                                setShowRemoveFriendModal(false);
+                            }}
+                        >
+                            Remove Friend
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </Card>
 
             {/* Experience Section */}
             <div className="mt-4 w-100">
