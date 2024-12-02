@@ -299,6 +299,33 @@ const ProfilePage = () => {
                     )}
                 </div>
             )}
+                        {/* Remove Friend Confirmation Modal */}
+            <Modal
+                show={showRemoveFriendModal}
+                onHide={() => setShowRemoveFriendModal(false)}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Remove Friend</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to remove this person from your friends list?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowRemoveFriendModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            handleRemoveFriend(); // Call the function to remove the friend
+                            setShowRemoveFriendModal(false); // Close modal after action
+                        }}
+                    >
+                        Remove Friend
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };
