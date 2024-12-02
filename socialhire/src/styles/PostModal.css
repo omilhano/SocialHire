@@ -1,0 +1,249 @@
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-post-content {
+  background-color: rgba(255, 255, 255, 1);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); /* Optional shadow for clarity */
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+/* Post Header */
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.post-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.post-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  color: #666;
+}
+
+.icon-button:hover {
+  background-color: #f5f5f5;
+}
+
+.icon-button.delete:hover {
+  color: #dc3545;
+}
+
+/* Post Image */
+.post-image {
+  margin-bottom: 1.5rem;
+}
+
+.post-image img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Post Content */
+.post-content {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Post Interactions */
+.post-interactions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.like-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.like-button.liked {
+  color: #dc3545;
+}
+
+.like-button:hover {
+  background-color: #f5f5f5;
+}
+
+.comment-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+/* Comment Form */
+.comment-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.comment-form button {
+  padding: 0.75rem 1.5rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.comment-form button:hover {
+  background-color: #0052a3;
+}
+
+/* Comments List */
+.comment {
+  padding: 15px; /* Add padding inside the comment box */
+  margin-bottom: 20px; /* Add space between comments */
+  border: 1px solid #ddd; /* Optional: Light border around each comment */
+  border-radius: 8px; /* Optional: Rounded corners */
+  background-color: #f9f9f9; /* Optional: Light background */
+  text-align: left; /* Align content to the left */
+}
+
+.comment-header {
+  display: flex; /* Align items horizontally */
+  justify-content: space-between; /* Space between username and date */
+  align-items: center; /* Vertically align content */
+  margin-bottom: 10px; /* Space between header and content */
+}
+
+.comment-profile-pic,
+.default-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.default-profile-pic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.comment-header div {
+  display: flex; /* Align the text items together */
+  flex-direction: column; /* Stack username and date vertically */
+}
+
+.comment-header strong {
+  font-size: 1rem; /* Bold for the username */
+  color: #333; /* Darker text color for better readability */
+}
+
+.comment-header .comment-date {
+  font-size: 0.875rem; /* Smaller font size for the date */
+  color: #888; /* Lighter text color for the date */
+}
+
+.comment-content {
+  font-size: 1rem; /* Consistent font size for the comment content */
+  color: #555; /* Neutral text color */
+}
+
+.delete-comment {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+}
+
+.delete-comment:hover {
+  text-decoration: underline;
+}
+
+.load-more {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.load-more:hover {
+  text-decoration: underline;
+}
+
+/* Error Message */
+.error-message {
+  color: #dc3545;
+  padding: 0.75rem;
+  background-color: #f8d7da;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.loading {
+  color: white;
+  font-size: 1.2rem;
+}

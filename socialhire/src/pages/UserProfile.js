@@ -160,10 +160,15 @@ const UserProfile = () => {
         console.log("Experience data being sent to addDocument:", experience); // Debug log
         console.log("Experience id", experience.id); // Debug log
         const newExperienceId = experience.id || Date.now().toString();
-        const success = experience.id
-            ? await updateExperience('experience', experience.id, experience)
-            : await addExperience('experience', newExperienceId, { ...experience });
-
+        let success;
+        if (experience.id) {
+            // Update existing experience
+            success = await updateExperience('experience', experience.id, experience);
+        } else {
+            // Assign new ID and add the experience
+            experience.id = newExperienceId;
+            success = await addExperience('experience', newExperienceId, { ...experience });
+        }
         if (success) {
             setState(prev => ({
                 ...prev,
@@ -195,12 +200,10 @@ const UserProfile = () => {
             return;
         }
         console.log("Post data being sent to addDocument:", post); // Debug log
-        console.log("Post id", post.id); // Debug log
         const newPostId = post.id || Date.now().toString();
         const success = post.id
-            ? await updatePost('posts', post.id, post)
-            : await addPost('posts', newPostId, { ...post });
-
+        ? await updateExperience('posts', post.id, post)
+        : post.id = newPostId; await addExperience('posts', newPostId, { ...post });
         if (success) {
             setState(prev => ({
                 ...prev,

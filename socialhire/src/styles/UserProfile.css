@@ -709,6 +709,7 @@
 
 /* Post Card */
 .post-card {
+    cursor: pointer;
     flex: 0 0 280px;
     background: white;
     border: 1px solid #e5e7eb;

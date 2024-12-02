@@ -37,8 +37,8 @@ export const useFirebaseDocument = (collectionName) => {
 
     const updateDocument = useCallback(async (collectionName, docId, data) => {
         if (!auth.currentUser) return null;
-        console.log("Experience data:", data); // Debug log
-        console.log("Experience Id:", docId); // Debug log
+        console.log("data:", data); // Debug log
+        console.log("Id:", docId); // Debug log
         
         try {
             setLoading(true);
@@ -119,7 +119,6 @@ export const useFirebaseDocument = (collectionName) => {
         [collectionName]
     );
     
-
     const addDocument = async (collectionName, docId = null, data) => {
         if (typeof data !== 'object' || data === null) {
             console.error("Invalid data provided. Data must be a non-null object.");

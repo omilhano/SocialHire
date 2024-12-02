@@ -101,6 +101,10 @@
     background-color: #f3f4f6;
 }
 
+.action-button.liked {
+    color: #dc3545;
+  }
+  
 /* Horizontal Scroll */
 .posts-scroll {
     display: flex;

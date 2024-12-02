@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Plus, PencilIcon, TrashIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { auth } from "../../firebaseConfig";
 import { Timestamp } from 'firebase/firestore';
+import PostModal from '../PostModal';
+
 
 export const PostSection = ({
     posts: initialPosts,
@@ -201,21 +203,46 @@ const PostForm = ({ post, onSave, onCancel }) => {
 };
 
 const PostList = ({ posts, onEdit, onDelete }) => {
+    const [selectedPost, setSelectedPost] = useState(null);
     if (!Array.isArray(posts) || posts.length === 0) {
         return <p className="empty-message">No posts available</p>;
     }
+    const handlePostClick = (post) => {
+        setSelectedPost(post.id);
+    };
 
     return (
         <div className="post-list">
             {posts.map((post) => (
-                <div key={post.id} className="post-card">
+                <div 
+                    key={post.id} 
+                    className="post-card"
+                    onClick={(e) => {
+                        // Prevent click if user clicked on edit/delete buttons
+                        if (!e.target.closest('.post-card-actions')) {
+                            handlePostClick(post);
+                        }
+                    }}
+                >
                     <div className="card-header">
                         <h3 className="post-title">{post.title}</h3>
                         <div className="post-card-actions">
-                            <button onClick={() => onEdit(post)} className="action-button edit-post-button">
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onEdit(post);
+                                }} 
+                                className="action-button edit-post-button"
+                            >
                                 <PencilIcon size={16} />
                             </button>
-                            <button onClick={() => onDelete(post.id)} className="action-button delete-post-button">
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(post.id);
+                                }} 
+                                className="action-button delete-post-button"
+                            >
                                 <TrashIcon size={16} />
                             </button>
                         </div>
@@ -227,8 +254,15 @@ const PostList = ({ posts, onEdit, onDelete }) => {
                     </div>
                 </div>
             ))}
+
+            {selectedPost && (
+                <PostModal
+                    postId={selectedPost}
+                    collectionName="posts"
+                    onClose={() => setSelectedPost(null)}
+                />
+            )}
         </div>
     );
 };
-
 export default PostSection;
