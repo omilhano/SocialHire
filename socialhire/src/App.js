@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Footer from './components/Footer';
 import NavbarSocialhire from './components/Navbar';
@@ -21,27 +21,27 @@ import ChatPage from './pages/ChatPage';
 import Checkout from './pages/checkoutTest';
 import ProfilePage from './pages/ProfilePage';
 
-
 function App() {
+  const [filters, setFilters] = useState({ jobType: '', location: '', numOfPeople: '' }); // Define filters state
   const currentLocation = useLocation();
 
   // Define routes where the LandingNavbar should be used
-  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', '/aboutus', '/tos','/privacypolicy', '/contacts', '/credits'];
+  const landingNavbarRoutes = ['/', '/signin', '/signup', '/features', '/aboutus', '/tos', '/privacypolicy', '/contacts', '/credits'];
 
   return (
     <div className="App">
       {/* Conditional Navbar */}
       {landingNavbarRoutes.includes(currentLocation.pathname.toLowerCase()) ? (
-        <LandingNavbar />
+        <LandingNavbar/>
       ) : (
-        <NavbarSocialhire />
+        <NavbarSocialhire setFilters={setFilters} /> // Pass setFilters to NavbarSocialhire
       )}
 
       <Routes>
         {/* Define routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/Main" element={<Main />} />
-        <Route path="/JobSearch" element={<JobSearch />} />
+        <Route path="/JobSearch" element={<JobSearch filters={filters} />} /> {/* Pass filters to JobSearch */}
         <Route path="/UserProfile" element={<Profile />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
@@ -53,7 +53,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/features" element={<Features />} />
         <Route path="/aboutus" element={<About />} />
-        <Route path='/checkout' element={<Checkout/>} />
+        <Route path='/checkout' element={<Checkout />} />
 
         {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />

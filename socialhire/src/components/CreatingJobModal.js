@@ -8,12 +8,15 @@ import { collection, addDoc } from 'firebase/firestore';
 
 const CreatingJobModal = ({ show, onClose }) => {
     const [jobType, setJobType] = useState('Choose Type of Job');
-    const [subJobType, setSubJobType] = useState(null);
     const [pricePerHour, setPricePerHour] = useState(0);
-    const [numOfWorkers, setNumOfWorkers] = useState(1);
     const [jobTitle, setJobTitle] = useState('');
     const [location, setLocation] = useState('');
     const [payRange, setPayRange] = useState({ min: '', max: '' });
+    const [jobDescription, setJobDescription] = useState('');
+    const [jobExpectedTime, setJobExpectedTime] = useState('');
+    const [endTime, setEndTime] = useState('');
+    const [newRequirement, setNewRequirement] = useState('');
+    const [additionalRequirements, setAdditionalRequirements] = useState([]);
 
     const { user } = useAuth();
 
@@ -21,24 +24,23 @@ const CreatingJobModal = ({ show, onClose }) => {
     useEffect(() => {
         if (!show) {
             setJobType('Choose Type of Job');
-            setSubJobType(null);
             setPricePerHour(0);
-            setNumOfWorkers(1);
             setJobTitle('');
             setLocation('');
             setPayRange({ min: '', max: '' });
+            setJobDescription('');
+            setJobExpectedTime('');
+            setEndTime(''); // Reset endTime state
         }
     }, [show]);
 
     const handleJobTypeSelect = (value) => {
         setJobType(value);
-        setSubJobType(null);
     };
 
-    const handleSubJobTypeSelect = (value) => setSubJobType(value);
 
     const handleSaveJob = async () => {
-        if (!jobTitle || !numOfWorkers) {
+        if (!jobTitle) {
             alert("Please fill in all the required fields.");
             return;
         }
@@ -46,14 +48,17 @@ const CreatingJobModal = ({ show, onClose }) => {
         const jobData = {
             jobType,
             jobTitle,
-            numOfWorkers,
             createdAt: new Date(),
             userId: user?.uid,
+            additionalRequirements, // Include additional requirements
         };
 
         if (jobType === 'Hustler') {
-            jobData.subJobType = subJobType;
             jobData.pricePerHour = pricePerHour;
+            jobData.jobDescription = jobDescription;
+            jobData.jobExpectedTime = `${jobExpectedTime} hours`; // Append "hours"
+            jobData.location = location
+            jobData.endTime = endTime;
         } else if (jobType === 'Formal Job') {
             jobData.location = location;
             jobData.payRange = payRange;
@@ -87,16 +92,6 @@ const CreatingJobModal = ({ show, onClose }) => {
 
                 {jobType === 'Hustler' && (
                     <>
-                        <Dropdown>
-                            <Dropdown.Toggle variant="primary" id="subJobTypeDropdown">
-                                {subJobType || 'Choose Hustler Job Type'}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => handleSubJobTypeSelect('Manual Job')}>Manual Job</Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleSubJobTypeSelect('Technical Job')}>Technical Job</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-
                         <div className="mt-3">
                             <label htmlFor="jobTitle">Job Title</label>
                             <input
@@ -106,6 +101,32 @@ const CreatingJobModal = ({ show, onClose }) => {
                                 placeholder="Ex: Need Electrician"
                                 value={jobTitle}
                                 onChange={(e) => setJobTitle(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="mt-3">
+                            <label htmlFor="jobDescription">Job Description</label>
+                            <input
+                                type="text"
+                                id="jobDescription"
+                                className="form-control"
+                                placeholder="Ex: Fix a tv (Max 500 characters)"
+                                maxLength="500"
+                                value={jobDescription}
+                                onChange={(e) => setJobDescription(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="mt-3">
+                            <label htmlFor="jobExpectedTime">Expected Duration</label>
+                            <input
+                                type="number"
+                                min="0"
+                                id="jobExpectedTime"
+                                className="form-control"
+                                placeholder="Ex: 2 for 2 hours"
+                                value={jobExpectedTime}
+                                onChange={(e) => setJobExpectedTime(e.target.value)}
                             />
                         </div>
 
@@ -124,15 +145,59 @@ const CreatingJobModal = ({ show, onClose }) => {
                         </div>
 
                         <div className="mt-3">
-                            <label htmlFor="numOfWorkers">Number of Workers: {numOfWorkers}</label>
+                            <label htmlFor="endTime">Expected End Time</label>
                             <input
-                                type="number"
-                                id="numOfWorkers"
+                                type="datetime-local"
+                                id="endTime"
                                 className="form-control"
-                                min="1"
-                                value={numOfWorkers}
-                                onChange={(e) => setNumOfWorkers(e.target.value)}
+                                value={endTime}
+                                onChange={(e) => setEndTime(e.target.value)}
                             />
+                        </div>
+
+                        <div className="mt-3">
+                            <label htmlFor="location">Location</label>
+                            <input
+                                type="text"
+                                id="location"
+                                className="form-control"
+                                placeholder="Enter Location"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="mt-3">
+                            <label htmlFor="additionalRequirements">Additional Requirements</label>
+                            <div className="d-flex gap-2 align-items-start">
+                                <input
+                                    type="text"
+                                    id="additionalRequirements"
+                                    className="form-control"
+                                    placeholder="Ex: Driver’s license"
+                                    maxLength="100"
+                                    value={newRequirement}
+                                    onChange={(e) => setNewRequirement(e.target.value)}
+                                />
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        if (newRequirement.trim() && newRequirement.length <= 100) {
+                                            setAdditionalRequirements([...additionalRequirements, newRequirement.trim()]);
+                                            setNewRequirement('');
+                                        } else {
+                                            alert("Please enter a valid requirement (max 100 characters).");
+                                        }
+                                    }}
+                                >
+                                    Add
+                                </button>
+                            </div>
+                            <ul className="mt-2">
+                                {additionalRequirements.map((requirement, index) => (
+                                    <li key={index}>{requirement}</li>
+                                ))}
+                            </ul>
                         </div>
                     </>
                 )}
