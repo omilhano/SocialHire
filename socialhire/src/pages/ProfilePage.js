@@ -4,22 +4,25 @@ import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
-import '../styles/ProfilePage.css';
+import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
     const { username } = useParams();
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [friendshipStatus, setFriendshipStatus] = useState(null); // "friends", "pending", or null
-    const [currentUserId, setCurrentUserId] = useState(null); // Current logged-in user's ID
+    const [friendshipStatus, setFriendshipStatus] = useState(null);
+    const [currentUserId, setCurrentUserId] = useState(null);
+    const [experienceData, setExperienceData] = useState([]); // State for experience data
+    const [jobPosts, setJobPosts] = useState([]); // State for job posts
+    const [socialPosts, setSocialPosts] = useState([]); // State for social posts
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const auth = getAuth();
                 const loggedInUserId = auth.currentUser?.uid;
-                setCurrentUserId(loggedInUserId); // Store current user's ID
+                setCurrentUserId(loggedInUserId);
 
                 const userQuery = query(
                     collection(db, "users"),
@@ -30,7 +33,10 @@ const ProfilePage = () => {
                 if (!querySnapshot.empty) {
                     const profile = querySnapshot.docs[0].data();
                     setProfileData(profile);
-                    checkFriendshipStatus(loggedInUserId, profile.userId); // Check friendship status
+                    checkFriendshipStatus(loggedInUserId, profile.userId);
+                    fetchExperiences(profile.userId); // Fetch experience data
+                    fetchJobPosts(profile.userId); // Fetch job post data
+                    fetchSocialPosts(profile.userId); // Fetch social post data
                 } else {
                     throw new Error("User not found");
                 }
@@ -42,10 +48,64 @@ const ProfilePage = () => {
             }
         };
 
+        const fetchExperiences = async (profileUserId) => {
+            try {
+                const experienceQuery = query(
+                    collection(db, "experience"),
+                    where("userId", "==", profileUserId)
+                );
+                const experienceSnapshot = await getDocs(experienceQuery);
+
+                const experiences = experienceSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setExperienceData(experiences);
+            } catch (err) {
+                console.error("Error fetching experiences:", err);
+            }
+        };
+
+        const fetchJobPosts = async (profileUserId) => {
+            try {
+                const jobsQuery = query(
+                    collection(db, "jobs"),
+                    where("userId", "==", profileUserId)
+                );
+                const jobsSnapshot = await getDocs(jobsQuery);
+
+                const jobs = jobsSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setJobPosts(jobs);
+            } catch (err) {
+                console.error("Error fetching job posts:", err);
+            }
+        };
+
+        const fetchSocialPosts = async (profileUserId) => {
+            try {
+                const postsQuery = query(
+                    collection(db, "posts"),
+                    where("userId", "==", profileUserId)
+                );
+                const postsSnapshot = await getDocs(postsQuery);
+
+                const posts = postsSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setSocialPosts(posts);
+            } catch (err) {
+                console.error("Error fetching social posts:", err);
+            }
+        };
+
         const checkFriendshipStatus = async (loggedInUserId, profileUserId) => {
             try {
                 if (loggedInUserId === profileUserId) {
-                    return; // No need to check friendship status for yourself
+                    return;
                 }
 
                 const connectionsQuery = query(
@@ -57,7 +117,7 @@ const ProfilePage = () => {
                 const snapshot = await getDocs(connectionsQuery);
                 if (!snapshot.empty) {
                     const connection = snapshot.docs[0].data();
-                    setFriendshipStatus(connection.status); // "friends" or "pending"
+                    setFriendshipStatus(connection.status);
                 }
             } catch (err) {
                 console.error("Error checking friendship status:", err);
@@ -74,7 +134,7 @@ const ProfilePage = () => {
                 user_id: currentUserId,
                 connected_user_id: profileData.userId,
                 status: "pending",
-                created_at: new Date()
+                created_at: new Date(),
             };
 
             await addDoc(connectionsCollectionRef, newConnection);
@@ -96,7 +156,7 @@ const ProfilePage = () => {
             if (!snapshot.empty) {
                 const docId = snapshot.docs[0].id;
                 await deleteDoc(doc(db, "Connections", docId));
-                setFriendshipStatus(null); // Reset friendship status
+                setFriendshipStatus(null);
             }
         } catch (err) {
             console.error("Error removing friend:", err);
@@ -132,16 +192,16 @@ const ProfilePage = () => {
     const isCurrentUserProfile = currentUserId === profileData.userId;
 
     return (
-        <Container className="profile-container d-flex flex-column justify-content-center align-items-center vh-100">
+        <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
             {/* Profile Picture */}
             <div className="profile-image-wrapper">
                 <img
-                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`} 
+                    src={`https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`}
                     alt={`${profileData.firstName} ${profileData.lastName}`}
                     className="profile-image"
                 />
             </div>
-            
+
             {/* User Card */}
             <Card className="profile-card mt-3 shadow-sm">
                 <Card.Body>
@@ -155,9 +215,8 @@ const ProfilePage = () => {
                         {profileData.about}
                     </Card.Text>
                 </Card.Body>
-                {/* Add Friend Button */}
                 {!isCurrentUserProfile && (
-                    <Button 
+                    <Button
                         className="follow-button mt-3"
                         onClick={() => {
                             if (friendshipStatus === "friends") {
@@ -174,6 +233,56 @@ const ProfilePage = () => {
                     </Button>
                 )}
             </Card>
+
+            {/* Experience Section */}
+            <div className="mt-4 w-100">
+                {experienceData.map((experience) => (
+                    <Card key={experience.id} className="mb-3 shadow-sm">
+                        <Card.Body>
+                            <Card.Title>{experience.title}</Card.Title>
+                            <Card.Subtitle className="text-muted">
+                                {experience.company} | {experience.current ? "Current" : "Past"}
+                            </Card.Subtitle>
+                            <Card.Text className="mt-2">{experience.description}</Card.Text>
+                        </Card.Body>
+                    </Card>
+                ))}
+            </div>
+
+            {/* Job Posts Section */}
+            <div className="mt-4 w-100">
+                <h4>Job Posts</h4>
+                {jobPosts.map((job) => (
+                    <Card key={job.id} className="mb-3 shadow-sm">
+                        <Card.Body>
+                            <Card.Title>{job.jobTitle}</Card.Title>
+                            <Card.Subtitle className="text-muted">
+                                {job.location} | {job.jobType}
+                            </Card.Subtitle>
+                            <Card.Text className="mt-2">
+                                Workers Needed: {job.numOfWorkers} | Pay: ${job.payRange.min} - $
+                                {job.payRange.max}
+                            </Card.Text>
+                        </Card.Body>
+                    </Card>
+                ))}
+            </div>
+
+            {/* Social Posts Section */}
+            <div className="mt-4 w-100">
+                <h4>Social Posts</h4>
+                {socialPosts.map((post) => (
+                    <Card key={post.id} className="mb-3 shadow-sm">
+                        <Card.Body>
+                            <Card.Title>{post.title}</Card.Title>
+                            <Card.Text>{post.content}</Card.Text>
+                            <Card.Footer className="text-muted">
+                                {post.likeCount} Likes | {post.commentCount} Comments
+                            </Card.Footer>
+                        </Card.Body>
+                    </Card>
+                ))}
+            </div>
         </Container>
     );
 };
