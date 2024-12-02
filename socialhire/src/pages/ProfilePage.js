@@ -215,7 +215,7 @@ const ProfilePage = () => {
                         {profileData.about}
                     </Card.Text>
                 </Card.Body>
-                {!isCurrentUserProfile && (
+                {currentUserId && profileData && !isCurrentUserProfile && (
                     <Button
                         className="follow-button mt-3"
                         onClick={() => {
@@ -232,7 +232,7 @@ const ProfilePage = () => {
                         {friendshipStatus === null && "Add Friend"}
                     </Button>
                 )}
-            </Card>
+         </Card>
 
             {/* Experience Section */}
             <div className="mt-4 w-100">
