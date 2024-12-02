@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { db } from '../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 
-// TODO finish this
+// TODO finish Filters
 
 const CreatingJobModal = ({ show, onClose }) => {
     const [jobType, setJobType] = useState('Choose Type of Job');
@@ -25,6 +25,7 @@ const CreatingJobModal = ({ show, onClose }) => {
     const [additionalJobRequirements, setAdditionalJobRequirements] = useState([]);
     const [newFavouredSkill, setNewFavouredSkill] = useState('');
     const [favouredSkills, setFavouredSkills] = useState([]);
+    const [contractDuration, setDuration] = useState('');
 
     const { user } = useAuth();
 
@@ -39,6 +40,10 @@ const CreatingJobModal = ({ show, onClose }) => {
             setJobDescription('');
             setJobExpectedTime('');
             setEndTime(''); // Reset endTime state
+            setAdditionalBenefits([]);
+            setAdditionalJobRequirements([]);
+            setFavouredSkills([]);
+            setDuration('');
         }
     }, [show]);
 
@@ -53,32 +58,34 @@ const CreatingJobModal = ({ show, onClose }) => {
             return;
         }
 
+        // Prepare job data
         const jobData = {
             jobType,
             jobTitle,
             createdAt: new Date(),
             userId: user?.uid,
-            additionalRequirements,
-            additionalJobRequirements, // Include additional requirements
-            additionalBenefits,
-            favouredSkills, 
+            location: location,
+            jobDescription: jobDescription || 'N/A',
         };
 
         if (jobType === 'Hustler') {
-            jobData.pricePerHour = pricePerHour;
-            jobData.jobDescription = jobDescription;
-            jobData.jobExpectedTime = `${jobExpectedTime} hours`; // Append "hours"
-            jobData.location = location
-            jobData.endTime = endTime;
+            jobData.pricePerHour = pricePerHour || 'N/A';
+            jobData.jobDescription = jobDescription || 'N/A';
+            jobData.jobExpectedTime = jobExpectedTime ? `${jobExpectedTime} hours` : 'N/A';
+            jobData.location = location || 'N/A';
+            jobData.endTime = endTime || 'N/A';
         } else if (jobType === 'Formal Job') {
-            jobData.location = location;
-            jobData.payRange = payRange;
-            jobData.jobDescription = jobDescription;
-            jobData.additionalBenefits = newBenefits;
-            jobData.additionalJobRequirements = newjobRequirement;
-            jobData.favouredSkills = favouredSkills
+            jobData.location = location || 'N/A';
+            jobData.payRange = payRange.min && payRange.max ? payRange : 'N/A';
+            jobData.jobDescription = jobDescription || 'N/A';
+            jobData.payRange = payRange.min && payRange.max ? payRange : 'N/A';
+            jobData.additionalBenefits= additionalBenefits.length > 0 ? additionalBenefits : 'N/A';
+            jobData.additionalJobRequirements= additionalJobRequirements.length > 0 ? additionalJobRequirements : 'N/A';
+            jobData.favouredSkills= favouredSkills.length > 0 ? favouredSkills : 'N/A';
+            jobData.contractDuration= contractDuration;
         }
 
+        // Save job data to Firestore
         try {
             const jobRef = await addDoc(collection(db, 'jobs'), jobData);
             console.log("Job created with ID: ", jobRef.id);
@@ -244,25 +251,25 @@ const CreatingJobModal = ({ show, onClose }) => {
 
                         <div className="mt-3">
                             <label htmlFor="jobDescription">Job Description</label>
-                            <input
-                                type="text"
+                            <textarea
                                 id="jobDescription"
                                 className="form-control"
-                                placeholder="Ex: Fix a tv (Max 500 characters)"
+                                placeholder="Ex: Responsible for ensuring product quality."
                                 maxLength="500"
+                                rows={3}
                                 value={jobDescription}
                                 required
                                 onChange={(e) => setJobDescription(e.target.value)}
-                            />
+                            ></textarea>
                         </div>
 
                         <div className="mt-3">
-                            <label htmlFor="location">Location</label>
+                            <label htmlFor="location">General Location</label>
                             <input
                                 type="text"
                                 id="location"
                                 className="form-control"
-                                placeholder="Enter Location"
+                                placeholder="Enter district(s) or region"
                                 value={location}
                                 required
                                 onChange={(e) => setLocation(e.target.value)}
@@ -289,15 +296,27 @@ const CreatingJobModal = ({ show, onClose }) => {
                             </div>
                         </div>
 
-                        {/* Array of the job's benefits */}
                         <div className="mt-3">
-                            <label htmlFor="additionalBenefits">Additional Benefits</label>
+                            <label htmlFor="contractDuration">Contract Duration</label>
+                            <input
+                                type="text"
+                                id="contractDuration"
+                                className="form-control"
+                                placeholder="E.g., 6 months"
+                                value={contractDuration}
+                                required
+                                onChange={(e) => setDuration(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="mt-3">
+                            <label htmlFor="additionalBenefits">Benefits</label>
                             <div className="d-flex gap-2 align-items-start">
                                 <input
                                     type="text"
                                     id="additionalBenefits"
                                     className="form-control"
-                                    placeholder="Ex: Health insurance"
+                                    placeholder="Ex: Health insurance, Paid vacation"
                                     maxLength="250"
                                     value={newBenefits}
                                     onChange={(e) => setNewBenefit(e.target.value)}
@@ -309,7 +328,7 @@ const CreatingJobModal = ({ show, onClose }) => {
                                             setAdditionalBenefits([...additionalBenefits, newBenefits.trim()]);
                                             setNewBenefit('');
                                         } else {
-                                            alert("Please enter a valid requirement (max 100 characters).");
+                                            alert("Please enter a valid benefit (max 250 characters).");
                                         }
                                     }}
                                 >
@@ -317,33 +336,32 @@ const CreatingJobModal = ({ show, onClose }) => {
                                 </button>
                             </div>
                             <ul className="mt-2">
-                                {additionalBenefits.map((benefits, index) => (
-                                    <li key={index}>{benefits}</li>
+                                {additionalBenefits.map((benefit, index) => (
+                                    <li key={index}>{benefit}</li>
                                 ))}
                             </ul>
                         </div>
 
-                        {/* Array of the job's requirements */}
                         <div className="mt-3">
-                            <label htmlFor="jobRequirements">Requirements: </label>
+                            <label htmlFor="jobRequirements">Job Requirements</label>
                             <div className="d-flex gap-2 align-items-start">
                                 <input
                                     type="text"
                                     id="jobRequirements"
                                     className="form-control"
-                                    placeholder="Ex: Proficiency in Python "
-                                    maxLength="250"
+                                    placeholder="Ex: 5+ years in marketing"
+                                    maxLength="500"
                                     value={newjobRequirement}
                                     onChange={(e) => setNewJobRequirement(e.target.value)}
                                 />
                                 <button
                                     className="btn btn-primary"
                                     onClick={() => {
-                                        if (newjobRequirement.trim() && newjobRequirement.length <= 250) {
+                                        if (newjobRequirement.trim() && newjobRequirement.length <= 500) {
                                             setAdditionalJobRequirements([...additionalJobRequirements, newjobRequirement.trim()]);
                                             setNewJobRequirement('');
                                         } else {
-                                            alert("Please enter a valid requirement (max 100 characters).");
+                                            alert("Please enter a valid requirement (max 500 characters).");
                                         }
                                     }}
                                 >
@@ -351,21 +369,20 @@ const CreatingJobModal = ({ show, onClose }) => {
                                 </button>
                             </div>
                             <ul className="mt-2">
-                                {additionalJobRequirements.map((jobRequirements, index) => (
-                                    <li key={index}>{jobRequirements}</li>
+                                {additionalJobRequirements.map((req, index) => (
+                                    <li key={index}>{req}</li>
                                 ))}
                             </ul>
                         </div>
 
-                        {/* Array of the job's favored skills */}
                         <div className="mt-3">
-                            <label htmlFor="favouredSkills">Favored Skills: </label>
+                            <label htmlFor="favouredSkills">Favored Skills</label>
                             <div className="d-flex gap-2 align-items-start">
                                 <input
                                     type="text"
                                     id="favouredSkills"
                                     className="form-control"
-                                    placeholder="Ex: Communication, Leadership"
+                                    placeholder="Ex: Knowledge of design software"
                                     maxLength="250"
                                     value={newFavouredSkill}
                                     onChange={(e) => setNewFavouredSkill(e.target.value)}
@@ -390,8 +407,6 @@ const CreatingJobModal = ({ show, onClose }) => {
                                 ))}
                             </ul>
                         </div>
-
-
                     </>
                 )}
             </Modal.Body>
@@ -405,6 +420,6 @@ const CreatingJobModal = ({ show, onClose }) => {
             </Modal.Footer>
         </Modal>
     );
-};
+}
 
 export default CreatingJobModal;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"; // Import necessary React ho
 import { useParams } from "react-router-dom"; // Import to access URL parameters
 import { db } from "../firebaseConfig"; // Import Firestore configuration
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore"; // Firestore functions to interact with data
-import { getAuth } from "firebase/auth"; // Firebase authentication
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Firebase authentication
 import { Container, Spinner, Alert, Card, Button, Modal } from "react-bootstrap"; // UI components from react-bootstrap
 import "../styles/ProfilePage.css"; // Import custom styling
 
@@ -16,19 +16,22 @@ const ProfilePage = () => {
     const [error, setError] = useState(null);
     const [friendshipStatus, setFriendshipStatus] = useState(null); // Friendship status (friends, pending, etc.)
     const [blockStatus, setBlockStatus] = useState(null); // Block status (blocked or not)
-    const [currentUserId, setCurrentUserId] = useState(null); // Store current logged-in user ID
     const [experienceData, setExperienceData] = useState([]); // User's experience data
     const [jobPosts, setJobPosts] = useState([]); // User's job posts
     const [socialPosts, setSocialPosts] = useState([]); // User's social posts
     const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false); // Modal state for removing friends
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        console.log("Auth state changed. Current user:", user);
+    });
+    const loggedInUserId = auth.currentUser?.uid; // Get the logged-in user's ID
 
     useEffect(() => {
         // Function to fetch profile data from Firestore based on the 'username'
         const fetchProfile = async () => {
+
             try {
-                const auth = getAuth();
-                const loggedInUserId = auth.currentUser?.uid; // Get the logged-in user's ID
-                setCurrentUserId(loggedInUserId); // Set the current user ID
+
 
                 // Query to get the user document matching the provided username
                 const userQuery = query(collection(db, "users"), where("username", "==", username));
@@ -118,14 +121,14 @@ const ProfilePage = () => {
         };
 
         fetchProfile(); // Call the function to fetch profile data
-    }, [username]); // Re-run effect when the username parameter changes
+    }, [username, loggedInUserId]);  // Re-run effect when the username parameter changes
 
     // Handler function to send a friend request
     const handleAddFriend = async () => {
         try {
             const connectionsCollectionRef = collection(db, "Connections");
             const newConnection = {
-                user_id: currentUserId,
+                user_id: loggedInUserId,
                 connected_user_id: profileData.userId,
                 status: "pending", // Friend request status is pending
                 created_at: new Date(),
@@ -142,8 +145,8 @@ const ProfilePage = () => {
         try {
             const connectionsQuery = query(
                 collection(db, "Connections"),
-                where("user_id", "in", [currentUserId, profileData.userId]),
-                where("connected_user_id", "in", [currentUserId, profileData.userId])
+                where("user_id", "in", [loggedInUserId, profileData.userId]),
+                where("connected_user_id", "in", [loggedInUserId, profileData.userId])
             );
             const snapshot = await getDocs(connectionsQuery);
             if (!snapshot.empty) {
@@ -162,8 +165,8 @@ const ProfilePage = () => {
             const connectionsCollectionRef = collection(db, "Connections");
             const existingConnectionQuery = query(
                 connectionsCollectionRef,
-                where("user_id", "in", [currentUserId, profileData.userId]),
-                where("connected_user_id", "in", [currentUserId, profileData.userId])
+                where("user_id", "in", [loggedInUserId, profileData.userId]),
+                where("connected_user_id", "in", [loggedInUserId, profileData.userId])
             );
             const snapshot = await getDocs(existingConnectionQuery);
 
@@ -173,7 +176,7 @@ const ProfilePage = () => {
             }
 
             await addDoc(connectionsCollectionRef, {
-                user_id: currentUserId,
+                user_id: loggedInUserId,
                 connected_user_id: profileData.userId,
                 status: "blocked", // Set status as blocked
                 created_at: new Date(),
@@ -189,7 +192,7 @@ const ProfilePage = () => {
         try {
             const connectionsQuery = query(
                 collection(db, "Connections"),
-                where("user_id", "==", currentUserId),
+                where("user_id", "==", loggedInUserId),
                 where("connected_user_id", "==", profileData.userId),
                 where("status", "==", "blocked")
             );
@@ -243,7 +246,7 @@ const ProfilePage = () => {
     }
 
     // Check if the current user is viewing their own profile
-    const isCurrentUserProfile = currentUserId === profileData.userId;
+    const isCurrentUserProfile = loggedInUserId === profileData.userId;
 
     return (
         <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
