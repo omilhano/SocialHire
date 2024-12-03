@@ -1,18 +1,14 @@
 import { React, useState } from 'react';
 import { Heart, MessageCircle, Share2, Briefcase } from 'lucide-react';
 import ApplyingJobModal from './ApplyJobModal';
-import RecommendModal from './RecommendationModal';
+import RecommendModal from './RecommendModal'; // Import RecommendModal component
 
-// Individual JobCard Component
 const JobCard = ({ job }) => {
     const [showApplyingModal, setApplyingJobModal] = useState(false);
-    // const [showRecommendModal, setRecommendModal] = useState(false);
-    console.log(job.endTime); // For debugging the endTime field
+    const [showRecommendModal, setRecommendModal] = useState(false); // State for Recommend Modal
 
-    // Format the date to a readable string
     const formatDate = (timestamp) => {
-        if (!timestamp) return 'N/A'; // Return "N/A" if no date
-
+        if (!timestamp) return 'N/A';
         const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
         return date.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -23,8 +19,6 @@ const JobCard = ({ job }) => {
 
     const formatDateTimeLocal = (inputDateTime) => {
         const date = new Date(inputDateTime);
-
-        // Format the date to a readable format (e.g., 'December 1, 2024, 10:00 AM')
         const options = {
             weekday: 'long',
             year: 'numeric',
@@ -33,22 +27,19 @@ const JobCard = ({ job }) => {
             hour: 'numeric',
             minute: 'numeric',
             second: 'numeric',
-            hour12: true
+            hour12: true,
         };
         return date.toLocaleString('en-US', options);
-    }
+    };
 
-    // Format pay range for formal jobs
     const formatPayRange = (min, max) => {
         return min && max ? `€${min} - €${max}` : "Pay range not available";
     };
 
-    // Format hourly rate for hustler jobs
     const formatHourlyRate = (pricePerHour) => {
         return pricePerHour ? `€${pricePerHour}/hour` : "Hourly rate not available";
     };
 
-    // Format end time and expected time
     const formatTimeDetails = (endTime, jobExpectedTime) => {
         return (
             <div className="text-sm text-gray-600">
@@ -58,7 +49,6 @@ const JobCard = ({ job }) => {
         );
     };
 
-    // Truncate the description text to a maximum length with ellipsis
     const truncateText = (text, maxLength = 100) => {
         if (!text) return '';
         return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
@@ -66,7 +56,6 @@ const JobCard = ({ job }) => {
 
     return (
         <div className="job-card border border-gray-300 rounded-lg shadow-md p-4 flex flex-col">
-            {/* Job Image or Placeholder */}
             <div className="job-image-container mb-4 flex justify-center">
                 {job.imageUrl ? (
                     <img
@@ -81,16 +70,13 @@ const JobCard = ({ job }) => {
                 )}
             </div>
 
-            {/* Job Content */}
             <div className="job-content flex flex-col">
-                {/* Job Header: Title, Location, and Date */}
                 <div className="job-header flex justify-between items-start mb-2">
                     <h3 className="text-lg font-semibold text-gray-800">{job.jobTitle || 'Untitled Job'}</h3>
                     <span id="location-post" className="text-sm text-gray-500">{job.location}</span>
                     <span id="date-post" className="text-sm text-gray-500">{formatDate(job.createdAt)}</span>
                 </div>
 
-                {/* Job Type Specific Content */}
                 <div className="job-pay text-sm text-gray-600 mb-2">
                     {job.jobType === "Formal Job" && (
                         <>
@@ -103,29 +89,21 @@ const JobCard = ({ job }) => {
 
                     {job.jobType === "Hustler" && (
                         <>
-                            {/* Display Hustler Job Information */}
                             <p className="job-description text-sm text-gray-700 mb-4">
                                 {truncateText(job.jobDescription)}
                             </p>
-
-                            {/* Display Pay Info */}
                             <p className="hourly-rate">{formatHourlyRate(job.pricePerHour)}</p>
-
-                            {/* Display Additional Requirements */}
                             <p className="additional-requirements text-sm text-gray-500">
                                 <strong>Additional Requirements: </strong>
                                 {job.additionalRequirements && job.additionalRequirements.length > 0
-                                    ? job.additionalRequirements.join(", ")  // Join array elements with commas
+                                    ? job.additionalRequirements.join(", ")
                                     : "No additional requirements"}
                             </p>
-
-                            {/* Display Time Info (End Date and Expected Time) */}
                             {formatTimeDetails(job.endTime, job.jobExpectedTime)}
                         </>
                     )}
                 </div>
 
-                {/* Footer with Action Buttons */}
                 <div className="job-footer flex justify-between items-center">
                     <div className="job-actions flex space-x-4">
                         <button className="action-button flex items-center text-gray-500 hover:text-gray-700">
@@ -139,26 +117,24 @@ const JobCard = ({ job }) => {
                         <button className="action-button flex items-center text-gray-500 hover:text-gray-700">
                             <Share2 size={16} />
                         </button>
-
-                        {/* Button to Apply for a job */}
-                        <button className='applying-job' onClick={setApplyingJobModal}>Apply</button>
-                        {/* Recommend someone for  a job */}
-                        {/* <button className='recommend-job' onClick={setRecommendModal}>Apply</button> */}
+                        <button className="applying-job" onClick={() => setApplyingJobModal(true)}>Apply</button>
+                        <button className="recommend-job" onClick={() => setRecommendModal(true)}>Recommend</button>
                     </div>
                 </div>
             </div>
             <ApplyingJobModal
                 show={showApplyingModal}
                 onClose={() => setApplyingJobModal(false)}
-                jobId={job.id} // Pass job ID to the modal
+                jobId={job.id}
             />
-            {/* <RecommendModal
+            <RecommendModal
                 show={showRecommendModal}
                 onClose={() => setRecommendModal(false)}
-            /> */}
+                jobId={job.id}
+            />
+
         </div>
     );
-
 };
 
 export default JobCard;
