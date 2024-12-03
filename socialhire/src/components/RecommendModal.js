@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Spinner, Button } from 'react-bootstrap';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseConfig'; // Import Firebase configuration
-import { useAuth } from '../hooks/useAuth'; // Import the authentication hook
+import { db } from '../firebaseConfig';
+import { useAuth } from '../hooks/useAuth';
 
 const RecommendModal = ({ show, onClose, jobId }) => {
-    const { user } = useAuth(); // Get the authenticated user
+    const { user } = useAuth();
     const [friends, setFriends] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [selectedFriend, setSelectedFriend] = useState(null);
 
     useEffect(() => {
@@ -20,13 +20,13 @@ const RecommendModal = ({ show, onClose, jobId }) => {
 
                 const connectionsQuery1 = query(
                     connectionsCollectionRef,
-                    where('user_id', '==', user.uid), // Use user.uid
+                    where('user_id', '==', user.uid),
                     where('status', '==', 'friends')
                 );
 
                 const connectionsQuery2 = query(
                     connectionsCollectionRef,
-                    where('connected_user_id', '==', user.uid), // Use user.uid
+                    where('connected_user_id', '==', user.uid),
                     where('status', '==', 'friends')
                 );
 
@@ -67,14 +67,6 @@ const RecommendModal = ({ show, onClose, jobId }) => {
         fetchFriends();
     }, [show, user]);
 
-    const handleRecommend = () => {
-        if (selectedFriend) {
-            // Handle the recommendation logic here
-            console.log(`Recommended job ${jobId} to ${selectedFriend.name}`);
-            onClose(); // Close the modal after recommendation
-        }
-    };
-
     return (
         <Modal show={show} onHide={onClose} centered>
             <Modal.Header closeButton>
@@ -87,22 +79,29 @@ const RecommendModal = ({ show, onClose, jobId }) => {
                             <span className="visually-hidden">Loading...</span>
                         </Spinner>
                     </div>
-                ) : (
+                ) : friends.length > 0 ? (
                     <div className="friends-list">
-                        {friends.length > 0 ? (
-                            friends.map(friend => (
-                                <div
-                                    key={friend.id}
-                                    className={`friend-item ${selectedFriend?.id === friend.id ? 'selected' : ''}`}
-                                    onClick={() => setSelectedFriend(friend)}
-                                >
-                                    <span>{friend.name}</span>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No friends available to recommend.</p>
-                        )}
+                        {friends.map(friend => (
+                            <div
+                                key={friend.id}
+                                className={`friend-item ${selectedFriend?.id === friend.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedFriend(friend)}
+                                style={{
+                                    cursor: 'pointer', // Ensure the item is clickable
+                                    padding: '10px',
+                                    margin: '5px 0',
+                                    border: selectedFriend?.id === friend.id ? '2px solid #007bff' : '1px solid #ccc',
+                                    borderRadius: '5px',
+                                    backgroundColor: selectedFriend?.id === friend.id ? '#e9f5ff' : '#fff',
+                                    transition: 'all 0.2s',
+                                }}
+                            >
+                                <span>{friend.name}</span>
+                            </div>
+                        ))}
                     </div>
+                ) : (
+                    <p>No friends available to recommend.</p>
                 )}
             </Modal.Body>
             <Modal.Footer>
@@ -111,7 +110,12 @@ const RecommendModal = ({ show, onClose, jobId }) => {
                 </Button>
                 <Button
                     variant="primary"
-                    onClick={handleRecommend}
+                    onClick={() => {
+                        if (selectedFriend) {
+                            console.log(`Recommended job ${jobId} to ${selectedFriend.name}`);
+                            onClose();
+                        }
+                    }}
                     disabled={!selectedFriend}
                 >
                     Recommend
