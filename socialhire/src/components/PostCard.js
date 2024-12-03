@@ -1,19 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PostModal from './PostModal.js';
+import TipoPostCard from './TipoPostCard.js';
+
 import { Heart, MessageCircle, Share2, Image as ImageIcon } from 'lucide-react';
 import '../styles/PostCard.css';
+import { useFirebaseUpload, useFirebaseDocument } from '../hooks/useFirebase';
+import { db, auth } from '../firebaseConfig';
+import { doc, collection, query, where, getDocs, addDoc, Timestamp, orderBy, getDoc } from 'firebase/firestore';
 
 // Individual PostCard Component
 const PostCard = ({ post }) => {
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
-  const [likes, setLikes] = useState(post.likeCount || 0); // Manage likes locally
+  const { updateDocument, getDocument, deleteDocument } = useFirebaseDocument('posts');
+  const [likes, setLikes] = useState(post.likeCount || 0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleLike = () => {
-    // Update the like count locally
-    setLikes((prev) => prev + 1);
+  useEffect(() => {
+    console.log(`PostCard mounted for post ID: ${post.id}`);
+    checkIfLiked();
+    return () => {
+      console.log(`PostCard unmounted for post ID: ${post.id}`);
+    };
+  }, [post.id]);
 
-    // You can call an API or update Firestore here to persist the like
-    console.log(`Post ${post.id} liked!`);
+  const checkIfLiked = async () => {
+    console.log('Checking if the post is liked...');
+    if (!auth.currentUser) {
+      console.log('User is not logged in.');
+      return;
+    }
+
+    try {
+      const likesRef = collection(db, 'postLikes');
+      const q = query(
+        likesRef,
+        where('userId', '==', auth.currentUser.uid),
+        where('postId', '==', post.id)
+      );
+      const snapshot = await getDocs(q);
+      setIsLiked(!snapshot.empty);
+    } catch (err) {
+      console.error('Error checking like status:', err);
+    }
+  };
+
+  const handleLike = async () => {
+    console.log('Like button clicked for post ID:', post.id);
+    if (!auth.currentUser) {
+      console.warn('User is not logged in. Cannot like the post.');
+      return;
+    }
+
+    try {
+      const likesRef = collection(db, 'postLikes');
+      if (!isLiked) {
+        console.log('Adding like to the database...');
+        await addDoc(likesRef, {
+          userId: auth.currentUser.uid,
+          postId: post.id
+        });
+        console.log('Updating like count in the posts collection...');
+        await updateDocument("posts", post.id, {
+          likeCount: (post.likeCount || 0) + 1
+        });
+        setIsLiked(true);
+        setLikes(prev => prev + 1);
+      } else {
+        console.log('Already liked. Skipping like update.');
+      }
+    } catch (err) {
+      console.error('Failed to update like status:', err);
+      setError('Failed to update like status');
+    }
   };
 
   const formatDate = (timestamp) => {
@@ -33,10 +91,7 @@ const PostCard = ({ post }) => {
 
   return (
     <>
-      <div
-        className="post-card"
-        onClick={() => setShowModal(true)} // Open modal on click
-      >
+      <div className="post-card">
         <div className="post-image-container">
           {post.imageUrl ? (
             <img src={post.imageUrl} alt="Post" className="post-image" />
@@ -58,9 +113,9 @@ const PostCard = ({ post }) => {
           <div className="post-footer">
             <div className="post-actions">
               <button
-                className="action-button"
+                className={`like-button ${isLiked ? "liked" : ""}`}
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent opening modal on like click
+                  e.stopPropagation();
                   handleLike();
                 }}
               >
@@ -79,20 +134,20 @@ const PostCard = ({ post }) => {
         </div>
       </div>
 
-      {showModal && (
-        <PostModal
-          postId={post.id}
-          collectionName="posts"
-          onClose={() => setShowModal(false)}
-        />
-      )}
+
     </>
   );
 };
 
-// PostList Component with horizontal scroll
+// PostList Component
 const PostList = ({ posts, loading }) => {
-  console.log(posts)
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handlePostClick = (post) => {
+    console.log('Post clicked with ID:', post.id);
+    setSelectedPost(post.id);
+  };
+
   if (loading) {
     return (
       <div className="w-full h-64 flex items-center justify-center">
@@ -102,6 +157,7 @@ const PostList = ({ posts, loading }) => {
   }
 
   if (!posts?.length) {
+    console.log('No posts available.');
     return (
       <div className="w-full h-64 flex flex-col items-center justify-center text-gray-500">
         <MessageCircle size={32} />
@@ -110,15 +166,32 @@ const PostList = ({ posts, loading }) => {
     );
   }
 
+
   return (
     <div className="posts-scroll">
       <div className="flex space-x-4 px-4">
-
-        {
-        posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className="post-card"
+            onClick={(e) => {
+ //             if (!e.target.closest('.post-card-actions')) {
+                handlePostClick(post);
+ //             }
+            }}
+          >
+            <PostCard key={post.id} post={post} />
+          </div>
         ))}
       </div>
+
+      {selectedPost && (
+        <PostModal
+          postId={selectedPost}
+          collectionName="posts"
+          onClose={() => setSelectedPost(null)}
+        />
+      )}
     </div>
   );
 };

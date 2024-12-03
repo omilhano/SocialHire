@@ -48,7 +48,7 @@ export const useFirebaseDocument = (collectionName) => {
             return true;
         } catch (err) {
             setError('Failed to update document');
-            console.error('Update error:', err);
+            console.error('Update error:', err, "-");
             return false;
         } finally {
             setLoading(false);

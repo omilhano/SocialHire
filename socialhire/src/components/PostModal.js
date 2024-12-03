@@ -6,24 +6,22 @@ import '../styles/PostModal.css';
 import { useFirebaseUpload, useFirebaseDocument } from '../hooks/useFirebase';
 import DefaultProfilePic from '../images/placeholderPic.jpg';
 
-
 const PostModal = ({ postId, collectionName, onClose }) => {
     const { updateDocument, getDocument, deleteDocument } = useFirebaseDocument('posts');
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
-    const [visibleComments, setVisibleComments] = useState(3);
     const [isLiked, setIsLiked] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [userMap, setUserMap] = useState({}); // State to store userId to firstName mapping.
+    const [userMap, setUserMap] = useState({});
+
     useEffect(() => {
         fetchPostData();
         checkIfLiked();
         fetchComments();
     }, [postId]);
 
-    // Function to fetch a user's firstName by their userId
     const fetchUserFirstNameById = async (userId) => {
         try {
             const userData = await getDocument('users', userId);
@@ -55,26 +53,33 @@ const PostModal = ({ postId, collectionName, onClose }) => {
         }
     }, [comments, getDocument]);
 
-
     const fetchPostData = async () => {
-        const postData = await getDocument(collectionName, postId);
-        setPost(postData);
-        setLoading(false);
+        try {
+            console.log("Data in fetch Post Data in Post Modal: colection", collectionName,"postId", postId,"--")
+            const postData = await getDocument(collectionName, postId);
+            setPost(postData);
+        } catch (error) {
+            console.error('Error fetching post data:', error);
+        } finally {
+            setLoading(false);
+        }
     };
-
-
 
     const checkIfLiked = async () => {
         if (!auth.currentUser) return;
 
-        const likesRef = collection(db, 'postLikes');
-        const q = query(
-            likesRef,
-            where('userId', '==', auth.currentUser.uid),
-            where('postId', '==', postId)
-        );
-        const snapshot = await getDocs(q);
-        setIsLiked(!snapshot.empty);
+        try {
+            const likesRef = collection(db, 'postLikes');
+            const q = query(
+                likesRef,
+                where('userId', '==', auth.currentUser.uid),
+                where('postId', '==', postId)
+            );
+            const snapshot = await getDocs(q);
+            setIsLiked(!snapshot.empty);
+        } catch (error) {
+            console.error('Error checking like status:', error);
+        }
     };
 
     const handleLike = async () => {
@@ -95,18 +100,23 @@ const PostModal = ({ postId, collectionName, onClose }) => {
             }
         } catch (err) {
             setError('Failed to update like status');
+            console.error('Error liking the post:', err);
         }
     };
 
     const fetchComments = async () => {
-        const commentsRef = collection(db, 'comments');
-        const q = query(commentsRef, where('postId', '==', postId));
-        const snapshot = await getDocs(q);
-        const commentsData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        setComments(commentsData.sort((a, b) => b.created_at - a.created_at));
+        try {
+            const commentsRef = collection(db, 'comments');
+            const q = query(commentsRef, where('postId', '==', postId));
+            const snapshot = await getDocs(q);
+            const commentsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setComments(commentsData.sort((a, b) => b.created_at - a.created_at));
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
     };
 
     const handleAddComment = async (e) => {
@@ -114,10 +124,6 @@ const PostModal = ({ postId, collectionName, onClose }) => {
         if (!newComment.trim() || !auth.currentUser) return;
 
         try {
-            const userData = await getDocument('users', auth.currentUser.uid);
-            if (!userData) throw new Error('User not found');
-
-
             const commentRef = collection(db, 'comments');
             const newCommentData = {
                 postId,
@@ -127,7 +133,6 @@ const PostModal = ({ postId, collectionName, onClose }) => {
             };
 
             await addDoc(commentRef, newCommentData);
-
             await updateDocument(collectionName, postId, {
                 commentCount: (post.commentCount || 0) + 1,
             });
@@ -141,52 +146,54 @@ const PostModal = ({ postId, collectionName, onClose }) => {
             fetchComments();
         } catch (err) {
             setError('Failed to add comment');
+            console.error('Error adding comment:', err);
         }
     };
 
     const handleDeleteComment = async (commentId) => {
         if (window.confirm('Are you sure you want to delete this comment?')) {
             try {
-                // Delete the comment document
                 const result = await deleteDocument('comments', commentId);
-
                 if (!result.success) {
                     setError('Failed to delete comment');
                     return;
                 }
 
-                // Update comment count in the post
                 const postRef = doc(db, 'posts', postId);
                 const postDoc = await getDoc(postRef);
 
                 if (postDoc.exists()) {
                     const currentCount = postDoc.data().commentCount || 0;
                     await updateDocument('posts', postId, {
-                        commentCount: Math.max(currentCount - 1, 0), // Ensure count doesn't go below 0
+                        commentCount: Math.max(currentCount - 1, 0),
                     });
 
-                    // Update local state
                     setPost((prev) => ({
                         ...prev,
                         commentCount: Math.max((prev.commentCount || 0) - 1, 0),
                     }));
                 }
 
-                // Remove the deleted comment from the local state
                 setComments((prev) => prev.filter((comment) => comment.id !== commentId));
             } catch (err) {
                 setError('Failed to delete comment');
+                console.error('Error deleting comment:', err);
             }
         }
     };
 
     const handleDelete = async () => {
         if (window.confirm('Are you sure you want to delete this post?')) {
-            const result = await deleteDocument(collectionName, postId);
-            if (result.success) {
-                onClose();
-            } else {
+            try {
+                const result = await deleteDocument(collectionName, postId);
+                if (result.success) {
+                    onClose();
+                } else {
+                    setError('Failed to delete post');
+                }
+            } catch (error) {
                 setError('Failed to delete post');
+                console.error('Error deleting post:', error);
             }
         }
     };
