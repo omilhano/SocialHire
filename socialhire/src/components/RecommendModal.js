@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Spinner, Button } from 'react-bootstrap';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, setDoc, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useAuth } from '../hooks/useAuth';
 
-const RecommendModal = ({ show, onClose, jobId }) => {
+const RecommendModal = ({ show, onClose, jobId, jobTitle }) => {
     const { user } = useAuth();
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedFriend, setSelectedFriend] = useState(null);
+    const [sending, setSending] = useState(false);
 
+    // Fetch friends of the user
     useEffect(() => {
-        if (!show || !user) return;
-
         const fetchFriends = async () => {
             setLoading(true);
             try {
@@ -41,15 +41,16 @@ const RecommendModal = ({ show, onClose, jobId }) => {
                 ]);
 
                 const friendsList = await Promise.all(
-                    Array.from(connectedUserIds).map(async userId => {
-                        const userDocRef = collection(db, 'users');
-                        const userDocSnapshot = await getDocs(query(userDocRef, where('userId', '==', userId)));
+                    Array.from(connectedUserIds).map(async friendId => {
+                        const userDocSnapshot = await getDocs(
+                            query(collection(db, 'users'), where('userId', '==', friendId))
+                        );
 
                         if (!userDocSnapshot.empty) {
-                            const userData = userDocSnapshot.docs[0].data();
+                            const friendData = userDocSnapshot.docs[0].data();
                             return {
-                                id: userId,
-                                name: `${userData.firstName} ${userData.lastName}`,
+                                id: friendId,
+                                name: `${friendData.firstName} ${friendData.lastName}`,
                             };
                         }
                         return null;
@@ -65,60 +66,113 @@ const RecommendModal = ({ show, onClose, jobId }) => {
         };
 
         fetchFriends();
-    }, [show, user]);
+    }, [user]);
+
+    // Handle recommend action
+    const handleRecommend = async () => {
+        if (!selectedFriend) return;
+
+        setSending(true);
+
+        try {
+            const friendId = selectedFriend.id;
+
+            // Check if a chat already exists between the user and the friend
+            const chatsCollection = collection(db, 'chats');
+            const chatQuery = query(
+                chatsCollection,
+                where('users', 'array-contains', user.uid)
+            );
+
+            const chatSnapshot = await getDocs(chatQuery);
+
+            let chatId = null;
+
+            // Find the specific chat for this user and friend
+            chatSnapshot.forEach(doc => {
+                const chatData = doc.data();
+                if (chatData.users.includes(friendId)) {
+                    chatId = doc.id;
+                }
+            });
+
+            // If no chat exists, create a new chat
+            if (!chatId) {
+                const newChatRef = await addDoc(chatsCollection, {
+                    users: [user.uid, friendId],
+                    lastMessage: '',
+                    lastMessageTimestamp: Timestamp.now(),
+                });
+                chatId = newChatRef.id;
+            }
+
+            // Add the recommendation as a new message in the chat's messages subcollection
+            const messagesCollection = collection(db, 'chats', chatId, 'messages');
+            await addDoc(messagesCollection, {
+                senderId: user.uid,
+                text: `I recommend you check out this job: "${jobTitle}".`,
+                timestamp: Timestamp.now(),
+            });
+
+            // Update the last message and timestamp in the parent chat document
+            const chatDocRef = doc(db, 'chats', chatId);
+            await setDoc(chatDocRef, {
+                lastMessage: `I recommend you check out this job: "${jobTitle}".`,
+                lastMessageTimestamp: Timestamp.now(),
+            }, { merge: true });
+
+            alert('Recommendation sent successfully!');
+            onClose();
+        } catch (error) {
+            console.error('Error sending recommendation:', error);
+            alert('Failed to send recommendation.');
+        } finally {
+            setSending(false);
+        }
+    };
 
     return (
-        <Modal show={show} onHide={onClose} centered>
+        <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Recommend Job</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {loading ? (
-                    <div className="loading-container">
-                        <Spinner animation="border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    </div>
-                ) : friends.length > 0 ? (
-                    <div className="friends-list">
-                        {friends.map(friend => (
-                            <div
-                                key={friend.id}
-                                className={`friend-item ${selectedFriend?.id === friend.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedFriend(friend)}
-                                style={{
-                                    cursor: 'pointer', // Ensure the item is clickable
-                                    padding: '10px',
-                                    margin: '5px 0',
-                                    border: selectedFriend?.id === friend.id ? '2px solid #007bff' : '1px solid #ccc',
-                                    borderRadius: '5px',
-                                    backgroundColor: selectedFriend?.id === friend.id ? '#e9f5ff' : '#fff',
-                                    transition: 'all 0.2s',
-                                }}
-                            >
-                                <span>{friend.name}</span>
-                            </div>
-                        ))}
-                    </div>
+                    <Spinner animation="border" />
                 ) : (
-                    <p>No friends available to recommend.</p>
+                    <div>
+                        {friends.length > 0 ? (
+                            friends.map(friend => (
+                                <div
+                                    key={friend.id}
+                                    className={`friend-item ${selectedFriend?.id === friend.id ? 'selected' : ''}`}
+                                    onClick={() => setSelectedFriend(friend)}
+                                    style={{
+                                        padding: '10px',
+                                        cursor: 'pointer',
+                                        background: selectedFriend?.id === friend.id ? '#e0e0e0' : 'transparent',
+                                        borderRadius: '5px',
+                                    }}
+                                >
+                                    {friend.name}
+                                </div>
+                            ))
+                        ) : (
+                            <p>No friends found.</p>
+                        )}
+                    </div>
                 )}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onClose}>
-                    Cancel
+                    Close
                 </Button>
                 <Button
                     variant="primary"
-                    onClick={() => {
-                        if (selectedFriend) {
-                            console.log(`Recommended job ${jobId} to ${selectedFriend.name}`);
-                            onClose();
-                        }
-                    }}
-                    disabled={!selectedFriend}
+                    onClick={handleRecommend}
+                    disabled={!selectedFriend || sending}
                 >
-                    Recommend
+                    {sending ? 'Sending...' : 'Recommend'}
                 </Button>
             </Modal.Footer>
         </Modal>
