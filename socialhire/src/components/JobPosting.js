@@ -1,8 +1,12 @@
-import React from 'react';
+import { React, useState } from 'react';
 import { Heart, MessageCircle, Share2, Briefcase } from 'lucide-react';
+import ApplyingJobModal from './ApplyJobModal';
+import RecommendModal from './RecommendationModal';
 
 // Individual JobCard Component
 const JobCard = ({ job }) => {
+    const [showApplyingModal, setApplyingJobModal] = useState(false);
+    // const [showRecommendModal, setRecommendModal] = useState(false);
     console.log(job.endTime); // For debugging the endTime field
 
     // Format the date to a readable string
@@ -135,11 +139,26 @@ const JobCard = ({ job }) => {
                         <button className="action-button flex items-center text-gray-500 hover:text-gray-700">
                             <Share2 size={16} />
                         </button>
+
+                        {/* Button to Apply for a job */}
+                        <button className='applying-job' onClick={setApplyingJobModal}>Apply</button>
+                        {/* Recommend someone for  a job */}
+                        {/* <button className='recommend-job' onClick={setRecommendModal}>Apply</button> */}
                     </div>
                 </div>
             </div>
+            <ApplyingJobModal
+                show={showApplyingModal}
+                onClose={() => setApplyingJobModal(false)}
+                jobId={job.id} // Pass job ID to the modal
+            />
+            {/* <RecommendModal
+                show={showRecommendModal}
+                onClose={() => setRecommendModal(false)}
+            /> */}
         </div>
     );
+
 };
 
 export default JobCard;
