@@ -20,6 +20,7 @@ import Main from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
 import Checkout from './pages/checkoutTest';
 import ProfilePage from './pages/ProfilePage';
+import CompanyProfile from './pages/CompanyProfile1';
 
 function App() {
   const [filters, setFilters] = useState({ jobType: '', location: '', numOfPeople: '' }); // Define filters state
@@ -43,6 +44,7 @@ function App() {
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch filters={filters} />} /> {/* Pass filters to JobSearch */}
         <Route path="/UserProfile" element={<Profile />} />
+        <Route path='/companyprofile' element={<CompanyProfile />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/tos" element={<TOS />} />

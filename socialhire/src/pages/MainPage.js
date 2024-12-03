@@ -30,6 +30,7 @@ const Main = () => {
                 // Assuming there's a 'posts' collection in Firestore
                 const postsQuery = query(collection(db, "posts"));
                 const querySnapshot = await getDocs(postsQuery);
+                console.log(user.uid);
 
                 // Map through the documents and get the data
                 const postsData = querySnapshot.docs.map(doc => ({
