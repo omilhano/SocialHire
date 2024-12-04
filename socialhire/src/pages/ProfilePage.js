@@ -12,7 +12,8 @@ import {
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
-import RemoveFriendModal from "../components/RemoveFriendModal"; // Import the new modal component
+import RemoveFriendModal from "../components/RemoveFriendModal";
+import BlockUserModal from "../components/BlockUserModal"; // Import the Block User Modal
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
@@ -23,6 +24,7 @@ const ProfilePage = () => {
   const [friendshipStatus, setFriendshipStatus] = useState(null);
   const [blockStatus, setBlockStatus] = useState(null);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
+  const [showBlockUserModal, setShowBlockUserModal] = useState(false); // State for Block Modal
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
 
@@ -119,6 +121,11 @@ const ProfilePage = () => {
     }
   };
 
+  const handleBlockUser = () => {
+    console.log("User has been blocked!");
+    setShowBlockUserModal(false);
+  };
+
   if (loading) {
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
@@ -174,54 +181,58 @@ const ProfilePage = () => {
         </Card.Body>
       </Card>
 
-          {!isCurrentUserProfile && (
-              <div className="action-buttons">
-                  {friendshipStatus === "friends" && (
-                      <>
-                          <Button
-                              variant="danger"
-                              className="mt-3"
-                              onClick={() => setShowRemoveFriendModal(true)}
-                          >
-                              Remove Friend
-                          </Button>
-                          <RemoveFriendModal
-                              show={showRemoveFriendModal}
-                              onHide={() => setShowRemoveFriendModal(false)}
-                              onConfirm={() => {
-                                  handleRemoveFriend();
-                                  setShowRemoveFriendModal(false);
-                              }}
-                          />
-                      </>
-                  )}
-                  {friendshipStatus === null && (
-                      <Button
-                          className="follow-button mt-3"
-                          onClick={handleAddFriend}
-                      >
-                          Add Friend
-                      </Button>
-                  )}
-                  {friendshipStatus === "pending" && (
-                      <Button
-                          className="follow-button mt-3"
-                          disabled
-                      >
-                          Request Pending
-                      </Button>
-                  )}
-              </div>
+      {!isCurrentUserProfile && (
+        <div className="action-buttons">
+          {friendshipStatus === "friends" && (
+            <>
+              <Button
+                variant="danger"
+                className="mt-3"
+                onClick={() => setShowRemoveFriendModal(true)}
+              >
+                Remove Friend
+              </Button>
+              <RemoveFriendModal
+                show={showRemoveFriendModal}
+                onHide={() => setShowRemoveFriendModal(false)}
+                onConfirm={() => {
+                  handleRemoveFriend();
+                  setShowRemoveFriendModal(false);
+                }}
+              />
+            </>
           )}
-
-
-      <RemoveFriendModal
-        show={showRemoveFriendModal}
-        onHide={() => setShowRemoveFriendModal(false)}
-        onConfirm={() => {
-          handleRemoveFriend();
-          setShowRemoveFriendModal(false);
-        }}
+          {friendshipStatus === null && (
+            <Button
+              className="follow-button mt-3"
+              onClick={handleAddFriend}
+            >
+              Add Friend
+            </Button>
+          )}
+          {friendshipStatus === "pending" && (
+            <Button
+              className="follow-button mt-3"
+              disabled
+            >
+              Request Pending
+            </Button>
+          )}
+          {friendshipStatus !== "blocked" && (
+            <Button
+              variant="dark"
+              className="mt-3"
+              onClick={() => setShowBlockUserModal(true)}
+            >
+              Block User
+            </Button>
+          )}
+        </div>
+      )}
+      <BlockUserModal
+        show={showBlockUserModal}
+        onHide={() => setShowBlockUserModal(false)}
+        onConfirm={handleBlockUser}
       />
     </Container>
   );
