@@ -14,6 +14,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
 import RemoveFriendModal from "../components/RemoveFriendModal";
 import BlockUserModal from "../components/BlockUserModal"; // Import the Block User Modal
+import { UserPostsSection } from "../components/profile/UserPostsSection"; // Import UserPostsSection
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
@@ -25,6 +26,8 @@ const ProfilePage = () => {
   const [blockStatus, setBlockStatus] = useState(null);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showBlockUserModal, setShowBlockUserModal] = useState(false); // State for Block Modal
+  const [userPosts, setUserPosts] = useState([]); // State for user's posts
+  const [editMode, setEditMode] = useState(false); // Edit mode for posts
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
 
@@ -45,6 +48,7 @@ const ProfilePage = () => {
           const profile = querySnapshot.docs[0].data();
           setProfileData(profile);
           checkFriendshipStatus(loggedInUserId, profile.userId);
+          fetchUserPosts(profile.userId); // Fetch user's posts
         } else {
           throw new Error("User not found");
         }
@@ -53,6 +57,25 @@ const ProfilePage = () => {
         setError(err.message);
       } finally {
         setLoading(false);
+      }
+    };
+
+    const fetchUserPosts = async (userId) => {
+      try {
+        const postsQuery = query(
+          collection(db, "posts"),
+          where("userId", "==", userId)
+        );
+        const postsSnapshot = await getDocs(postsQuery);
+
+        const posts = postsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setUserPosts(posts);
+      } catch (err) {
+        console.error("Error fetching user posts:", err);
       }
     };
 
@@ -203,18 +226,12 @@ const ProfilePage = () => {
             </>
           )}
           {friendshipStatus === null && (
-            <Button
-              className="follow-button mt-3"
-              onClick={handleAddFriend}
-            >
+            <Button className="follow-button mt-3" onClick={handleAddFriend}>
               Add Friend
             </Button>
           )}
           {friendshipStatus === "pending" && (
-            <Button
-              className="follow-button mt-3"
-              disabled
-            >
+            <Button className="follow-button mt-3" disabled>
               Request Pending
             </Button>
           )}
@@ -233,6 +250,11 @@ const ProfilePage = () => {
         show={showBlockUserModal}
         onHide={() => setShowBlockUserModal(false)}
         onConfirm={handleBlockUser}
+      />
+
+      {/* UserPostsSection */}
+      <UserPostsSection
+        posts={userPosts}
       />
     </Container>
   );
