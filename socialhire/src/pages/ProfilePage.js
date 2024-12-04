@@ -296,10 +296,12 @@ const ProfilePage = () => {
                                 Block User
                             </Button>
                         </>
+                        // add send message
                     )}
                 </div>
             )}
-                        {/* Remove Friend Confirmation Modal */}
+            {/* Remove Friend Confirmation Modal */}
+            {/* Change Modal location */}
             <Modal
                 show={showRemoveFriendModal}
                 onHide={() => setShowRemoveFriendModal(false)}
@@ -326,6 +328,10 @@ const ProfilePage = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+        {/* User experiences */}
+        {/* User posts */}
+        {/* User job posts */}
+        {/* User friends */}
         </Container>
     );
 };
