@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../firebaseConfig";
 import {
   collection,
@@ -10,26 +10,25 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
 import RemoveFriendModal from "../components/RemoveFriendModal";
 import BlockUserModal from "../components/BlockUserModal"; // Import the Block User Modal
 import { UserPostsSection } from "../components/profile/UserPostsSection"; // Import UserPostsSection
 import { JobPostsSection } from "../components/profile/JobPostsSection"; // Import JobPostsSection
 
-
 const ProfilePage = () => {
   const { username } = useParams();
+  const navigate = useNavigate(); // Initialize the navigate function
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [friendshipStatus, setFriendshipStatus] = useState(null);
   const [blockStatus, setBlockStatus] = useState(null);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
-  const [showBlockUserModal, setShowBlockUserModal] = useState(false); // State for Block Modal
-  const [userPosts, setUserPosts] = useState([]); // State for user's posts
-  const [userJobs, setUserJobs] = useState([]); // State for user's jobs
-  const [editMode, setEditMode] = useState(false); // Edit mode for posts
+  const [showBlockUserModal, setShowBlockUserModal] = useState(false);
+  const [userPosts, setUserPosts] = useState([]);
+  const [userJobs, setUserJobs] = useState([]);
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
 
@@ -222,7 +221,14 @@ const ProfilePage = () => {
         </Card.Body>
       </Card>
 
-      {!isCurrentUserProfile && (
+      {isCurrentUserProfile ? (
+        <Button
+          className="edit-profile-button mt-3"
+          onClick={() => navigate("/UserProfile")}
+        >
+          Edit My Profile
+        </Button>
+      ) : (
         <div className="action-buttons">
           {friendshipStatus === "friends" && (
             <>
