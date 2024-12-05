@@ -15,7 +15,8 @@ import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
 import RemoveFriendModal from "../components/RemoveFriendModal";
 import BlockUserModal from "../components/BlockUserModal"; // Import the Block User Modal
 import { UserPostsSection } from "../components/profile/UserPostsSection"; // Import UserPostsSection
-import "../styles/ProfilePage.css";
+import { JobPostsSection } from "../components/profile/JobPostsSection"; // Import JobPostsSection
+
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -27,13 +28,10 @@ const ProfilePage = () => {
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showBlockUserModal, setShowBlockUserModal] = useState(false); // State for Block Modal
   const [userPosts, setUserPosts] = useState([]); // State for user's posts
+  const [userJobs, setUserJobs] = useState([]); // State for user's jobs
   const [editMode, setEditMode] = useState(false); // Edit mode for posts
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
-
-  onAuthStateChanged(auth, (user) => {
-    console.log("Auth state changed. Current user:", user);
-  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -49,6 +47,7 @@ const ProfilePage = () => {
           setProfileData(profile);
           checkFriendshipStatus(loggedInUserId, profile.userId);
           fetchUserPosts(profile.userId); // Fetch user's posts
+          fetchUserJobs(profile.userId); // Fetch user's jobs
         } else {
           throw new Error("User not found");
         }
@@ -76,6 +75,25 @@ const ProfilePage = () => {
         setUserPosts(posts);
       } catch (err) {
         console.error("Error fetching user posts:", err);
+      }
+    };
+
+    const fetchUserJobs = async (userId) => {
+      try {
+        const jobsQuery = query(
+          collection(db, "jobs"),
+          where("userId", "==", userId)
+        );
+        const jobsSnapshot = await getDocs(jobsQuery);
+
+        const jobs = jobsSnapshot.docs.map((doc) => ({
+          jobID: doc.id,
+          ...doc.data(),
+        }));
+
+        setUserJobs(jobs);
+      } catch (err) {
+        console.error("Error fetching user jobs:", err);
       }
     };
 
@@ -252,10 +270,11 @@ const ProfilePage = () => {
         onConfirm={handleBlockUser}
       />
 
-      {/* UserPostsSection */}
-      <UserPostsSection
-        posts={userPosts}
-      />
+      {/* User Posts Section */}
+      <UserPostsSection posts={userPosts} />
+
+      {/* Job Posts Section */}
+      <JobPostsSection jobs={userJobs} />
     </Container>
   );
 };

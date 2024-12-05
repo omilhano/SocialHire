@@ -1,0 +1,58 @@
+.job-posts-section {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #343a40;
+  }
+  
+  .jobs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  .job-card {
+    width: 300px;
+    border: none;
+    background: #f8f9fa;
+    transition: transform 0.2s;
+  }
+  
+  .job-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .job-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .job-type {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+  }
+  
+  .job-location,
+  .job-price,
+  .job-description,
+  .job-details {
+    font-size: 0.95rem;
+    color: #495057;
+    margin-bottom: 5px;
+  }
+  
+  .no-jobs-message {
+    font-size: 1.1rem;
+    color: #6c757d;
+    text-align: center;
+  }
+  
