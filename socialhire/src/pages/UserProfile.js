@@ -12,6 +12,7 @@ import { Toast } from '../components/common/Toast';
 import { AboutSection } from '../components/profile/AboutSection.js';
 import { ExperienceSection } from '../components/profile/ExperienceSection.js';
 import { PostSection } from '../components/profile/PostsSection.js';
+import ToggleSwitch from '../components/common/ToggleSwitch'; // Import ToggleSwitch
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
@@ -20,7 +21,7 @@ const UserProfile = () => {
     const { updateDocument, getDocument } = useFirebaseDocument('users');
     const { updateDocument: updateExperience, getDocumentsByUserId } = useFirebaseDocument('experience');
     const { addDocument: addExperience } = useFirebaseDocument('experience');
-    const { updateDocument: updatePost, getDocumentsByUserId: getPostsByUserId} = useFirebaseDocument('posts');
+    const { updateDocument: updatePost, getDocumentsByUserId: getPostsByUserId } = useFirebaseDocument('posts');
     const { addDocument: addPost } = useFirebaseDocument('posts');
     
     // State
@@ -31,31 +32,33 @@ const UserProfile = () => {
         loading: true,
         error: null,
         validation: {},
-        editMode: { basic: false, about: false, experience: false, post: false }
+        editMode: { basic: false, about: false, experience: false, post: false },
+        notificationsEnabled: false, // New state for the toggle
     });
 
-    const { profileData, experienceData, postData, loading, error, validation, editMode } = state;
+    const { profileData, experienceData, postData, loading, error, validation, editMode, notificationsEnabled } = state;
 
+    // Toggle  handler
+    const handleToggleNotifications = (checked) => {
+        setState((prevState) => ({ ...prevState, notificationsEnabled: checked }));
+        console.log(`Profile is ${checked ? 'Private' : 'Public'}`);
+    };
 
-    // Profile (USERS TABLE)
-
-    // Fetch data
+    // Fetch profile data
     const fetchProfile = useCallback(async () => {
         if (!auth.currentUser) return;
 
         try {
             const profile = await getDocument('users', auth.currentUser.uid);
-            // Fetch experience data
             const experiences = await getDocumentsByUserId('experience', auth.currentUser.uid);
             const posts = await getPostsByUserId('posts', auth.currentUser.uid);
 
-            console.log("Experiences: ", experiences)
+            console.log("Experiences: ", experiences);
             setState(prev => ({
                 ...prev,
                 profileData: profile || {},
                 experienceData: experiences || [],
                 postData: posts || [],
-
                 loading: false,
             }));
         } catch (error) {
@@ -67,28 +70,24 @@ const UserProfile = () => {
         }
     }, [getDocument, getDocumentsByUserId, getPostsByUserId]);
 
-    // When refreshes shows profile again
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                fetchProfile(); // Fetch the profile only when the user is authenticated
+                fetchProfile();
             } else {
-                navigate('/signin'); // Redirect to sign-in if no user
+                navigate('/signin');
             }
         });
 
-        return () => unsubscribe(); // Cleanup the listener on unmount
+        return () => unsubscribe();
     }, [fetchProfile, navigate]);
 
-    // Handle profile updates
     const handleProfileUpdate = useCallback(async (field, value) => {
-        console.log("User trying to updaye in user Profile", auth.currentUser.uid, { [field]: value });
+        console.log("User trying to update in UserProfile", auth.currentUser.uid, { [field]: value });
 
         const validationResult = field === 'users'
             ? validateExperience(value)
             : validateProfileData({ ...profileData, [field]: value });
-        
-        console.log("User trying to updaye in user Profile", auth.currentUser.uid, { [field]: value });
 
         if (!validationResult.isValid) {
             setState(prev => ({
@@ -97,7 +96,6 @@ const UserProfile = () => {
             }));
             return;
         }
-        console.log("iS VALID? ", !validationResult.isValid);
 
         const success = await updateDocument('users', auth.currentUser.uid, { [field]: value });
         if (success) {
@@ -114,14 +112,12 @@ const UserProfile = () => {
         try {
             await auth.signOut();
             console.log("User logged out");
-            navigate('/signin'); // Redirect to the sign-in page
             navigate('/signin');
         } catch (error) {
             console.error("Error during logout:", error.message);
         }
     };
 
-    // Handle profile picture update
     const handleProfilePictureChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -136,20 +132,12 @@ const UserProfile = () => {
         }
     };
 
-    // Effects
     useEffect(() => {
         fetchProfile();
     }, [fetchProfile]);
 
-    //
-    // Experience
-    //
-
-    // Add a new experience or update an existing one
     const handleExperienceUpdate = useCallback(async (experience) => {
         const validationResult = validateExperience(experience);
-        console.log("Experience data being sent to handleExperienceUpdate"); // Debug log
-        console.log("Experience data is invalid?", !validationResult.isValid); // Debug log
         if (!validationResult.isValid) {
             setState(prev => ({
                 ...prev,
@@ -157,18 +145,16 @@ const UserProfile = () => {
             }));
             return;
         }
-        console.log("Experience data being sent to addDocument:", experience); // Debug log
-        console.log("Experience id", experience.id); // Debug log
+
         const newExperienceId = experience.id || Date.now().toString();
         let success;
         if (experience.id) {
-            // Update existing experience
             success = await updateExperience('experience', experience.id, experience);
         } else {
-            // Assign new ID and add the experience
             experience.id = newExperienceId;
             success = await addExperience('experience', newExperienceId, { ...experience });
         }
+
         if (success) {
             setState(prev => ({
                 ...prev,
@@ -181,17 +167,8 @@ const UserProfile = () => {
         }
     }, [updateExperience, addExperience]);
 
-
-
-    //
-    // Posts
-    //
-
-    // Add a new Post or update an existing one
     const handlePostUpdate = useCallback(async (post) => {
         const validationResult = validatePost(post);
-        console.log("Post data being sent to handlePostUpdate", post); // Debug log
-        console.log("Post data is invalid?", !validationResult.isValid); // Debug log
         if (!validationResult.isValid) {
             setState(prev => ({
                 ...prev,
@@ -199,16 +176,17 @@ const UserProfile = () => {
             }));
             return;
         }
-        console.log("Post data being sent to addDocument:", post); // Debug log
+
         const newPostId = post.id || Date.now().toString();
         const success = post.id
-        ? await updateExperience('posts', post.id, post)
-        : post.id = newPostId; await addExperience('posts', newPostId, { ...post });
+            ? await updatePost('posts', post.id, post)
+            : await addPost('posts', newPostId, { ...post });
+
         if (success) {
             setState(prev => ({
                 ...prev,
                 postData: post.id
-                    ? prev.postData.map(exp => (exp.id === post.id ? post : exp))
+                    ? prev.postData.map(p => (p.id === post.id ? post : p))
                     : [...prev.postData, { ...post, id: newPostId }],
                 editMode: { ...prev.editMode, post: false },
                 validation: {},
@@ -216,12 +194,9 @@ const UserProfile = () => {
         }
     }, [updatePost, addPost]);
 
-
     if (loading) {
         return <div className="loading">Loading profile...</div>;
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////
 
     return (
         <div className="profile-container">
@@ -234,7 +209,6 @@ const UserProfile = () => {
             )}
             <ProfileHeader
                 profileData={profileData}
-
                 editMode={editMode.basic}
                 validation={validation}
                 onEditModeChange={(mode) => setState(prev => ({
@@ -263,7 +237,7 @@ const UserProfile = () => {
                 }))}
                 onAddExperience={(experience) => handleExperienceUpdate(experience)}
             />
-             <PostSection
+            <PostSection
                 posts={postData}
                 editMode={editMode.post}
                 onEditModeChange={(mode) => setState(prev => ({
@@ -272,6 +246,14 @@ const UserProfile = () => {
                 }))}
                 onAddPost={(post) => handlePostUpdate(post)}
             />
+            <div className="toggle-container">
+                <span> Privatize toggle:</span>
+                <ToggleSwitch
+                    id="notifications-toggle"
+                    checked={notificationsEnabled}
+                    onChange={handleToggleNotifications}
+                />
+            </div>
             <button className="logout" onClick={handleLogout}>
                 Logout
             </button>
