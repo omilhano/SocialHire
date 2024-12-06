@@ -13,13 +13,14 @@ import {
 import { getAuth } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
 import RemoveFriendModal from "../components/RemoveFriendModal";
-import BlockUserModal from "../components/BlockUserModal"; // Import the Block User Modal
-import { UserPostsSection } from "../components/profile/UserPostsSection"; // Import UserPostsSection
-import { JobPostsSection } from "../components/profile/JobPostsSection"; // Import JobPostsSection
+import BlockUserModal from "../components/BlockUserModal";
+import { UserPostsSection } from "../components/profile/UserPostsSection";
+import { JobPostsSection } from "../components/profile/JobPostsSection";
+import { UserExperiencesSection } from "../components/profile/UserExperiencesSection"; // Import UserExperiencesSection
 
 const ProfilePage = () => {
   const { username } = useParams();
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,6 +30,7 @@ const ProfilePage = () => {
   const [showBlockUserModal, setShowBlockUserModal] = useState(false);
   const [userPosts, setUserPosts] = useState([]);
   const [userJobs, setUserJobs] = useState([]);
+  const [userExperiences, setUserExperiences] = useState([]); // Add state for experiences
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
 
@@ -45,8 +47,9 @@ const ProfilePage = () => {
           const profile = querySnapshot.docs[0].data();
           setProfileData(profile);
           checkFriendshipStatus(loggedInUserId, profile.userId);
-          fetchUserPosts(profile.userId); // Fetch user's posts
-          fetchUserJobs(profile.userId); // Fetch user's jobs
+          fetchUserPosts(profile.userId);
+          fetchUserJobs(profile.userId);
+          fetchUserExperiences(profile.userId); // Fetch user's experiences
         } else {
           throw new Error("User not found");
         }
@@ -93,6 +96,25 @@ const ProfilePage = () => {
         setUserJobs(jobs);
       } catch (err) {
         console.error("Error fetching user jobs:", err);
+      }
+    };
+
+    const fetchUserExperiences = async (userId) => {
+      try {
+        const experiencesQuery = query(
+          collection(db, "experience"),
+          where("userId", "==", userId)
+        );
+        const experiencesSnapshot = await getDocs(experiencesQuery);
+
+        const experiences = experiencesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setUserExperiences(experiences);
+      } catch (err) {
+        console.error("Error fetching user experiences:", err);
       }
     };
 
@@ -212,75 +234,38 @@ const ProfilePage = () => {
           <Card.Title className="text-center profile-card-title">
             {profileData.firstName} {profileData.lastName}
           </Card.Title>
-          <Card.Subtitle className="text-muted text-center profile-card-subtitle">
-            {profileData.location}
-          </Card.Subtitle>
-          <Card.Text className="mt-3 text-center profile-card-text">
-            {profileData.about}
+          <Card.Text className="text-center">
+            {profileData.headline}
           </Card.Text>
         </Card.Body>
       </Card>
 
-      {isCurrentUserProfile ? (
-        <Button
-          className="edit-profile-button mt-3"
-          onClick={() => navigate("/UserProfile")}
-        >
-          Edit My Profile
-        </Button>
-      ) : (
-        <div className="action-buttons">
+      {!isCurrentUserProfile && (
+        <div className="d-flex justify-content-center align-items-center mt-2">
           {friendshipStatus === "friends" && (
-            <>
-              <Button
-                variant="danger"
-                className="mt-3"
-                onClick={() => setShowRemoveFriendModal(true)}
-              >
-                Remove Friend
-              </Button>
-              <RemoveFriendModal
-                show={showRemoveFriendModal}
-                onHide={() => setShowRemoveFriendModal(false)}
-                onConfirm={() => {
-                  handleRemoveFriend();
-                  setShowRemoveFriendModal(false);
-                }}
-              />
-            </>
-          )}
-          {friendshipStatus === null && (
-            <Button className="follow-button mt-3" onClick={handleAddFriend}>
-              Add Friend
+            <Button
+              variant="outline-danger"
+              onClick={() => setShowRemoveFriendModal(true)}
+            >
+              Remove Friend
             </Button>
           )}
           {friendshipStatus === "pending" && (
-            <Button className="follow-button mt-3" disabled>
-              Request Pending
+            <Button variant="secondary" disabled>
+              Friend Request Sent
             </Button>
           )}
-          {friendshipStatus !== "blocked" && (
-            <Button
-              variant="dark"
-              className="mt-3"
-              onClick={() => setShowBlockUserModal(true)}
-            >
-              Block User
+          {friendshipStatus === null && (
+            <Button variant="primary" onClick={handleAddFriend}>
+              Add Friend
             </Button>
           )}
         </div>
       )}
-      <BlockUserModal
-        show={showBlockUserModal}
-        onHide={() => setShowBlockUserModal(false)}
-        onConfirm={handleBlockUser}
-      />
 
-      {/* User Posts Section */}
       <UserPostsSection posts={userPosts} />
-
-      {/* Job Posts Section */}
       <JobPostsSection jobs={userJobs} />
+      <UserExperiencesSection experiences={userExperiences} />
     </Container>
   );
 };

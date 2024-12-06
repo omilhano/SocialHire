@@ -1,0 +1,27 @@
+.user-experiences-section {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .experiences-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .experience-card {
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .experience-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .experience-description,
+  .experience-dates {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
