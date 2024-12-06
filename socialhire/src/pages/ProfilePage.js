@@ -149,7 +149,30 @@ const ProfilePage = () => {
         console.error("Error checking friendship status:", err);
       }
     };
+    const checkBlockStatus = async (loggedInUserId, profileUserId) => {
+      try {
+        const connectionsQuery = query(
+          collection(db, "Connections"),
+          where("user_id", "in", [loggedInUserId, profileUserId]),
+          where("connected_user_id", "in", [loggedInUserId, profileUserId])
+        );
+        
+        const snapshot = await getDocs(connectionsQuery);
 
+        if (!snapshot.empty) {
+          const connection = snapshot.docs[0].data();
+          if (connection.status === "blocked") {
+            if (connection.user_id === loggedInUserId) {
+              setBlockStatus("blocked");
+            } else {
+              setBlockStatus("blockedByOther");
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error checking block status:", err);
+      }
+    };
     fetchProfile();
   }, [username, loggedInUserId, friendshipStatus, isCurrentUserProfile]);
 
@@ -215,6 +238,26 @@ const ProfilePage = () => {
     }
   };
 
+  const handleUnblockUser = async () => {
+    try {
+      const connectionsQuery = query(
+        collection(db, "Connections"),
+        where("user_id", "in", [loggedInUserId, profileData.userId]),
+        where("connected_user_id", "in", [loggedInUserId, profileData.userId])
+      );
+      const snapshot = await getDocs(connectionsQuery);
+
+      if (!snapshot.empty) {
+        const docId = snapshot.docs[0].id;
+        await deleteDoc(doc(db, "Connections", docId));
+      }
+
+      setBlockStatus(null);
+    } catch (err) {
+      console.error("Error unblocking user:", err);
+    }
+  };
+
   if (loading) {
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
@@ -241,6 +284,32 @@ const ProfilePage = () => {
     );
   }
 
+  if (blockStatus === "blocked") {
+    return (
+      <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
+        <div className="profile-image-wrapper">
+          <img
+            src={
+              profileData.profileImageUrl ||
+              `https://ui-avatars.com/api/?name=${profileData.firstName}+${profileData.lastName}&background=177b7b&color=ffffff`
+            }
+            alt={`${profileData.firstName} ${profileData.lastName}`}
+            className="profile-image"
+          />
+        </div>
+        <Card className="profile-card mt-3 shadow-sm">
+          <Card.Body>
+            <Card.Title className="text-center profile-card-title">
+              {profileData.firstName} {profileData.lastName}
+            </Card.Title>
+          </Card.Body>
+        </Card>
+        <Button variant="danger" onClick={handleUnblockUser}>
+          Unblock User
+        </Button>
+      </Container>
+    );
+  }
   return (
     <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
       <div className="profile-image-wrapper">
