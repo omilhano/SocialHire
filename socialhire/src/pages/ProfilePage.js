@@ -9,6 +9,7 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Container, Spinner, Alert, Card, Button } from "react-bootstrap";
@@ -179,9 +180,32 @@ const ProfilePage = () => {
     }
   };
 
-  const handleBlockUser = () => {
-    console.log("User has been blocked!");
-    setShowBlockUserModal(false);
+  const handleBlockUser = async () => {
+    try {
+      const connectionsQuery = query(
+        collection(db, "Connections"),
+        where("user_id", "in", [loggedInUserId, profileData.userId]),
+        where("connected_user_id", "in", [loggedInUserId, profileData.userId])
+      );
+      const snapshot = await getDocs(connectionsQuery);
+
+      if (!snapshot.empty) {
+        const docId = snapshot.docs[0].id;
+        await updateDoc(doc(db, "Connections", docId), { status: "blocked" });
+      } else {
+        await addDoc(collection(db, "Connections"), {
+          user_id: loggedInUserId,
+          connected_user_id: profileData.userId,
+          status: "blocked",
+          created_at: new Date(),
+        });
+      }
+
+      setBlockStatus("blocked");
+      setShowBlockUserModal(false);
+    } catch (err) {
+      console.error("Error blocking user:", err);
+    }
   };
 
   if (loading) {
@@ -256,6 +280,15 @@ const ProfilePage = () => {
               Add Friend
             </Button>
           )}
+          {blockStatus !== "blocked" && (
+            <Button
+              variant="danger"
+              className="ms-2"
+              onClick={() => setShowBlockUserModal(true)}
+            >
+              Block User
+            </Button>
+          )}
         </div>
       )}
 
@@ -276,6 +309,12 @@ const ProfilePage = () => {
           </Card.Body>
         </Card>
       )}
+
+      <BlockUserModal
+        show={showBlockUserModal}
+        onHide={() => setShowBlockUserModal(false)}
+        onConfirm={handleBlockUser}
+      />
     </Container>
   );
 };
