@@ -33,16 +33,12 @@ const UserProfile = () => {
         error: null,
         validation: {},
         editMode: { basic: false, about: false, experience: false, post: false },
-        notificationsEnabled: false, // New state for the toggle
+        privateProfile: false, // New state for the toggle
     });
 
-    const { profileData, experienceData, postData, loading, error, validation, editMode, notificationsEnabled } = state;
+    const { profileData, experienceData, postData, loading, error, validation, editMode, privateProfile } = state;
 
-    // Toggle  handler
-    const handleToggleNotifications = (checked) => {
-        setState((prevState) => ({ ...prevState, notificationsEnabled: checked }));
-        console.log(`Profile is ${checked ? 'Private' : 'Public'}`);
-    };
+
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
@@ -59,6 +55,7 @@ const UserProfile = () => {
                 profileData: profile || {},
                 experienceData: experiences || [],
                 postData: posts || [],
+                privateProfile: profile?.privateProfile || false,
                 loading: false,
             }));
         } catch (error) {
@@ -81,6 +78,23 @@ const UserProfile = () => {
 
         return () => unsubscribe();
     }, [fetchProfile, navigate]);
+
+    const handleTogglePrivacy = async (checked) => {
+        try {
+            setState((prevState) => ({ ...prevState, privateProfile: checked }));
+            await updateDocument('users', auth.currentUser.uid, { privateProfile: checked });
+            console.log(`Profile is now ${checked ? 'Private' : 'Public'}`);
+        } catch (error) {
+            console.error("Failed to update privacy setting:", error.message);
+            setState(prevState => ({ ...prevState, error: "Failed to update privacy setting." }));
+        }
+    }; 
+
+        // // Toggle  handler
+        // const handleTogglePrivacy = (checked) => {
+        //     setState((prevState) => ({ ...prevState, privateProfile: checked }));
+        //     console.log(`Profile is ${checked ? 'Private' : 'Public'}`);
+        // };
 
     const handleProfileUpdate = useCallback(async (field, value) => {
         console.log("User trying to update in UserProfile", auth.currentUser.uid, { [field]: value });
@@ -249,9 +263,9 @@ const UserProfile = () => {
             <div className="toggle-container">
                 <span> Privatize toggle:</span>
                 <ToggleSwitch
-                    id="notifications-toggle"
-                    checked={notificationsEnabled}
-                    onChange={handleToggleNotifications}
+                    id="privacy-toggle"
+                    checked={privateProfile}
+                    onChange={handleTogglePrivacy}
                 />
             </div>
             <button className="logout" onClick={handleLogout}>
