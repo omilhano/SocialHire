@@ -16,7 +16,7 @@ import RemoveFriendModal from "../components/RemoveFriendModal";
 import BlockUserModal from "../components/BlockUserModal";
 import { UserPostsSection } from "../components/profile/UserPostsSection";
 import { JobPostsSection } from "../components/profile/JobPostsSection";
-import { UserExperiencesSection } from "../components/profile/UserExperiencesSection"; // Import UserExperiencesSection
+import { UserExperiencesSection } from "../components/profile/UserExperiencesSection";
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -30,7 +30,7 @@ const ProfilePage = () => {
   const [showBlockUserModal, setShowBlockUserModal] = useState(false);
   const [userPosts, setUserPosts] = useState([]);
   const [userJobs, setUserJobs] = useState([]);
-  const [userExperiences, setUserExperiences] = useState([]); // Add state for experiences
+  const [userExperiences, setUserExperiences] = useState([]);
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
 
@@ -47,9 +47,11 @@ const ProfilePage = () => {
           const profile = querySnapshot.docs[0].data();
           setProfileData(profile);
           checkFriendshipStatus(loggedInUserId, profile.userId);
-          fetchUserPosts(profile.userId);
-          fetchUserJobs(profile.userId);
-          fetchUserExperiences(profile.userId); // Fetch user's experiences
+          if (!profile.privateProfile || friendshipStatus === "friends") {
+            fetchUserPosts(profile.userId);
+            fetchUserJobs(profile.userId);
+            fetchUserExperiences(profile.userId);
+          }
         } else {
           throw new Error("User not found");
         }
@@ -68,12 +70,10 @@ const ProfilePage = () => {
           where("userId", "==", userId)
         );
         const postsSnapshot = await getDocs(postsQuery);
-
         const posts = postsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setUserPosts(posts);
       } catch (err) {
         console.error("Error fetching user posts:", err);
@@ -87,12 +87,10 @@ const ProfilePage = () => {
           where("userId", "==", userId)
         );
         const jobsSnapshot = await getDocs(jobsQuery);
-
         const jobs = jobsSnapshot.docs.map((doc) => ({
           jobID: doc.id,
           ...doc.data(),
         }));
-
         setUserJobs(jobs);
       } catch (err) {
         console.error("Error fetching user jobs:", err);
@@ -106,12 +104,10 @@ const ProfilePage = () => {
           where("userId", "==", userId)
         );
         const experiencesSnapshot = await getDocs(experiencesQuery);
-
         const experiences = experiencesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setUserExperiences(experiences);
       } catch (err) {
         console.error("Error fetching user experiences:", err);
@@ -147,7 +143,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [username, loggedInUserId]);
+  }, [username, loggedInUserId, friendshipStatus]);
 
   const handleAddFriend = async () => {
     try {
@@ -263,9 +259,23 @@ const ProfilePage = () => {
         </div>
       )}
 
-      <UserPostsSection posts={userPosts} />
-      <JobPostsSection jobs={userJobs} />
-      <UserExperiencesSection experiences={userExperiences} />
+      {(!profileData.privateProfile || friendshipStatus === "friends") && (
+        <>
+          <UserPostsSection posts={userPosts} />
+          <JobPostsSection jobs={userJobs} />
+          <UserExperiencesSection experiences={userExperiences} />
+        </>
+      )}
+
+      {profileData.privateProfile && friendshipStatus !== "friends" && (
+        <Card className="profile-card mt-3 shadow-sm">
+          <Card.Body>
+            <Card.Text className="text-center">
+              This profile is private. Become friends to view more details.
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      )}
     </Container>
   );
 };
