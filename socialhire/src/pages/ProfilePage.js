@@ -35,6 +35,9 @@ const ProfilePage = () => {
   const auth = getAuth();
   const loggedInUserId = auth.currentUser?.uid;
 
+  // Declare isCurrentUserProfile earlier
+  const isCurrentUserProfile = loggedInUserId && profileData?.userId === loggedInUserId;
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -48,7 +51,11 @@ const ProfilePage = () => {
           const profile = querySnapshot.docs[0].data();
           setProfileData(profile);
           checkFriendshipStatus(loggedInUserId, profile.userId);
-          if (!profile.privateProfile || friendshipStatus === "friends") {
+          if (
+            isCurrentUserProfile ||
+            !profile.privateProfile ||
+            friendshipStatus === "friends"
+          ) {
             fetchUserPosts(profile.userId);
             fetchUserJobs(profile.userId);
             fetchUserExperiences(profile.userId);
@@ -144,7 +151,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [username, loggedInUserId, friendshipStatus]);
+  }, [username, loggedInUserId, friendshipStatus, isCurrentUserProfile]);
 
   const handleAddFriend = async () => {
     try {
@@ -234,8 +241,6 @@ const ProfilePage = () => {
     );
   }
 
-  const isCurrentUserProfile = loggedInUserId === profileData.userId;
-
   return (
     <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
       <div className="profile-image-wrapper">
@@ -292,7 +297,9 @@ const ProfilePage = () => {
         </div>
       )}
 
-      {(!profileData.privateProfile || friendshipStatus === "friends") && (
+      {(isCurrentUserProfile ||
+        !profileData.privateProfile ||
+        friendshipStatus === "friends") && (
         <>
           <UserPostsSection posts={userPosts} />
           <JobPostsSection jobs={userJobs} />
@@ -300,15 +307,17 @@ const ProfilePage = () => {
         </>
       )}
 
-      {profileData.privateProfile && friendshipStatus !== "friends" && (
-        <Card className="profile-card mt-3 shadow-sm">
-          <Card.Body>
-            <Card.Text className="text-center">
-              This profile is private. Become friends to view more details.
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      )}
+      {!isCurrentUserProfile &&
+        profileData.privateProfile &&
+        friendshipStatus !== "friends" && (
+          <Card className="profile-card mt-3 shadow-sm">
+            <Card.Body>
+              <Card.Text className="text-center">
+                This profile is private. Become friends to view more details.
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        )}
 
       <BlockUserModal
         show={showBlockUserModal}
