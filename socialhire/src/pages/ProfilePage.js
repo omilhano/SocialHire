@@ -121,7 +121,7 @@ const ProfilePage = () => {
         console.error("Error fetching user experiences:", err);
       }
     };
-
+    //TODO review this code
     const checkFriendshipStatus = async (loggedInUserId, profileUserId) => {
       try {
         if (loggedInUserId === profileUserId) return;
@@ -175,7 +175,7 @@ const ProfilePage = () => {
     };
     fetchProfile();
   }, [username, loggedInUserId, friendshipStatus, isCurrentUserProfile]);
-
+//TODO until here
   const handleAddFriend = async () => {
     try {
       const connectionsCollectionRef = collection(db, "Connections");
@@ -280,6 +280,24 @@ const ProfilePage = () => {
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Alert variant="warning">Profile not found</Alert>
+      </Container>
+    );
+  }
+
+   // Show only name if the viewer is blocked by the profile owner
+   if (blockStatus === "blockedByOther") {
+    return (
+      <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
+        <Card className="profile-card mt-3 shadow-sm">
+          <Card.Body>
+            <Card.Title className="text-center profile-card-title">
+              {profileData.firstName} {profileData.lastName}
+            </Card.Title>
+            <Card.Text className="text-center">
+              This user has blocked you.
+            </Card.Text>
+          </Card.Body>
+        </Card>
       </Container>
     );
   }
