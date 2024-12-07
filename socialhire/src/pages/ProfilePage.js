@@ -294,7 +294,7 @@ const ProfilePage = () => {
               {profileData.firstName} {profileData.lastName}
             </Card.Title>
             <Card.Text className="text-center">
-              This user has blocked you.
+              This user has deactivated their account.
             </Card.Text>
           </Card.Body>
         </Card>
