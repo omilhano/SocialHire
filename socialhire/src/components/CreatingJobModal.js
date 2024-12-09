@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import '../styles/FiltersModal.css';
 import { useAuth } from '../hooks/useAuth';
 import { db } from '../firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
 
 // TODO finish Filters
 
@@ -26,6 +26,7 @@ const CreatingJobModal = ({ show, onClose }) => {
     const [newFavouredSkill, setNewFavouredSkill] = useState('');
     const [favouredSkills, setFavouredSkills] = useState([]);
     const [contractDuration, setDuration] = useState('');
+    const [userType, setUserType] = useState(''); // State to store userType
 
     const { user } = useAuth();
 
@@ -47,6 +48,28 @@ const CreatingJobModal = ({ show, onClose }) => {
         }
     }, [show]);
 
+    // Fetching user type
+    useEffect(() => {
+        const fetchUserType = async () => {
+            if (user?.uid) {
+                const userDocRef = doc(db, 'users', user.uid); // Reference to user document
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists()) {
+                    setUserType(userDoc.data().accountType); // Set the userType from the document
+                } else {
+                    console.error("User document not found!");
+                }
+            }
+        };
+
+        if (show) { // Only fetch user type when the modal is shown
+            fetchUserType();
+        }
+    }, [user, show]);
+
+
+
     const handleJobTypeSelect = (value) => {
         setJobType(value);
     };
@@ -65,6 +88,7 @@ const CreatingJobModal = ({ show, onClose }) => {
             createdAt: new Date(),
             userId: user?.uid,
             location: location,
+            userType,
             jobDescription: jobDescription || 'N/A',
         };
 
@@ -79,10 +103,10 @@ const CreatingJobModal = ({ show, onClose }) => {
             jobData.payRange = payRange.min && payRange.max ? payRange : 'N/A';
             jobData.jobDescription = jobDescription || 'N/A';
             jobData.payRange = payRange.min && payRange.max ? payRange : 'N/A';
-            jobData.additionalBenefits= additionalBenefits.length > 0 ? additionalBenefits : 'N/A';
-            jobData.additionalJobRequirements= additionalJobRequirements.length > 0 ? additionalJobRequirements : 'N/A';
-            jobData.favouredSkills= favouredSkills.length > 0 ? favouredSkills : 'N/A';
-            jobData.contractDuration= contractDuration;
+            jobData.additionalBenefits = additionalBenefits.length > 0 ? additionalBenefits : 'N/A';
+            jobData.additionalJobRequirements = additionalJobRequirements.length > 0 ? additionalJobRequirements : 'N/A';
+            jobData.favouredSkills = favouredSkills.length > 0 ? favouredSkills : 'N/A';
+            jobData.contractDuration = contractDuration;
         }
 
         // Save job data to Firestore

@@ -8,14 +8,16 @@ import '../styles/FiltersModal.css';
 // Pass on filters for parent component
 const SearchModal = ({ show, onClose, filters, setFilters }) => {
     // Destructure filters for easier access and set defaults if not provided
-    const { jobType, location, numOfPeople, minSalary, maxSalary } = filters || {};
+    const { jobType, location, numOfPeople, minSalary, maxSalary, pricePerHour, userType } = filters || {};
 
     // Local state for each filter category
     const [selectedJobType, setSelectedJobType] = useState(jobType || 'Choose Type of Job');
     const [selectedLocation, setSelectedLocation] = useState(location || 'Choose Location');
     const [selectedNumOfPeople, setSelectedNumOfPeople] = useState(numOfPeople || 'Choose Nº of people');
     const [selectedMinSalary, setSelectedMinSalary] = useState(minSalary || 0);
-    const [selectedMaxSalary, setSelectedMaxSalary] = useState(maxSalary || 100000);
+    const [selectedMaxSalary, setSelectedMaxSalary] = useState(maxSalary || 200000);
+    const [selectedPricePerHour, setSelectedPricePerHour] = useState(pricePerHour || 0);
+    const [selectedUserType, setSelectedUserType] = useState(userType || 'Choose User Type'); // User Type state
 
     // Reset local state when modal is closed
     useEffect(() => {
@@ -24,11 +26,13 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
             setSelectedLocation(location || 'Choose Location');
             setSelectedNumOfPeople(numOfPeople || 'Choose Nº of people');
             setSelectedMinSalary(minSalary || 0);
-            setSelectedMaxSalary(maxSalary || 100000);
+            setSelectedMaxSalary(maxSalary || 200000);
+            setSelectedPricePerHour(pricePerHour || 0);
+            setSelectedUserType(userType || 'Choose User Type'); // Reset User Type
         }
-    }, [show, jobType, location, numOfPeople, minSalary, maxSalary]);
+    }, [show, jobType, location, numOfPeople, minSalary, maxSalary, pricePerHour, userType]);
 
-    // Mapping dropdown values to realated Firestore values
+    // Mapping dropdown values to related Firestore values
     const jobTypeMapping = {
         'Formal': 'Formal Job',
         'Hustler': 'Hustler'
@@ -46,34 +50,57 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
         '3+': '3+'
     };
 
+    const userTypeMapping = {
+        'User': 'user',
+        'Company': 'company'
+    };
+
     // Handlers for each dropdown
     const handleJobTypeSelect = (value) => setSelectedJobType(value);
     const handleLocationSelect = (value) => setSelectedLocation(value);
     const handleNumOfPeopleSelect = (value) => setSelectedNumOfPeople(value);
+    const handleUserTypeSelect = (value) => setSelectedUserType(value); // Handle User Type change
 
-    // Handlers for salary range
-    const handleMinSalaryChange = (e) => {
-        setSelectedMinSalary(e.target.value);
-    };
-    const handleMaxSalaryChange = (e) => {
-        setSelectedMaxSalary(e.target.value);
-    };
-    const handleMinSalarySliderChange = (e) => {
-        setSelectedMinSalary(e.target.value);
-    };
-    const handleMaxSalarySliderChange = (e) => {
-        setSelectedMaxSalary(e.target.value);
-    };
+    // Handlers for salary and price per hour
+    const handleMinSalaryChange = (e) => setSelectedMinSalary(e.target.value);
+    const handleMaxSalaryChange = (e) => setSelectedMaxSalary(e.target.value);
+    const handlePricePerHourChange = (e) => setSelectedPricePerHour(e.target.value);
 
     // Apply filters when the button is clicked
     const handleApplyFilters = () => {
-        setFilters({
-            jobType: jobTypeMapping[selectedJobType] || selectedJobType,
-            location: locationMapping[selectedLocation] || selectedLocation,
-            numOfPeople: numOfPeopleMapping[selectedNumOfPeople] || selectedNumOfPeople,
-            minSalary: selectedMinSalary,
-            maxSalary: selectedMaxSalary,
-        });
+        const appliedFilters = {};
+
+        // Only add filters that are selected (not the default)
+        if (selectedJobType !== 'Choose Type of Job') {
+            appliedFilters.jobType = jobTypeMapping[selectedJobType] || selectedJobType;
+        }
+        if (selectedLocation !== 'Choose Location') {
+            appliedFilters.location = locationMapping[selectedLocation] || selectedLocation;
+        }
+        if (selectedNumOfPeople !== 'Choose Nº of people') {
+            appliedFilters.numOfPeople = numOfPeopleMapping[selectedNumOfPeople] || selectedNumOfPeople;
+        }
+
+        // Handle salary or price per hour based on job type
+        if (selectedJobType === 'Hustler') {
+            if (selectedPricePerHour > 0) {
+                appliedFilters.pricePerHour = selectedPricePerHour;
+            }
+        } else {
+            if (selectedMinSalary > 0) {
+                appliedFilters.minSalary = selectedMinSalary;
+            }
+            if (selectedMaxSalary < 200000) {
+                appliedFilters.maxSalary = selectedMaxSalary;
+            }
+        }
+
+        // Include user type filter
+        if (selectedUserType !== 'Choose User Type') {
+            appliedFilters.userType = userTypeMapping[selectedUserType] || selectedUserType;
+        }
+
+        setFilters(appliedFilters); // Pass the filters to the parent
         onClose(); // Close the modal after applying filters
     };
 
@@ -118,54 +145,60 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
                     </Dropdown.Menu>
                 </Dropdown>
 
-                {/* Salary Range Inputs and Slider */}
-                <div className="salary-range">
-                    <h6>Salary Range</h6>
-                    <Form.Group controlId="salaryRange">
-                        <Form.Label>Min Salary: €{selectedMinSalary}</Form.Label>
-                        {/* Number */}
-                        <Form.Control
-                            type="number"
-                            value={selectedMinSalary}
-                            onChange={handleMinSalaryChange}
-                            min="0"
-                            max="200000"
-                            step="1000"
-                        />
-                        {/* Slider */}
-                        <Form.Control
-                            type="range"
-                            min="0"
-                            max="200000"
-                            step="1000"
-                            value={selectedMinSalary}
-                            onChange={handleMinSalarySliderChange}
-                        />
-                    </Form.Group>
+                {/* User Type Dropdown */}
+                <Dropdown>
+                    <Dropdown.Toggle variant="primary" id="dropdown-userType">
+                        {selectedUserType}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => handleUserTypeSelect('User')}>User</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleUserTypeSelect('Company')}>Company</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
 
-                    <Form.Group controlId="salaryRange">
-                        <Form.Label>Max Salary: €{selectedMaxSalary}</Form.Label>
-                        {/* Number */}
-                        <Form.Control
-                            type="number"
-                            value={selectedMaxSalary}
-                            onChange={handleMaxSalaryChange}
-                            min="0"
-                            max="200000"
-                            step="1000"
-                        />
-                        {/* Slider */}
-                        <Form.Control
-                            type="range"
-                            min="0"
-                            max="200000"
-                            step="1000"
-                            value={selectedMaxSalary}
-                            onChange={handleMaxSalarySliderChange}
-                        />
+                {/* Conditional Rendering for Salary/Price Based on Job Type */}
+                {selectedJobType === 'Hustler' ? (
+                    <div className="price-per-hour">
+                        <h6>Price per Hour</h6>
+                        <Form.Group controlId="pricePerHour">
+                            <Form.Label>Price: €{selectedPricePerHour}</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={selectedPricePerHour}
+                                onChange={handlePricePerHourChange}
+                                min="0"
+                                step="10"
+                            />
+                        </Form.Group>
+                    </div>
+                ) : (
+                    <div className="salary-range">
+                        <h6>Salary Range</h6>
+                        <Form.Group controlId="salaryRange">
+                            <Form.Label>Min Salary: €{selectedMinSalary}</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={selectedMinSalary}
+                                onChange={handleMinSalaryChange}
+                                min="0"
+                                max="200000"
+                                step="1000"
+                            />
+                        </Form.Group>
 
-                    </Form.Group>
-                </div>
+                        <Form.Group controlId="salaryRange">
+                            <Form.Label>Max Salary: €{selectedMaxSalary}</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={selectedMaxSalary}
+                                onChange={handleMaxSalaryChange}
+                                min="0"
+                                max="200000"
+                                step="1000"
+                            />
+                        </Form.Group>
+                    </div>
+                )}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onClose}>Close</Button>

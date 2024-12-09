@@ -4,6 +4,7 @@ import CreatingJobModal from '../components/CreatingJobModal';
 import JobList from '../components/JobList';
 import { db } from '../firebaseConfig'; // Import Firebase db
 import { collection, getDocs, query, where } from 'firebase/firestore'; // Firestore functions
+import '../styles/JobSearch.css';
 
 const JobSearch = ({ filters }) => {
   const [showJobModal, setShowJobModal] = useState(false);
@@ -35,6 +36,11 @@ const JobSearch = ({ filters }) => {
         }
         if (filters.numOfPeople && filters.numOfPeople !== 'Choose Nº of people') {
           jobsCollectionRef = query(jobsCollectionRef, where('numOfPeople', '==', filters.numOfPeople));
+        }
+
+        // Add the userType filter if selected
+        if (filters.userType && filters.userType !== 'Choose User Type') {
+          jobsCollectionRef = query(jobsCollectionRef, where('userType', '==', filters.userType));
         }
 
         // Handle salary range filter if min/max salary are set

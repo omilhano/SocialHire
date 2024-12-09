@@ -36,9 +36,11 @@ const JobList = ({ jobs, loading, error }) => {
     return (
         <div className="jobs-scroll">
             <div className="flex space-x-4 px-4 overflow-x-auto">
-                {jobs.map((job) => (
-                    <JobCard key={job.id} job={job} />
-                ))}
+                <div className='jobs-wrapper'>
+                    {jobs.map((job) => (
+                        <JobCard key={job.id} job={job} />
+                    ))}
+                </div>
             </div>
         </div>
     );

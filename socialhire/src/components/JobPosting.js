@@ -73,8 +73,11 @@ const JobCard = ({ job }) => {
             <div className="job-content flex flex-col">
                 <div className="job-header flex justify-between items-start mb-2">
                     <h3 className="text-lg font-semibold text-gray-800">{job.jobTitle || 'Untitled Job'}</h3>
-                    <span id="location-post" className="text-sm text-gray-500">{job.location}</span>
-                    <span id="date-post" className="text-sm text-gray-500">{formatDate(job.createdAt)}</span>
+                    <div className="location-date-class">
+                        <span id="location-post">{job.location}</span>
+                        <span id="date-post">{formatDate(job.createdAt)}</span>
+                    </div>
+
                 </div>
 
                 <div className="job-pay text-sm text-gray-600 mb-2">
@@ -106,17 +109,6 @@ const JobCard = ({ job }) => {
 
                 <div className="job-footer flex justify-between items-center">
                     <div className="job-actions flex space-x-4">
-                        <button className="action-button flex items-center text-gray-500 hover:text-gray-700">
-                            <Heart size={16} />
-                            <span className="ml-1">{job.likeCount || 0}</span>
-                        </button>
-                        <button className="action-button flex items-center text-gray-500 hover:text-gray-700">
-                            <MessageCircle size={16} />
-                            <span className="ml-1">{job.commentCount || 0}</span>
-                        </button>
-                        <button className="action-button flex items-center text-gray-500 hover:text-gray-700">
-                            <Share2 size={16} />
-                        </button>
                         <button className="applying-job" onClick={() => setApplyingJobModal(true)}>Apply</button>
                         <button className="recommend-job" onClick={() => setRecommendModal(true)}>Recommend</button>
                     </div>
