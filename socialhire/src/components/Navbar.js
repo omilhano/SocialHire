@@ -55,7 +55,7 @@ const NavbarSocialhire = ({ filters, setFilters }) => {
                     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                     if (userDoc.exists()) {
                         const userData = userDoc.data(); // Extract user data
-                        setUserName(userData.firstName || "User"); // Set user's first name or a default
+                        setUserName(userData.username || "User"); // Set user's first name or a default
                     }
                 } catch (error) {
                     console.error("Error fetching user profile:", error);
