@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from "../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; // maybe need a hook instead of this
 import '../styles/SignUp.css';
 import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
@@ -41,7 +41,7 @@ const SignUp = () => {
         } else if (formData.lastName.length < 2) {
             newErrors.lastName = 'Last name must be at least 2 characters';
         }
-        
+
 
         // Validate Email
         if (!formData.email.trim()) {
@@ -79,10 +79,10 @@ const SignUp = () => {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", username));
         const querySnapshot = await getDocs(q);
-    
+
         return !querySnapshot.empty; // True if a user with the username exists
     };
-    
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -103,13 +103,13 @@ const SignUp = () => {
         setTermsAccepted(e.target.checked);
     };
 
+    // After clicking signin button
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Check if username is unique first
         const usernameExists = await checkUsernameExists(formData.username);
         if (usernameExists) {
             setErrors(prev => ({ ...prev, username: 'Username is already taken' }));
-            return; // Stop further execution if username is not unique
+            return;
         }
 
         if (validateForm()) {
@@ -122,11 +122,15 @@ const SignUp = () => {
                     formData.password
                 );
 
+                // Send email verification
+                await sendEmailVerification(userCredential.user);
+
+                // Send welcome email
+                sendWelcomeEmail(formData);
+
                 // Get the user ID from authentication
                 const userId = userCredential.user.uid;
 
-
-                // User is created
                 // Create user document in Firestore
                 await setDoc(doc(db, "users", userId), {
                     firstName: formData.firstName,
@@ -135,21 +139,19 @@ const SignUp = () => {
                     email: formData.email,
                     accountType: formData.accountType,
                     createdAt: new Date().toISOString(),
-                    userId: userId // Store the userId for reference
-                    // Note: We don't store the password in Firestore
+                    userId: userId
                 });
 
-                sendWelcomeEmail(formData);
-                
-                console.log("User account created successfully!");
-                alert("Account created successfully! Please sign in.");
+                // Redirect to sign in after verification email has been sent
+                console.log("User account created, verification email sent, and welcome email sent!");
+                alert("Account created successfully! Please verify your email before signing in.");
                 navigate('/signin');
 
             } catch (error) {
                 console.error("Error creating account:", error);
                 let errorMessage = 'Failed to create account. ';
 
-                switch (error.code) {
+                switch (error.code) { // Switch case to handle errors
                     case 'auth/email-already-in-use':
                         errorMessage += 'Email is already registered.';
                         setErrors(prev => ({ ...prev, email: 'Email is already registered' }));
@@ -178,6 +180,8 @@ const SignUp = () => {
             }
         }
     };
+
+
 
     return (
         <div className="signup-page">
@@ -326,8 +330,8 @@ const SignUp = () => {
                         </label>
                     </div>
 
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="signup-button"
                         disabled={isSubmitting || !termsAccepted}
                     >
