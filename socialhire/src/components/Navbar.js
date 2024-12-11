@@ -147,7 +147,8 @@ const NavbarSocialhire = ({ filters, setFilters }) => {
 
                     {/* User profile picture and name */}
                     <div className="profile-picture-1">
-                        <Link className="profile-picture-navbar" to="/UserProfile">
+                        <Link className="profile-picture-navbar" 
+                        to={userName ? `/profile/${userName}` : "/login"} >
                             <img
                                 src={placeholderPic}
                                 alt="Profile"
