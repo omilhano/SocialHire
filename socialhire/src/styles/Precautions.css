@@ -1,0 +1,30 @@
+.precautions-list{
+    text-align: left;
+}
+
+
+@media (max-width: 690px) {
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "layout-sidebar"
+            "layout-aside"
+            "layout-main";
+        justify-content: center;
+        align-items: center;
+    }
+
+    .layout-sidebar {
+        grid-area: layout-sidebar;
+    }
+
+    .layout-main {
+        grid-area: layout-main;
+    }
+
+    .layout-aside {
+        grid-area: layout-aside;
+    }
+}

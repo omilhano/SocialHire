@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
+import Precautions from '../components/Precautions';
 import CreatingJobModal from '../components/CreatingJobModal';
 import JobList from '../components/JobList';
 import { db } from '../firebaseConfig'; // Import Firebase db
@@ -93,7 +94,7 @@ const JobSearch = ({ filters }) => {
           <div className="sidebar-header">
             <div className="header-top">
               {/* Button to open the modal */}
-              <button onClick={handleOpenModal}>Start Hiring</button>
+              <button onClick={handleOpenModal} className='btn btn-primary'>Start Hiring</button>
             </div>
           </div>
         </div>
@@ -108,8 +109,8 @@ const JobSearch = ({ filters }) => {
         {/* Aside Section */}
         <div className="layout-aside">
           <div className="add-people">
-            <h2>Before Applying: </h2>
             {/* Component to suggest precautions before accepting jobs */}
+            <Precautions />
           </div>
         </div>
       </div>

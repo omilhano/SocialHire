@@ -7,7 +7,7 @@ import '../styles/SignUp.css';
 import useRedirectIfLoggedIn from "../hooks/useRedirectIfLoggedIn";
 import sendWelcomeEmail from '../components/EmailSend';
 
-
+// Handling SignUp 
 const SignUp = () => {
     useRedirectIfLoggedIn(); // Hook to redirect logged-in users
     const navigate = useNavigate();
