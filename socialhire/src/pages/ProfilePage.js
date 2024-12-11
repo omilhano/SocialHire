@@ -175,6 +175,10 @@ const ProfilePage = () => {
     };
     fetchProfile();
   }, [username, loggedInUserId, friendshipStatus, isCurrentUserProfile]);
+
+  const handleEditProfile = () => {
+    navigate("/UserProfile");
+  };
 //TODO until here
   const handleAddFriend = async () => {
     try {
@@ -352,6 +356,13 @@ const ProfilePage = () => {
         </Card.Body>
       </Card>
 
+      {isCurrentUserProfile && (
+        <div className="d-flex justify-content-center align-items-center mt-3">
+          <Button variant="primary" onClick={handleEditProfile}>
+            Edit Profile
+          </Button>
+        </div>
+      )}
       {!isCurrentUserProfile && (
         <div className="d-flex justify-content-center align-items-center mt-2">
           {friendshipStatus === "friends" && (
