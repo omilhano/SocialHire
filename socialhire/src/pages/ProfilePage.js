@@ -410,21 +410,25 @@ const ProfilePage = () => {
               Remove Friend
             </Button>
           )}
+          {/* Modal for confirming the removal of a friend */}
           <RemoveFriendModal
             show={showRemoveFriendModal}  // Modal visibility controlled by state
             onHide={() => setShowRemoveFriendModal(false)}  // Close the modal
             onConfirm={handleRemoveFriend}  // Executes the function to remove the friend
           />
+          {/* If a friend request is pending, show a disabled button */}
           {friendshipStatus === "pending" && (
             <Button variant="secondary" disabled>
               Friend Request Sent
             </Button>
           )}
+          {/* If there's no friendship status, show an "Add Friend" button */}
           {friendshipStatus === null && (
             <Button variant="primary" onClick={handleAddFriend}>
               Add Friend
             </Button>
           )}
+          {/* If the user is not blocked, show the "Block User" button */}
           {blockStatus !== "blocked" && (
             <Button
               variant="danger"
@@ -437,6 +441,10 @@ const ProfilePage = () => {
         </div>
       )}
 
+      {/* Conditional rendering for posts and job sections:
+            - Show posts and experiences only if it's the current user's profile, or the profile is public,
+              or the users are friends.
+      */}
       {(isCurrentUserProfile ||
         !profileData.privateProfile ||
         friendshipStatus === "friends") && (
@@ -446,7 +454,7 @@ const ProfilePage = () => {
           <UserExperiencesSection experiences={userExperiences} />
         </>
       )}
-
+      {/* If it's a private profile and the viewer is not a friend, show a message indicating the profile is private */}
       {!isCurrentUserProfile &&
         profileData.privateProfile &&
         friendshipStatus !== "friends" && (
@@ -458,14 +466,14 @@ const ProfilePage = () => {
             </Card.Body>
           </Card>
         )}
-
+      {/* Modal for blocking a user */}
       <BlockUserModal
-        show={showBlockUserModal}
-        onHide={() => setShowBlockUserModal(false)}
-        onConfirm={handleBlockUser}
+        show={showBlockUserModal} // Controls whether the block user modal is visible
+        onHide={() => setShowBlockUserModal(false)} // Closes the modal
+        onConfirm={handleBlockUser} // Executes the function to block the user
       />
     </Container>
   );
 };
-
+// Export the ProfilePage component for use in other parts of the application
 export default ProfilePage;
