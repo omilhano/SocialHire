@@ -207,75 +207,89 @@ const ProfilePage = () => {
       console.error("Error sending friend request:", err);
     }
   };
-
+// Function to handle removing a friend
   const handleRemoveFriend = async () => {
     try {
+      // Create a query to search the "Connections" collection to find the connection
+      // between the logged-in user and the profile user (either user_id or connected_user_id)
       const connectionsQuery = query(
-        collection(db, "Connections"),
-        where("user_id", "in", [loggedInUserId, profileData.userId]),
-        where("connected_user_id", "in", [loggedInUserId, profileData.userId])
+        collection(db, "Connections"), // The "Connections" collection in the Firestore database
+        where("user_id", "in", [loggedInUserId, profileData.userId]), // Find documents where user_id matches either logged-in or profile user
+        where("connected_user_id", "in", [loggedInUserId, profileData.userId]) // Find documents where connected_user_id matches either logged-in or profile user
       );
+       // Execute the query to get the matching documents
       const snapshot = await getDocs(connectionsQuery);
 
+      // If a matching connection is found, remove it by deleting the document
       if (!snapshot.empty) {
-        const docId = snapshot.docs[0].id;
-        await deleteDoc(doc(db, "Connections", docId));
-        setFriendshipStatus(null);
+        const docId = snapshot.docs[0].id; // Get the document ID of the first matching document
+        await deleteDoc(doc(db, "Connections", docId)); // Delete the document from the database
+        setFriendshipStatus(null); // Reset the friendship status to null
       }
     } catch (err) {
       console.error("Error removing friend:", err);
     }
   };
-
+// Function to handle blocking a user
   const handleBlockUser = async () => {
     try {
+      // Create a query to search for existing connection between the logged-in user and the profile user
       const connectionsQuery = query(
         collection(db, "Connections"),
         where("user_id", "in", [loggedInUserId, profileData.userId]),
         where("connected_user_id", "in", [loggedInUserId, profileData.userId])
       );
+      // Execute the query to check if a connection exists
       const snapshot = await getDocs(connectionsQuery);
 
+      // If a connection exists, update its status to "blocked"
       if (!snapshot.empty) {
-        const docId = snapshot.docs[0].id;
-        await updateDoc(doc(db, "Connections", docId), { status: "blocked" });
+        const docId = snapshot.docs[0].id; // Get the document ID of the first matching document
+        await updateDoc(doc(db, "Connections", docId), { status: "blocked" }); // Update the document's status field to "blocked"
       } else {
+        // If no connection exists, create a new "blocked" connection
         await addDoc(collection(db, "Connections"), {
           user_id: loggedInUserId,
           connected_user_id: profileData.userId,
-          status: "blocked",
-          created_at: new Date(),
+          status: "blocked", // Set the initial status to "blocked"
+          created_at: new Date(), // Set the creation date of the new connection
         });
       }
 
-      setBlockStatus("blocked");
-      setShowBlockUserModal(false);
+      setBlockStatus("blocked"); // Update the state to reflect the "blocked" status
+      setShowBlockUserModal(false); // Close the block user modal
     } catch (err) {
       console.error("Error blocking user:", err);
     }
   };
 
+  // Function to handle unblocking a user
   const handleUnblockUser = async () => {
     try {
+       // Create a query to search for an existing connection between the logged-in user and the profile user
       const connectionsQuery = query(
         collection(db, "Connections"),
         where("user_id", "in", [loggedInUserId, profileData.userId]),
         where("connected_user_id", "in", [loggedInUserId, profileData.userId])
       );
+      // Execute the query to check if a connection exists
       const snapshot = await getDocs(connectionsQuery);
 
+      // If a connection exists, delete it (unblock the user)
       if (!snapshot.empty) {
-        const docId = snapshot.docs[0].id;
-        await deleteDoc(doc(db, "Connections", docId));
+        const docId = snapshot.docs[0].id; // Get the document ID of the first matching document
+        await deleteDoc(doc(db, "Connections", docId)); // Delete the connection from the database
       }
 
-      setBlockStatus(null);
+      setBlockStatus(null); // Reset the block status to null (unblocked)
     } catch (err) {
       console.error("Error unblocking user:", err);
     }
   };
 
+  // UI rendering logic for various states (loading, error, and profile not found)
   if (loading) {
+    // If loading is true, display a loading spinner in the center of the screen
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Spinner animation="border" role="status">
@@ -286,6 +300,7 @@ const ProfilePage = () => {
   }
 
   if (error) {
+     // If an error exists, display the error message in a danger-colored alert
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Alert variant="danger">{error}</Alert>
@@ -294,6 +309,7 @@ const ProfilePage = () => {
   }
 
   if (!profileData) {
+     // If no profile data exists, display a warning alert indicating profile not found
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Alert variant="warning">Profile not found</Alert>
@@ -301,8 +317,9 @@ const ProfilePage = () => {
     );
   }
 
-   // Show only name if the viewer is blocked by the profile owner
+   // Check if the user has been blocked by the profile owner
    if (blockStatus === "blockedByOther") {
+    // Display the profile container centered on the screen
     return (
       <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
         <Card className="profile-card mt-3 shadow-sm">
@@ -318,9 +335,10 @@ const ProfilePage = () => {
       </Container>
     );
   }
-
+  // Check if the viewer has blocked this user
   if (blockStatus === "blocked") {
     return (
+      // Display the profile container centered on the screen
       <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
         <div className="profile-image-wrapper">
           <img
@@ -347,6 +365,7 @@ const ProfilePage = () => {
   }
   return (
     <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
+      {/* Wrapper for the profile image */}
       <div className="profile-image-wrapper">
         <img
           src={
@@ -358,8 +377,10 @@ const ProfilePage = () => {
         />
       </div>
 
+      {/* Profile information displayed in a card */}
       <Card className="profile-card mt-3 shadow-sm">
         <Card.Body>
+          {/* Display user's name in the card title */}
           <Card.Title className="text-center profile-card-title">
             {profileData.firstName} {profileData.lastName}
           </Card.Title>
@@ -369,6 +390,7 @@ const ProfilePage = () => {
         </Card.Body>
       </Card>
 
+       {/* Conditional rendering: Only show the "Edit Profile" button if this is the current user's profile */}
       {isCurrentUserProfile && (
         <div className="d-flex justify-content-center align-items-center mt-3">
           <Button variant="primary" onClick={handleEditProfile}>
@@ -376,8 +398,10 @@ const ProfilePage = () => {
           </Button>
         </div>
       )}
+      {/* Conditional rendering for non-current users */}
       {!isCurrentUserProfile && (
         <div className="d-flex justify-content-center align-items-center mt-2">
+          {/* If the user is a friend, show the "Remove Friend" button */}
           {friendshipStatus === "friends" && (
             <Button
               variant="outline-danger"
@@ -386,6 +410,11 @@ const ProfilePage = () => {
               Remove Friend
             </Button>
           )}
+          <RemoveFriendModal
+            show={showRemoveFriendModal}  // Modal visibility controlled by state
+            onHide={() => setShowRemoveFriendModal(false)}  // Close the modal
+            onConfirm={handleRemoveFriend}  // Executes the function to remove the friend
+          />
           {friendshipStatus === "pending" && (
             <Button variant="secondary" disabled>
               Friend Request Sent
