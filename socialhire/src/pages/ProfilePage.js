@@ -386,6 +386,11 @@ const ProfilePage = () => {
               Remove Friend
             </Button>
           )}
+          <RemoveFriendModal
+            show={showRemoveFriendModal}  // Modal visibility controlled by state
+            onHide={() => setShowRemoveFriendModal(false)}  // Close the modal
+            onConfirm={handleRemoveFriend}  // Executes the function to remove the friend
+          />
           {friendshipStatus === "pending" && (
             <Button variant="secondary" disabled>
               Friend Request Sent
