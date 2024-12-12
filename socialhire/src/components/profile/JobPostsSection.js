@@ -2,6 +2,23 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 import "../../styles/JobPostsSection.css";
 
+/**
+ * JobPostsSection Component
+ * 
+ * Parameters:
+ * - jobs (Array): An array of job objects. Each job contains details such as jobTitle, 
+ *   jobType, location, pricePerHour, jobDescription, jobExpectedTime, and endTime.
+ * - editMode (Boolean): A flag that determines whether the component is in edit mode. 
+ *   If true, it displays a "Delete Job" button for each job listing.
+ * - onDeleteJob (Function): A callback function to handle the deletion of a job listing. 
+ *   It is triggered when the "Delete Job" button is clicked, and it takes the job's jobID as an argument.
+ * 
+ * Description:
+ * This component renders a list of job postings. If no jobs are available, 
+ * it shows a message indicating no job listings yet. 
+ * Each job is displayed in a Bootstrap Card with details such as title, type, location, hourly rate, description, 
+ * expected time, and end time. If the component is in edit mode, a delete button will appear on each job card.
+ */
 export const JobPostsSection = ({ jobs, editMode, onDeleteJob }) => {
   return (
     <div className="job-posts-section">

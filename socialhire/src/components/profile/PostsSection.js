@@ -4,6 +4,23 @@ import { auth } from "../../firebaseConfig";
 import { Timestamp } from 'firebase/firestore';
 import PostModal from '../PostModal';
 
+/**
+ * PostSection Component
+ * 
+ * Parameters:
+ * - posts 
+ * - editMode (Boolean): A flag that determines whether the component is in edit mode. If true, it shows a form to add or edit an experience.
+ * - onEditModeChange (Function): A callback function to handle toggling between edit and view mode. 
+ *   It takes a boolean value (true/false) as an argument. True Edit, False no Edit
+ * - onPostDataChange (Function): A callback function that handles changes to the post data (e.g., title, content, etc.). It is passed to the PostForm component to update the post data.
+ * - onAddPost (Function): A callback function triggered when a new post is created. 
+ *   It receives the post data as an argument.
+ * - onDeletePost (Function): A callback function triggered when a post is deleted. 
+ *   It receives the post's id to remove the specific post from the list.
+ * Description:
+ * This component manages the rendering and editing of posts. 
+ * It provides functionality to view existing posts, create a new one and edit or delete existing posts. 
+ */
 
 export const PostSection = ({
     posts: initialPosts,
@@ -214,8 +231,8 @@ const PostList = ({ posts, onEdit, onDelete }) => {
     return (
         <div className="post-list">
             {posts.map((post) => (
-                <div 
-                    key={post.id} 
+                <div
+                    key={post.id}
                     className="post-card"
                     onClick={(e) => {
                         // Prevent click if user clicked on edit/delete buttons
@@ -227,20 +244,20 @@ const PostList = ({ posts, onEdit, onDelete }) => {
                     <div className="card-header">
                         <h3 className="post-title">{post.title}</h3>
                         <div className="post-card-actions">
-                            <button 
+                            <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onEdit(post);
-                                }} 
+                                }}
                                 className="action-button edit-post-button"
                             >
                                 <PencilIcon size={16} />
                             </button>
-                            <button 
+                            <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onDelete(post.id);
-                                }} 
+                                }}
                                 className="action-button delete-post-button"
                             >
                                 <TrashIcon size={16} />

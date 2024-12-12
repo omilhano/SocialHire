@@ -4,6 +4,25 @@ import { useFirebaseDocument } from '../../hooks/useFirebase';
 import { auth } from "../../firebaseConfig";
 import PropTypes from 'prop-types';
 
+/**
+ * ExperienceSection Component
+ * 
+ * Parameters:
+ * - experiences (Array): The list of experience objects to display. 
+ *   Each experience contains fields like `id`, `title`, `company`, `startDate`, `endDate`, `current`, and `description`.
+ * - newExperience (Object): Data for a new experience to be added (not used directly in the component).
+ * - editMode (Boolean): A flag that determines whether the component is in edit mode. If true, it shows a form to add or edit an experience.
+ * - onEditModeChange (Function): A callback function to handle toggling between edit and view mode. 
+ *   It takes a boolean value (true/false) as an argument. True Edit, False no Edit
+ * - onExpereinceDataChange (Function): A callback function that handles changes in experience data in the form.
+ * - onAddExperience (Function): A callback function to add a new experience to the list. It receives the experience data as an argument.
+ * - onDeleteExperience (Function): A callback function to delete an experience. It receives the experience id to delete.
+ * 
+ * Description:
+ * This component manages the rendering and editing of a user's experience list. 
+ * It provides functionality to view existing experiences, add new ones, and edit or delete existing experiences. 
+ */
+
 export const ExperienceSection = ({
     experiences: initialExperiences,
     newExperience,
@@ -103,10 +122,10 @@ const ExperienceForm = ({ experience, onSave, onCancel }) => {
     useEffect(() => {
         setFormData({
             ...experience,
-            startDate: experience.startDate instanceof Date 
+            startDate: experience.startDate instanceof Date
                 ? experience.startDate.toISOString().split('T')[0]
                 : '',
-            endDate: experience.endDate instanceof Date 
+            endDate: experience.endDate instanceof Date
                 ? experience.endDate.toISOString().split('T')[0]
                 : ''
         });
@@ -121,7 +140,7 @@ const ExperienceForm = ({ experience, onSave, onCancel }) => {
 
     const handleSave = async () => {
         if (!auth.currentUser) return;
-    
+
         const experienceData = {
             title: formData.title || '',
             company: formData.company || '',
@@ -214,7 +233,7 @@ const ExperienceList = ({ experiences, onEdit, onDelete }) => {
                     month: 'long'
                 }).format(new Date(date.seconds * 1000));
             }
-            
+
             // Handle Date object
             if (date instanceof Date) {
                 return new Intl.DateTimeFormat('en-US', {
