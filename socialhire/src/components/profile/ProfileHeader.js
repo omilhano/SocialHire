@@ -4,6 +4,24 @@ import DefaultProfilePic from '../../images/placeholderPic.jpg';
 import { auth, db, storage } from "../../firebaseConfig"; // Adjust path based on location
 import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 
+/**
+ * Profile Header
+ * 
+ * Parameters:
+ * - profileData (Object): The profile data object containing the user's profile information 
+ *   (e.g., profilePicture, firstName, lastName, headline, location).
+ * - editMode (Object): A flag that determines which section is in edit mode. It contains a key basic, which is true if the "Basic Info" section is in edit mode and false otherwise.
+ * - onEditModeChange (Function): A callback function that toggles between view and edit modes for specific sections. 
+ *   It takes an object with the section's key (basic) and a boolean (true to enable edit mode).
+ * - onProfilePictureChange (Function): A callback function triggered when the user selects a new profile picture. It handles the file change event.
+ * - onProfileDataChange (Function): A callback function that updates the profile data. 
+ *   It receives the field name and the new value to update.
+ * Description:
+ * The ProfileHeader component displays the user's profile information at the top of their profile page. 
+ * It shows the profile picture, along with basic personal information like the user's name, headline, and location.
+ * It provides functionality for switching between edit and view modes for the "Basic Info" section.
+*/
+
 export const ProfileHeader = ({
     profileData,
     editMode,

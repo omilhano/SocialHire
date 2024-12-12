@@ -2,6 +2,28 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import "../../styles/UserExperiencesSection.css";
 
+/**
+ * UserExperiencesSection Component
+ * 
+ * This component displays a list of user experiences, such as job or internship roles.
+ * It uses a Bootstrap card for each experience to display its title, description, and dates.
+ * If no experiences are provided, it shows a message indicating no experiences have been added yet.
+ * 
+ * Parameters:
+ * - experiences (Array): An array of experience objects, where each object contains details such as:
+ *    - id (String): Unique identifier for the experience
+ *    - title (String): The title of the position or role
+ *    - company (String): The company or organization where the experience took place
+ *    - description (String): A description of the responsibilities or tasks performed
+ *    - startDate (Date): The starting date of the experience (in Firestore timestamp format)
+ *    - endDate (Date): The ending date of the experience (in Firestore timestamp format)
+ *    - current (Boolean): A flag indicating if the experience is ongoing (i.e., present)
+ * 
+ * Description:
+ * - This component maps through the experiences array and renders each experience inside a Bootstrap card.
+ * - If no experiences are available, a "No experiences added yet" message is displayed.
+ */
+
 export const UserExperiencesSection = ({ experiences }) => {
   return (
     <div className="user-experiences-section">

@@ -12,7 +12,8 @@ import { Toast } from '../components/common/Toast';
 import { AboutSection } from '../components/profile/AboutSection.js';
 import { ExperienceSection } from '../components/profile/ExperienceSection.js';
 import { PostSection } from '../components/profile/PostsSection.js';
-import ToggleSwitch from '../components/common/ToggleSwitch'; // Import ToggleSwitch
+import { JobPostsSection } from '../components/profile/JobPostsSection';
+import ToggleSwitch from '../components/common/ToggleSwitch';
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
@@ -23,20 +24,22 @@ const UserProfile = () => {
     const { addDocument: addExperience } = useFirebaseDocument('experience');
     const { updateDocument: updatePost, getDocumentsByUserId: getPostsByUserId } = useFirebaseDocument('posts');
     const { addDocument: addPost } = useFirebaseDocument('posts');
-    
+    const { getDocumentsByUserId: getJobsByUserId, deleteDocument: deleteJob } = useFirebaseDocument('jobs');
+
     // State
     const [state, setState] = useState({
         profileData: {},
         experienceData: {},
         postData: [],
+        jobData: [],
         loading: true,
         error: null,
         validation: {},
-        editMode: { basic: false, about: false, experience: false, post: false },
+        editMode: { basic: false, about: false, experience: false, post: false, jobs: false },
         privateProfile: false, // New state for the toggle
     });
 
-    const { profileData, experienceData, postData, loading, error, validation, editMode, privateProfile } = state;
+    const { profileData, experienceData, postData, jobData, loading, error, validation, editMode, privateProfile } = state;
 
 
 
@@ -48,6 +51,8 @@ const UserProfile = () => {
             const profile = await getDocument('users', auth.currentUser.uid);
             const experiences = await getDocumentsByUserId('experience', auth.currentUser.uid);
             const posts = await getPostsByUserId('posts', auth.currentUser.uid);
+            const jobs = await getJobsByUserId('jobs', auth.currentUser.uid);
+            console.log("Jobs fetched in UserProfile:", jobs);
 
             console.log("Experiences: ", experiences);
             setState(prev => ({
@@ -55,6 +60,7 @@ const UserProfile = () => {
                 profileData: profile || {},
                 experienceData: experiences || [],
                 postData: posts || [],
+                jobData: jobs || [],
                 privateProfile: profile?.privateProfile || false,
                 loading: false,
             }));
@@ -65,12 +71,14 @@ const UserProfile = () => {
                 loading: false
             }));
         }
-    }, [getDocument, getDocumentsByUserId, getPostsByUserId]);
+    }, [getDocument, getDocumentsByUserId, getPostsByUserId, getJobsByUserId]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 fetchProfile();
+                console.log("Job data fetched in UserProfile:", jobData);
+
             } else {
                 navigate('/signin');
             }
@@ -88,13 +96,13 @@ const UserProfile = () => {
             console.error("Failed to update privacy setting:", error.message);
             setState(prevState => ({ ...prevState, error: "Failed to update privacy setting." }));
         }
-    }; 
+    };
 
-        // // Toggle  handler
-        // const handleTogglePrivacy = (checked) => {
-        //     setState((prevState) => ({ ...prevState, privateProfile: checked }));
-        //     console.log(`Profile is ${checked ? 'Private' : 'Public'}`);
-        // };
+    // // Toggle  handler
+    // const handleTogglePrivacy = (checked) => {
+    //     setState((prevState) => ({ ...prevState, privateProfile: checked }));
+    //     console.log(`Profile is ${checked ? 'Private' : 'Public'}`);
+    // };
 
     const handleProfileUpdate = useCallback(async (field, value) => {
         console.log("User trying to update in UserProfile", auth.currentUser.uid, { [field]: value });
@@ -208,6 +216,23 @@ const UserProfile = () => {
         }
     }, [updatePost, addPost]);
 
+    const handleDeleteJob = async (jobID) => {
+        try {
+            await deleteJob('jobs', jobID);
+            setState(prev => ({
+                ...prev,
+                jobData: prev.jobData.filter(job => job.jobID !== jobID),
+            }));
+            console.log("Job deleted successfully:", jobID);
+        } catch (error) {
+            console.error("Failed to delete job:", error.message);
+            setState(prev => ({
+                ...prev,
+                error: "Failed to delete job.",
+            }));
+        }
+    };
+
     if (loading) {
         return <div className="loading">Loading profile...</div>;
     }
@@ -259,6 +284,11 @@ const UserProfile = () => {
                     editMode: { ...prev.editMode, post: mode }
                 }))}
                 onAddPost={(post) => handlePostUpdate(post)}
+            />
+            <JobPostsSection
+                jobs={jobData}
+                editMode={editMode.jobs}
+                onDeleteJob={handleDeleteJob}
             />
             <div className="toggle-container">
                 <span> Privatize toggle:</span>

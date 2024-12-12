@@ -3,6 +3,25 @@ import { db } from "../firebaseConfig";
 import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+/**
+ * People Component
+ *
+ * This component allows the logged-in user to view and connect with other users.
+ * It fetches a list of users excluding already connected users and displays them.
+ * The user can send a connection request (friend request) to other users.
+ *
+ * States:
+ * - users: An array to store the fetched user data from Firestore.
+ * - loading: A boolean to manage the loading state while users are being fetched.
+ * - error: A string to store any error messages encountered during the fetching process.
+ * - pendingRequests: An object to track which users have pending connection requests from the current user.
+ * 
+ * Functions:
+ * - fetchUsers: Fetches the users and filters out the current user and users who are already connected
+ *   to the current user.
+ * - addfriend: Sends a friend request to another user if no pending request already exists.
+ */
+
 const People = () => {
     const [users, setUsers] = useState([]); // State to store fetched users
     const [loading, setLoading] = useState(true); // State to handle loading status
