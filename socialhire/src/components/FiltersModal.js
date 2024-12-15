@@ -8,12 +8,11 @@ import '../styles/FiltersModal.css';
 // Pass on filters for parent component
 const SearchModal = ({ show, onClose, filters, setFilters }) => {
     // Destructure filters for easier access and set defaults if not provided
-    const { jobType, location, numOfPeople, minSalary, maxSalary, pricePerHour, userType } = filters || {};
+    const { jobType, location, minSalary, maxSalary, pricePerHour, userType } = filters || {};
 
     // Local state for each filter category
     const [selectedJobType, setSelectedJobType] = useState(jobType || 'Choose Type of Job');
     const [selectedLocation, setSelectedLocation] = useState(location || 'Choose Location');
-    const [selectedNumOfPeople, setSelectedNumOfPeople] = useState(numOfPeople || 'Choose Nº of people');
     const [selectedMinSalary, setSelectedMinSalary] = useState(minSalary || 0);
     const [selectedMaxSalary, setSelectedMaxSalary] = useState(maxSalary || 200000);
     const [selectedPricePerHour, setSelectedPricePerHour] = useState(pricePerHour || 0);
@@ -24,13 +23,12 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
         if (!show) {
             setSelectedJobType(jobType || 'Choose Type of Job');
             setSelectedLocation(location || 'Choose Location');
-            setSelectedNumOfPeople(numOfPeople || 'Choose Nº of people');
             setSelectedMinSalary(minSalary || 0);
             setSelectedMaxSalary(maxSalary || 200000);
             setSelectedPricePerHour(pricePerHour || 0);
             setSelectedUserType(userType || 'Choose User Type'); // Reset User Type
         }
-    }, [show, jobType, location, numOfPeople, minSalary, maxSalary, pricePerHour, userType]);
+    }, [show, jobType, location, minSalary, maxSalary, pricePerHour, userType]);
 
     // Mapping dropdown values to related Firestore values
     const jobTypeMapping = {
@@ -44,12 +42,6 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
         'Algarve Area': 'Algarve'
     };
 
-    const numOfPeopleMapping = {
-        '1': '1',
-        '2': '2',
-        '3+': '3+'
-    };
-
     const userTypeMapping = {
         'User': 'user',
         'Company': 'company'
@@ -58,7 +50,6 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
     // Handlers for each dropdown
     const handleJobTypeSelect = (value) => setSelectedJobType(value);
     const handleLocationSelect = (value) => setSelectedLocation(value);
-    const handleNumOfPeopleSelect = (value) => setSelectedNumOfPeople(value);
     const handleUserTypeSelect = (value) => setSelectedUserType(value); // Handle User Type change
 
     // Handlers for salary and price per hour
@@ -76,9 +67,6 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
         }
         if (selectedLocation !== 'Choose Location') {
             appliedFilters.location = locationMapping[selectedLocation] || selectedLocation;
-        }
-        if (selectedNumOfPeople !== 'Choose Nº of people') {
-            appliedFilters.numOfPeople = numOfPeopleMapping[selectedNumOfPeople] || selectedNumOfPeople;
         }
 
         // Handle salary or price per hour based on job type
@@ -130,18 +118,6 @@ const SearchModal = ({ show, onClose, filters, setFilters }) => {
                         <Dropdown.Item onClick={() => handleLocationSelect('Lisbon Area')}>Lisbon Area</Dropdown.Item>
                         <Dropdown.Item onClick={() => handleLocationSelect('Porto Area')}>Porto Area</Dropdown.Item>
                         <Dropdown.Item onClick={() => handleLocationSelect('Algarve Area')}>Algarve Area</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                {/* Number of People Dropdown */}
-                <Dropdown>
-                    <Dropdown.Toggle variant="primary" id="dropdown-numOfPeople">
-                        {selectedNumOfPeople}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => handleNumOfPeopleSelect('1')}>1</Dropdown.Item>
-                        <Dropdown.Item onClick={() => handleNumOfPeopleSelect('2')}>2</Dropdown.Item>
-                        <Dropdown.Item onClick={() => handleNumOfPeopleSelect('3+')}>3+</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 

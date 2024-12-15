@@ -1,3 +1,7 @@
+.sidebar-header{
+    gap: 10px;
+}
+
 .job-card {
     width: 100% !important;
 }

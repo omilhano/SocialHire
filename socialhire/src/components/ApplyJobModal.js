@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth"; // Firebase authent
 import { db } from "../firebaseConfig"; // Import Firestore configuration
 import { collection, addDoc } from 'firebase/firestore';
 
-const ApplyingJobModal = ({ jobId, show, onClose }) => {
+const ApplyingJobModal = ({ jobId, show, onClose, creatorId }) => {
     const [motivationText, setMotivation] = useState('');
     const [yearsOfExperience, setyearsOfExperience] = useState('');
     const auth = getAuth();
@@ -22,19 +22,19 @@ const ApplyingJobModal = ({ jobId, show, onClose }) => {
 
     const handleApply = async () => {
         const application = {
-            jobPostingId: jobId, // Ensure `job.id` is accessible
-            applicantId: currentUserId, // Replace with the logged-in user's ID
-            yearsOfExperience, // Make sure `experience` is set
-            motivationText, // Make sure `motivationText` is set
-            appliedAt: new Date(), // Optionally add a timestamp
+            jobPostingId: jobId,
+            applicantId: currentUserId,
+            yearsOfExperience, 
+            motivationText, 
+            appliedAt: new Date(),
+            creatorId,
+            status: "pending"
         };
 
         try {
             // Add the application document to the "applications" collection
             const docRef = await addDoc(collection(db, 'applications'), application);
             console.log("Application created with ID: ", docRef.id); // Firestore-generated ID
-
-            // Optionally close the modal
             onClose();
         } catch (error) {
             console.error("Error submitting application: ", error);

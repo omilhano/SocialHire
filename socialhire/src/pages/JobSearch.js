@@ -35,10 +35,6 @@ const JobSearch = ({ filters }) => {
         if (filters.location && filters.location !== 'Choose Location') {
           jobsCollectionRef = query(jobsCollectionRef, where('location', '==', filters.location));
         }
-        if (filters.numOfPeople && filters.numOfPeople !== 'Choose Nº of people') {
-          jobsCollectionRef = query(jobsCollectionRef, where('numOfPeople', '==', filters.numOfPeople));
-        }
-
         // Add the userType filter if selected
         if (filters.userType && filters.userType !== 'Choose User Type') {
           jobsCollectionRef = query(jobsCollectionRef, where('userType', '==', filters.userType));
@@ -46,23 +42,19 @@ const JobSearch = ({ filters }) => {
 
         // Handle salary range filter if min/max salary are set
         if (filters.minSalary || filters.maxSalary) {
-          // Firestore can't directly query on nested fields like 'payRange.min' and 'payRange.max'
-          // but we can filter using range queries and combine them in JavaScript logic.
-
-          // Fetch jobs with salary filtering
           const jobsSnapshot = await getDocs(jobsCollectionRef); // Get documents from Firestore
           const jobsList = jobsSnapshot.docs
             .map(doc => {
               const data = doc.data();
               const payRange = data.payRange || {};
-              return { id: doc.id, ...data, payRange };
+              return { id: doc.id, ...data, userId:data.userId, payRange };
             })
             .filter(job => {
               // Queries jobs minimum and maximum salary ranged defined before
               const { min, max } = job.payRange;
               const jobMinSalary = parseInt(min);
               const jobMaxSalary = parseInt(max);
-              console.log(job.payRange)
+
               // Apply filters for salary range
               const minSalaryMatch = filters.minSalary ? jobMinSalary >= filters.minSalary : true;
               const maxSalaryMatch = filters.maxSalary ? jobMaxSalary <= filters.maxSalary : true;
@@ -74,7 +66,17 @@ const JobSearch = ({ filters }) => {
           // No salary filter, just apply other filters
           const jobsSnapshot = await getDocs(jobsCollectionRef); // Get documents from Firestore
           const jobsList = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setJobs(jobsList); // Set the fetched jobs to state
+
+          // Additional check for pricePerHour if jobType is 'Hustler'
+          if (filters.jobType === 'Hustler' && filters.pricePerHour) {
+            const filteredJobs = jobsList.filter(job => {
+              const jobPrice = job.pricePerHour || 0; // Default to 0 if pricePerHour is not set
+              return jobPrice >= filters.pricePerHour;
+            });
+            setJobs(filteredJobs); // Filter jobs based on pricePerHour
+          } else {
+            setJobs(jobsList); // Set the fetched jobs to state
+          }
         }
       } catch (error) {
         setError(error.message); // Set error if any
@@ -92,10 +94,9 @@ const JobSearch = ({ filters }) => {
         {/* Sidebar */}
         <div className="layout-sidebar">
           <div className="sidebar-header">
-            <div className="header-top">
               {/* Button to open the modal */}
               <button onClick={handleOpenModal} className='btn btn-primary'>Start Hiring</button>
-            </div>
+              <Button variant="info">Check applications</Button>
           </div>
         </div>
 

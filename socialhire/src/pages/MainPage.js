@@ -53,32 +53,32 @@ const Main = () => {
 
     //trying users
     // Fetch Alice's data
-    useEffect(() => {
-        const fetchAlice = async () => {
-            try {
-                // Query Alice by username in Firestore
-                const aliceQuery = query(
-                    collection(db, "users"),
-                    where("username", "==", "Alice")
-                );
-                const querySnapshot = await getDocs(aliceQuery);
+    // useEffect(() => {
+    //     const fetchAlice = async () => {
+    //         try {
+    //             // Query Alice by username in Firestore
+    //             const aliceQuery = query(
+    //                 collection(db, "users"),
+    //                 where("username", "==", "Alice")
+    //             );
+    //             const querySnapshot = await getDocs(aliceQuery);
 
-                if (!querySnapshot.empty) {
-                    // Assuming 'username' is unique and we get one result
-                    const aliceData = querySnapshot.docs[0].data();
-                    setAlice(aliceData);
-                } else {
-                    console.error("Alice not found in database.");
-                }
-            } catch (error) {
-                console.error("Error fetching Alice's data:", error);
-            } finally {
-                setAliceLoading(false);
-            }
-        };
+    //             if (!querySnapshot.empty) {
+    //                 // Assuming 'username' is unique and we get one result
+    //                 const aliceData = querySnapshot.docs[0].data();
+    //                 setAlice(aliceData);
+    //             } else {
+    //                 console.error("Alice not found in database.");
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching Alice's data:", error);
+    //         } finally {
+    //             setAliceLoading(false);
+    //         }
+    //     };
 
-        fetchAlice();
-    }, []);
+    //     fetchAlice();
+    // }, []);
 
     // Display a loading spinner while authentication status is being determined
     if (loading) {
@@ -110,7 +110,7 @@ const Main = () => {
                     </div>
                     {/* trying users  */}
                     {/* Alice's UserCard */}
-                    <div className="alice-usercard">
+                    {/* <div className="alice-usercard">
                         <h3>Featured User</h3>
                         {aliceLoading ? (
                             <Spinner animation="border" role="status">
@@ -121,7 +121,7 @@ const Main = () => {
                         ) : (
                             <p>Alice's profile could not be loaded.</p>
                         )}
-                    </div>
+                    </div>*/}
                 </div>
 
                 {/* Main Content Section */}

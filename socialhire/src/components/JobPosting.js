@@ -118,11 +118,13 @@ const JobCard = ({ job }) => {
                 show={showApplyingModal}
                 onClose={() => setApplyingJobModal(false)}
                 jobId={job.id}
+                creatorId={job.userId}
             />
             <RecommendModal
                 show={showRecommendModal}
                 onClose={() => setRecommendModal(false)}
                 jobId={job.id}
+                creatorId={job.userID}
             />
 
         </div>

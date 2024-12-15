@@ -3,6 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown';
 import '../styles/SearchModal.css';
 import RequestNotification from './RequestNotification';
+import ApplicationNotifications from './ApplicationsNotifications';
 
 const NotificationModal = ({ show, onClose }) => {
     // State to hold selected values for each dropdown
@@ -25,8 +26,12 @@ const NotificationModal = ({ show, onClose }) => {
                 <Modal.Title>Notications</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                This is your notifications:
-                <RequestNotification/>
+                <h4>Friend Notifications:</h4>
+                <RequestNotification />
+                <br></br>
+                <h4>Job notifications:</h4>
+                <ApplicationNotifications/>
+
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onClose}>
