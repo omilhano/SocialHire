@@ -18,7 +18,6 @@ import Profile from './pages/UserProfile';
 import Features from './pages/Features';
 import Main from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
-import Checkout from './pages/checkoutTest';
 import ProfilePage from './pages/ProfilePage';
 import CompanyProfile from './pages/CompanyProfile1';
 import ApplicationsPage from './pages/Applications';
@@ -57,7 +56,6 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/features" element={<Features />} />
         <Route path="/aboutus" element={<About />} />
-        <Route path='/checkout' element={<Checkout />} />
 
         {/* Fallback 404 route */}
         <Route path="*" element={<NotFound />} />

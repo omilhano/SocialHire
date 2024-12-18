@@ -80,7 +80,7 @@ const ApplicationsPage = () => {
                                     <Col key={app.id} sm={12} md={6} lg={4} className="mb-3">
                                         <Card>
                                             <Card.Body>
-                                                <Card.Title>Job ID: {app.jobPostingId}</Card.Title>
+                                                <Card.Title>Job Name: {app.jobTitle}</Card.Title>
                                                 <Card.Text>
                                                     <strong>Motivation:</strong> {app.motivationText}
                                                 </Card.Text>

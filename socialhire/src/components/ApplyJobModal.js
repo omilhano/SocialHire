@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth"; // Firebase authent
 import { db } from "../firebaseConfig"; // Import Firestore configuration
 import { collection, addDoc } from 'firebase/firestore';
 
-const ApplyingJobModal = ({ jobId, show, onClose, creatorId }) => {
+const ApplyingJobModal = ({ jobId, jobTitle, show, onClose, creatorId }) => {
     const [motivationText, setMotivation] = useState('');
     const [yearsOfExperience, setyearsOfExperience] = useState('');
     const auth = getAuth();
@@ -23,6 +23,7 @@ const ApplyingJobModal = ({ jobId, show, onClose, creatorId }) => {
     const handleApply = async () => {
         const application = {
             jobPostingId: jobId,
+            jobTitle: jobTitle,
             applicantId: currentUserId,
             yearsOfExperience, 
             motivationText, 
