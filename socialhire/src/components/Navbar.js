@@ -32,6 +32,7 @@ const NavbarSocialhire = ({ filters, setFilters }) => {
     const [showModal, setShowModal] = useState(false); // State to toggle the visibility of the filter modal
     const [showNotificationModal, setShowNotificationModal] = useState(false); // State to toggle the visibility of the notification modal
     const [userName, setUserName] = useState(null); // State to store the logged-in user's name
+    const [profilePicture, setProfilePic] = useState(null);
 
 
     // Handles form submission for search functionality
@@ -56,6 +57,7 @@ const NavbarSocialhire = ({ filters, setFilters }) => {
                     if (userDoc.exists()) {
                         const userData = userDoc.data(); // Extract user data
                         setUserName(userData.username || "User"); // Set user's first name or a default
+                        setProfilePic(userData.profilePicture);
                     }
                 } catch (error) {
                     console.error("Error fetching user profile:", error);
@@ -150,7 +152,7 @@ const NavbarSocialhire = ({ filters, setFilters }) => {
                         <Link className="profile-picture-navbar" 
                         to={userName ? `/profile/${userName}` : "/login"} >
                             <img
-                                src={placeholderPic}
+                                src={profilePicture || placeholderPic}
                                 alt="Profile"
                                 className="profile-pic"
                             />

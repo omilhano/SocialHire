@@ -4,6 +4,11 @@ import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+/* TODO ADD COMMENTS
+   CHANGE STRUCTURE
+*/
+
+
 const ApplicationsPage = () => {
     const [submittedApplications, setSubmittedApplications] = useState([]); // Applications submitted by the user
     const [receivedApplications, setReceivedApplications] = useState([]); // Applications received by the user (job creator)
