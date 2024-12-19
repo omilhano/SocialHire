@@ -2,7 +2,7 @@
 
 // import { useState, useEffect } from 'react'; 
 // import { useNavigate } from "react-router-dom";
-// import { auth } from '../firebaseConfig';
+// import { auth } from 'firebaseConfig';
 
 // const useAuthRedirect = () => {
 //     const [currentUser, setCurrentUser] = useState(null);
