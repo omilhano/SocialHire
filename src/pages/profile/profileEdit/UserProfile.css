@@ -1,0 +1,1056 @@
+.profile-header {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-right: auto;
+    /* Center align if combined with max-width */
+}
+
+.profile-cover {
+    height: 200px;
+    background-color: #8c8c8c;
+    border-radius: 8px 8px 0 0;
+}
+
+.profile-info-container {
+    display: flex;
+    padding: 24px;
+    gap: 24px;
+}
+
+.profile-picture-container {
+    position: relative;
+    /* Allows positioning child elements inside */
+    width: 152px;
+    height: 152px;
+    border-radius: 50%;
+    /* Makes the container circular */
+    border: 4px solid #fff;
+    /* White border for clean separation */
+    overflow: hidden;
+    /* Ensures content stays inside the circle */
+    background-color: #fff;
+    /* Background color for fallback */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    margin-top: -76px;
+    /* Adjusts positioning */
+    display: flex;
+    /* Centers child content */
+    align-items: center;
+    /* Vertical centering */
+    justify-content: center;
+    /* Horizontal centering */
+    box-sizing: border-box;
+    /* Ensures padding does not affect size */
+}
+
+.profile-image {
+    width: 100%;
+    /* Ensures the image takes up available space */
+    height: 100%;
+    /* Maintains aspect ratio within the circle */
+    object-fit: cover;
+    /* Ensures the image fills the container */
+    border-radius: 50%;
+    /* Ensures the image stays circular */
+}
+
+.profile-picture-upload {
+    position: absolute;
+    /* Positioned relative to the container */
+    bottom: 10px;
+    /* Adjusts pencil position */
+    right: 10px;
+    /* Adjusts pencil position */
+    background-color: #0a66c2;
+    /* Blue background for the pencil */
+    width: 36px;
+    /* Icon container size */
+    height: 36px;
+    display: flex;
+    /* Centers the pencil inside */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* Makes the icon container circular */
+    cursor: pointer;
+    /* Indicates interactivity */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Subtle shadow */
+}
+
+.profile-picture-upload:hover {
+    background-color: #084d92;
+    /* Darker blue on hover */
+}
+
+.profile-picture-upload .edit-icon {
+    color: #fff;
+    /* White pencil icon for contrast */
+    width: 16px;
+    /* Icon size */
+    height: 16px;
+}
+
+.hidden {
+    display: none;
+    /* Hides the file input */
+}
+
+.basic-info {
+    flex-grow: 1;
+    padding-top: 0;
+}
+
+.info-display h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.headline {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 0 0 8px 0;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    padding: 3px 25px;
+    margin-left: auto;
+    /* Align to the right */
+}
+
+/* Edit Buttons and Forms */
+.edit-btn,
+.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    border: none;
+    color: #0a66c2;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 3px 25px;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+.edit-btn:hover,
+.add-btn:hover {
+    background-color: rgba(10, 102, 194, 0.1);
+}
+
+.edit-input {
+    width: 100%;
+    padding: 3px 25px;
+    margin: 8px 0;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.edit-basic-info {
+    background-color: #fff;
+    /* White background for better readability */
+    border-radius: 8px;
+    /* Rounded corners for a modern look */
+    padding: 24px;
+    /* Internal spacing for consistent design */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    /* Subtle border to separate from background */
+    display: flex;
+    /* Flexbox for alignment */
+    flex-direction: column;
+    /* Stack input fields vertically */
+    gap: 16px;
+    /* Space between input fields and buttons */
+    width: 100%;
+    /* Ensure it adapts to its container */
+    max-width: 1000px;
+    /* Optional: Limit the width for a centered layout */
+    margin: 0 auto;
+    /* Center horizontally */
+}
+
+.edit-basic-info .edit-input {
+    width: 100%;
+    /* Inputs take full width of the container */
+    padding: 10px 12px;
+    /* Comfortable input padding */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    /* Subtle border for inputs */
+    border-radius: 4px;
+    /* Rounded corners for consistency */
+    font-size: 14px;
+    /* Easy-to-read font size */
+    transition: border-color 0.3s;
+    /* Smooth interaction effect */
+}
+
+.edit-basic-info .edit-input:focus {
+    outline: none;
+    /* Remove default outline */
+    border-color: #0a66c2;
+    /* Highlight border on focus */
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
+    /* Subtle glow on focus */
+}
+
+.edit-basic-info .edit-actions {
+    display: flex;
+    /* Align buttons in a row */
+    justify-content: flex-end;
+    /* Align buttons to the right */
+    gap: 12px;
+    /* Space between buttons */
+}
+
+.edit-basic-info .save-btn,
+.edit-basic-info .cancel-btn {
+    padding: 8px 16px;
+    /* Button padding */
+    border-radius: 16px;
+    /* Rounded button shapes */
+    font-size: 14px;
+    /* Consistent font size */
+    font-weight: 600;
+    /* Bold text for prominence */
+    cursor: pointer;
+    /* Pointer cursor for clickable buttons */
+    transition: background-color 0.3s, color 0.3s;
+    /* Smooth interaction */
+}
+
+.edit-basic-info .save-btn {
+    background-color: #0a66c2;
+    /* Primary blue color */
+    color: #fff;
+    /* White text */
+    border: none;
+    /* Remove default border */
+}
+
+.edit-basic-info .save-btn:hover {
+    background-color: #084d92;
+    /* Darker blue on hover */
+}
+
+.edit-basic-info .cancel-btn {
+    background-color: transparent;
+    /* Transparent background */
+    color: rgba(0, 0, 0, 0.6);
+    /* Gray text */
+    border: none;
+    /* No border */
+}
+
+.edit-basic-info .cancel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    /* Light gray background on hover */
+}
+
+
+/* Profile Sections */
+.profile-section {
+    background-color: #fff;
+    /* White background for clarity */
+    border-radius: 8px;
+    /* Rounded edges for a clean look */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    /* Subtle shadow to elevate section */
+    padding: 24px;
+    /* Inner spacing for content */
+    margin-bottom: 20px;
+    /* Space below the section */
+}
+
+.profile-section h2 {
+    font-size: 20px;
+    /* Prominent heading size */
+    font-weight: 600;
+    /* Bold text for importance */
+    color: rgba(0, 0, 0, 0.9);
+    /* Dark color for readability */
+    margin-bottom: 16px;
+    /* Space below the heading */
+}
+
+.about-content p {
+    font-size: 16px;
+    /* Comfortable font size for readability */
+    color: rgba(0, 0, 0, 0.8);
+    /* Dark text for contrast */
+    margin-bottom: 12px;
+    /* Space below paragraph */
+    line-height: 1.5;
+    /* Better text spacing */
+}
+
+.about-content .edit-btn {
+    display: flex;
+    /* Align icon and text */
+    align-items: center;
+    /* Vertically center content */
+    gap: 8px;
+    /* Space between icon and text */
+    background-color: transparent;
+    /* No background */
+    border: none;
+    /* Remove border */
+    color: #0a66c2;
+    /* Blue color for link-like appearance */
+    font-size: 14px;
+    /* Smaller button text */
+    font-weight: 600;
+    /* Bold for emphasis */
+    cursor: pointer;
+    /* Pointer cursor for interaction */
+    padding: 6px 12px;
+    /* Comfortable padding */
+    border-radius: 4px;
+    /* Subtle rounding for hover effect */
+}
+
+.about-content .edit-btn:hover {
+    background-color: rgba(10, 102, 194, 0.1);
+    /* Light blue background on hover */
+}
+
+.edit-about {
+    display: flex;
+    /* Stack elements vertically */
+    flex-direction: column;
+    /* Ensure vertical layout */
+    gap: 16px;
+    /* Space between elements */
+}
+
+.edit-about .edit-textarea {
+    width: 100%;
+    /* Full width of the container */
+    min-height: 120px;
+    /* Minimum height for editing */
+    padding: 12px;
+    /* Comfortable spacing inside the textarea */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    /* Subtle border */
+    border-radius: 4px;
+    /* Rounded edges for consistency */
+    font-size: 14px;
+    /* Readable text size */
+    resize: vertical;
+    /* Allow vertical resizing */
+    transition: border-color 0.3s;
+    /* Smooth border interaction */
+}
+
+.edit-about .edit-textarea:focus {
+    outline: none;
+    /* Remove default outline */
+    border-color: #0a66c2;
+    /* Highlighted border */
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
+    /* Subtle glow for focus */
+}
+
+.edit-actions {
+    display: flex;
+    /* Place buttons side by side */
+    gap: 12px;
+    /* Space between buttons */
+    justify-content: flex-end;
+    /* Align buttons to the right */
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 8px 16px;
+    /* Button padding for usability */
+    border-radius: 16px;
+    /* Rounded buttons */
+    font-size: 14px;
+    /* Consistent text size */
+    font-weight: 600;
+    /* Bold for emphasis */
+    cursor: pointer;
+    /* Pointer cursor for interactivity */
+    transition: background-color 0.3s, color 0.3s;
+    /* Smooth hover effect */
+}
+
+.save-btn {
+    background-color: #0a66c2;
+    /* Primary blue color */
+    color: #fff;
+    /* White text */
+    border: none;
+    /* Remove border */
+}
+
+.save-btn:hover {
+    background-color: #084d92;
+    /* Darker blue on hover */
+}
+
+.cancel-btn {
+    background-color: transparent;
+    /* Transparent background */
+    color: rgba(0, 0, 0, 0.6);
+    /* Gray text */
+    border: none;
+    /* No border */
+}
+
+.cancel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    /* Light gray background on hover */
+}
+
+/* General styles */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.textarea-field {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+}
+
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-button {
+    background-color: #4caf50;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Experience list styles */
+.experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Spacing between cards */
+    margin: 20px 0;
+}
+
+.experience-card {
+    position: relative;
+    /* Enable positioning of child elements inside the card */
+    display: flex;
+    flex-direction: column;
+    /* Ensure the card contents flow vertically */
+    gap: 16px;
+    padding: 20px;
+    background-color: #ffffff;
+    /* White background for cards */
+    border: 1px solid #e5e7eb;
+    /* Light gray border */
+    border-radius: 12px;
+    /* Rounded corners for a modern look */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    transition: transform 0.2s, box-shadow 0.2s;
+    /* Smooth hover effects */
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-button {
+    position: absolute;
+    top: 12px;
+    /* Position near the top of the card */
+    right: 12px;
+    /* Move to the right edge of the card */
+    background: none;
+    /* Remove default styling */
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    /* Circular shape */
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.delete-button {
+    position: absolute;
+    bottom: 12px;
+    /* Position near the bottom of the card */
+    right: 12px;
+    /* Move to the right edge of the card */
+    background: none;
+    /* Remove default styling */
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    /* Circular shape */
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+/* Hover State */
+.edit-button:hover,
+.delete-button:hover {
+    background-color: #f3f4f6;
+    /* Light gray hover background */
+}
+
+.edit-button:active,
+.delete-button:active {
+    transform: scale(0.95);
+    /* Slightly shrink on click for feedback */
+}
+
+/* Edit Icon Styles */
+.edit-icon {
+    width: 20px;
+    height: 20px;
+    color: #4b5563;
+    /* Muted gray for subtlety */
+    transition: color 0.2s;
+    /* Smooth color transition */
+}
+
+/* Hover State for Edit Icon */
+.edit-button:hover .edit-icon {
+    color: #2563eb;
+    /* Blue on hover */
+}
+
+/* Delete Icon Styles */
+.delete-icon {
+    width: 20px;
+    height: 20px;
+    color: #dc2626;
+    /* Red color for delete icon */
+    transition: color 0.2s;
+    /* Smooth color transition */
+}
+
+/* Hover State for Delete Icon */
+.delete-button:hover .delete-icon {
+    color: #b91c1c;
+    /* Darker red on hover */
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    border-color: transparent;
+}
+
+.date-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.checkbox-input {
+    width: 1rem;
+    height: 1rem;
+    color: #3b82f6;
+    border-radius: 0.25rem;
+}
+
+.form-textarea {
+    width: 100%;
+    height: 8rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    resize: none;
+    margin-bottom: 1rem;
+}
+
+.form-textarea:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    border-color: transparent;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.cancel-button {
+    padding: 0.5rem 1.5rem;
+    color: #4b5563;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+}
+
+.cancel-button:hover {
+    background-color: #e5e7eb;
+}
+
+.save-button {
+    padding: 0.5rem 1.5rem;
+    color: white;
+    background-color: #2563eb;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+}
+
+.save-button:hover {
+    background-color: #1d4ed8;
+}
+
+.save-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.error-text {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    color: #6b7280;
+}
+
+.experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.experience-card:hover {
+    transform: translateY(-4px);
+    /* Lift effect on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* Enhanced shadow on hover */
+}
+
+.card-header {
+    display: flex;
+    gap: 16px;
+    /* Spacing between icon and content */
+    align-items: flex-start;
+}
+
+.icon-container {
+    flex-shrink: 0;
+    /* Ensures icon doesn't stretch */
+    background-color: #e0f2fe;
+    /* Light blue background for the icon */
+    padding: 10px;
+    border-radius: 50%;
+    /* Circle shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    color: #0284c7;
+    /* Blue color for the icon */
+    font-size: 20px;
+    /* Adjust icon size */
+}
+
+.header-content {
+    flex: 1;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.company {
+    font-size: 14px;
+    /* Smaller font size for secondary info */
+    font-weight: 500;
+    /* Medium weight */
+    color: #4b5563;
+    /* Muted gray */
+    margin: 4px 0;
+    /* Space around the company name */
+}
+
+.date-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Spacing between icon and date text */
+    font-size: 14px;
+    /* Consistent font size */
+    color: #6b7280;
+    /* Muted gray for subtlety */
+}
+
+
+.calendar-icon {
+    color: #9ca3af;
+    /* Lighter gray for the calendar icon */
+    font-size: 16px;
+    /* Adjust icon size */
+}
+
+.description {
+    font-size: 14px;
+    /* Consistent font size */
+    color: #374151;
+    /* Darker gray for better readability */
+    line-height: 1.6;
+    /* Improved readability */
+    margin-top: 8px;
+    /* Space above description */
+}
+
+.logout {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.post-section {
+    padding: 20px;
+    position: relative;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* Posts Container and Scroll */
+.posts-container {
+    position: relative;
+}
+
+.posts-scroll-container {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+}
+
+.scroll-button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.scroll-button.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-button:hover {
+    background-color: #f3f4f6;
+}
+
+.scroll-left {
+    right: calc(100% - 20px);
+}
+
+.scroll-right {
+    right: -20px;
+}
+
+/* Post List */
+.post-list {
+    display: flex;
+    gap: 20px;
+    padding: 0 10px;
+}
+
+/* Post Card */
+.post-card {
+    cursor: pointer;
+    flex: 0 0 280px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+} */
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.card-header .title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-button {
+    padding: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.edit-button:hover {
+    color: #2563eb;
+}
+
+.delete-button:hover {
+    color: #dc2626;
+}
+
+.content {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Post Form */
+.post-form {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cancel-button,
+.save-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.cancel-button {
+    background: none;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+}
+
+.save-button {
+    background-color: #2563eb;
+    border: none;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #f3f4f6;
+}
+
+.save-button:hover {
+    background-color: #1d4ed8;
+}
+
+.empty-message {
+    text-align: center;
+    color: #6b7280;
+    padding: 40px;
+}
+
+.job-posts-section {
+    width: 100%;
+    padding: 20px;
+    /* Optional: Add padding for aesthetics */
+}
+
+.jobs-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    /* Space between job cards */
+}
+
+.job-card {
+    flex: 0 0 auto;
+    /* Prevent shrinking and allow the cards to maintain their width */
+    min-width: 250px;
+    /* Adjust the width of each card */
+    max-width: 300px;
+    /* Prevent cards from getting too wide */
+    box-sizing: border-box;
+    /* Ensure padding is included in the width */
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .post-card {
+        flex: 0 0 240px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .cancel-button,
+    .save-button {
+        width: 100%;
+    }
+}
