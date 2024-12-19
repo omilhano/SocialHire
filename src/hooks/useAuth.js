@@ -2,7 +2,7 @@
 import { useEffect } from "react"; // React's effect hook for performing side effects in components
 import { useNavigate } from "react-router-dom"; // Hook for programmatic navigation in React Router
 import { useAuthState } from "react-firebase-hooks/auth"; // Firebase hook to track authentication state
-import { auth } from "../firebaseConfig"; // Firebase authentication instance from the app's configuration
+import { auth } from "firebaseConfig"; // Firebase authentication instance from the app's configuration
 
 // Custom hook for managing user authentication state and navigation
 export const useAuth = () => {

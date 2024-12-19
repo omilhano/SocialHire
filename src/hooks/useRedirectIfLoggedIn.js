@@ -2,7 +2,7 @@
 import { useEffect } from "react"; // React's effect hook to handle side effects
 import { useAuthState } from "react-firebase-hooks/auth"; // Firebase hook for tracking authentication state
 import { useNavigate } from "react-router-dom"; // Hook for navigation within React Router
-import { auth } from "../firebaseConfig"; // Firebase authentication instance from the app's configuration
+import { auth } from "firebaseConfig"; // Firebase authentication instance from the app's configuration
 
 // Custom hook to redirect logged-in users to the "/Main" route
 const useRedirectIfLoggedIn = () => {
