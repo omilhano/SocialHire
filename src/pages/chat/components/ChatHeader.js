@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { InputGroup, Form } from 'react-bootstrap';
-import { useAuth } from 'hooks/useAuth';
+import { useAuth } from 'common/hooks/useAuth';
 import { db } from 'firebaseConfig';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 

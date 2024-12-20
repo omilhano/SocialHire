@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Heart, MessageCircle, Trash2, Edit2 } from 'lucide-react';
-import 'components/postModal/PostModal.css';
+import 'common/components/postModal/PostModal.css';
 
 const PostModal = ({  postId, collectionName, onClose  }) => {
   return (

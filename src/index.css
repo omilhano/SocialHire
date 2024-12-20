@@ -1,7 +1,7 @@
 /*Define Futura PT Light */
 @font-face {
   font-family: 'Futura PT';
-  src: url('./fonts/FuturaCyrillicBook.ttf') format('truetype');
+  src: url('fonts/FuturaCyrillicBook.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   color: #e5e5e5;
@@ -10,7 +10,7 @@
 /* Define Futura PT Bold */
 @font-face {
   font-family: 'Futura PT';
-  src: url('./fonts/FuturaCyrillicBold.ttf') format('truetype');
+  src: url('fonts/FuturaCyrillicBold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   color: #e5e5e5;
@@ -18,7 +18,7 @@
 
 @font-face {
   font-family: 'Quicksand';
-  src: url('./fonts/Quicksand-Regular.ttf') format('truetype');
+  src: url('fonts/Quicksand-Regular.ttf') format('truetype');
   font-weight: 400 !important;
   color: #e5e5e5;
 }

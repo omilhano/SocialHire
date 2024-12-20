@@ -13,15 +13,15 @@ import Form from 'react-bootstrap/Form'; // Bootstrap Form for input and submiss
 // TODO Navbar
 import './Navbar.css'; // Custom CSS for Navbar styling
 
-import SearchModal from 'components/filtersModal/FiltersModal'; // Modal component for filters
+import SearchModal from 'common/components/filtersModal/FiltersModal'; // Modal component for filters
 import NotificationModal from './NotificationsModal'; // Modal component for notifications
-import brandLogo from 'images/brandlogo.png'; // Branding logo
-import lookGlass from 'images/lookglass.png'; // Search icon
-import placeholderPic from 'images/placeholderPic.jpg'; // Placeholder profile picture
-import HambMenu from 'images/HambMenu.png'; // Hamburger menu icon
-import Bell from 'images/Bell.png'; // Notification bell icon
-import Chats from 'images/Chats.png'; // Chats icon
-import JobSearch from 'images/JobSearch.png'; // Job search icon
+import brandLogo from 'common/images/brandlogo.png'; // Branding logo
+import lookGlass from 'common/images/lookglass.png'; // Search icon
+import placeholderPic from 'common/images/placeholderPic.jpg'; // Placeholder profile picture
+import HambMenu from 'common/images/HambMenu.png'; // Hamburger menu icon
+import Bell from 'common/images/Bell.png'; // Notification bell icon
+import Chats from 'common/images/Chats.png'; // Chats icon
+import JobSearch from 'common/images/JobSearch.png'; // Job search icon
 import Main from 'pages/main/MainPage'; // Main page component
 
 // Navbar component for the SocialHire app

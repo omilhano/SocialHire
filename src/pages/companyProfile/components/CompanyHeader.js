@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pencil, MapPin, Globe2 } from 'lucide-react';
-import DefaultCompanyPic from 'images/placeholderCompany.jpg';
+import DefaultCompanyPic from 'common/images/placeholderCompany.jpg';
 import '../CompanyProfile.css';
 
 export const CompanyHeader = ({

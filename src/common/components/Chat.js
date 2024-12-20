@@ -4,7 +4,7 @@ import {
     browserSessionPersistence, onAuthStateChanged
 } from "firebase/auth"; // Simplified imports to use only what's needed
 import { auth } from "firebaseConfig";
-import { useFirebaseUpload, useFirebaseDocument } from 'hooks/useFirebase';
+import { useFirebaseUpload, useFirebaseDocument } from 'common/hooks/useFirebase';
 
 const ChatBox = () => {
   const { updateDocument, getDocument } = useFirebaseDocument('users');

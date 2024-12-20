@@ -1,5 +1,5 @@
 import React from 'react';
-import UnderConstruction from 'components/UnderConstruction';
+import UnderConstruction from 'common/components/UnderConstruction';
 
 
 // TODO change nav

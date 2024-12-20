@@ -3,8 +3,8 @@ import React from 'react'; // React library for building components
 import { useNavigate } from 'react-router-dom'; // Hook for programmatic navigation
 import './Landing.css'; // Custom CSS for landing page styling
 import Container from 'react-bootstrap/Container'; // Bootstrap Container for a fluid responsive layout
-import Elipse from 'images/elipse.png'; // Image asset used in the belief section
-import useRedirectIfLoggedIn from "hooks/useRedirectIfLoggedIn";
+import Elipse from 'common/images/elipse.png'; // Image asset used in the belief section
+import useRedirectIfLoggedIn from 'common/hooks/useRedirectIfLoggedIn';
 
 // Landing page component
 const Landing = () => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Spinner, Button } from 'react-bootstrap';
 import { collection, query, where, getDocs, doc, setDoc, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
-import { useAuth } from 'hooks/useAuth';
+import { useAuth } from 'common/hooks/useAuth';
 
 const RecommendModal = ({ show, onClose, jobId, jobTitle }) => {
     const { user } = useAuth();

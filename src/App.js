@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
-import Footer from 'components/Footer';
-import NavbarSocialhire from 'components/navbar/Navbar';
-import LandingNavbar from 'components/landingNavbar/LandingNavbar';
+import Footer from 'common/components/Footer';
+import NavbarSocialhire from 'common/components/navbar/Navbar';
+import LandingNavbar from 'common/components/landingNavbar/LandingNavbar';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import NotFound from 'pages/notFound/NotFound.js';
 import Landing from 'pages/landing/Landing';

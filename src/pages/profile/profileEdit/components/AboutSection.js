@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pencil } from 'lucide-react';
-import DefaultProfilePic from 'images/profile_rand.png';
+import DefaultProfilePic from 'common/images/profile_rand.png';
 
 export const AboutSection = ({ about, editMode, onEditModeChange, onSave }) => {
     const [tempAbout, setTempAbout] = useState(about);

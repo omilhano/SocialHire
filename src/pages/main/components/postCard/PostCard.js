@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import PostModal from 'components/postModal/PostModal.js';
+import PostModal from 'common/components/postModal/PostModal.js';
 import TipoPostCard from '../TipoPostCard.js';
 
 import { Heart, MessageCircle, Share2, Image as ImageIcon } from 'lucide-react';
 import './PostCard.css';
-import { useFirebaseUpload, useFirebaseDocument } from 'hooks/useFirebase';
+import { useFirebaseUpload, useFirebaseDocument } from 'common/hooks/useFirebase';
 import { db, auth } from 'firebaseConfig';
 import { doc, collection, query, where, getDocs, addDoc, Timestamp, orderBy, getDoc } from 'firebase/firestore';
 
