@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown';
-import 'components/filtersModal/FiltersModal.css';
-import { useAuth } from 'hooks/useAuth';
+import 'common/components/filtersModal/FiltersModal.css';
+import { useAuth } from 'common/hooks/useAuth';
 import { db } from 'firebaseConfig';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
 

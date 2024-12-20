@@ -4,16 +4,16 @@ import {
     browserSessionPersistence, onAuthStateChanged
 } from "firebase/auth"; // Simplified imports to use only what's needed
 import { auth } from "firebaseConfig";
-import { useFirebaseUpload, useFirebaseDocument } from 'hooks/useFirebase';
-import { validateProfileData, validateExperience, validatePost } from 'utils/validation';
+import { useFirebaseUpload, useFirebaseDocument } from 'common/hooks/useFirebase';
+import { validateProfileData, validateExperience, validatePost } from './utils/validation';
 import { useNavigate } from 'react-router-dom';
 import { ProfileHeader } from './components/ProfileHeader.js';
-import { Toast } from 'components/common/Toast';
+import { Toast } from 'common/components/toast';
+import ToggleSwitch from 'common/components/toggleSwitch/ToggleSwitch.js';
 import { AboutSection } from './components/AboutSection.js';
 import { ExperienceSection } from './components/ExperienceSection.js';
 import { PostSection } from './components/PostsSection.js';
 import { JobPostsSection } from '../components/jobPosts/JobPostsSection';
-import ToggleSwitch from 'components/common/ToggleSwitch';
 import './UserProfile.css';
 
 const UserProfile = () => {

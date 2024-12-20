@@ -4,7 +4,7 @@ import { auth, db } from "firebaseConfig";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; // maybe need a hook instead of this
 import './SignUp.css';
-import useRedirectIfLoggedIn from "hooks/useRedirectIfLoggedIn";
+import useRedirectIfLoggedIn from 'common/hooks/useRedirectIfLoggedIn';
 import sendWelcomeEmail from './components/EmailSend';
 
 // Handling SignUp 

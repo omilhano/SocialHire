@@ -1,6 +1,6 @@
 import { Plus, Briefcase, Calendar, PencilIcon, TrashIcon, FolderIcon } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { useFirebaseDocument } from 'hooks/useFirebase';
+import { useFirebaseDocument } from 'common/hooks/useFirebase';
 import { auth } from "firebaseConfig";
 import PropTypes from 'prop-types';
 

@@ -2,15 +2,15 @@ import React from 'react';
 import './AboutUs.css';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import Diversity from 'images/Diversity.jpg';
-import Scratch from 'images/scratch.png';
-import Explode from 'images/explode.png';
-import Alex from 'images/SocialHirealex.png';
-import Brenda from 'images/SocialHirebrenda.png';
-import Eli from 'images/SocialHireeli.png';
-import Dash from 'images/dashhalf.png';
-import Diamond from 'images/doublediamond.png';
-import useRedirectIfLoggedIn from "hooks/useRedirectIfLoggedIn";
+import Diversity from 'common/images/Diversity.jpg';
+import Scratch from 'common/images/scratch.png';
+import Explode from 'common/images/explode.png';
+import Alex from 'common/images/SocialHirealex.png';
+import Brenda from 'common/images/SocialHirebrenda.png';
+import Eli from 'common/images/SocialHireeli.png';
+import Dash from 'common/images/dashhalf.png';
+import Diamond from 'common/images/doublediamond.png';
+import useRedirectIfLoggedIn from 'common/hooks/useRedirectIfLoggedIn';
 
 
 // TODO images

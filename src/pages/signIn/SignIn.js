@@ -4,7 +4,7 @@ import { auth, db } from "firebaseConfig";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, query, where, getDocs, collection } from "firebase/firestore";
 import './SignIn.css';
-import useRedirectIfLoggedIn from "hooks/useRedirectIfLoggedIn";
+import useRedirectIfLoggedIn from 'common/hooks/useRedirectIfLoggedIn';
 
 const SignIn = () => {
     useRedirectIfLoggedIn(); // Hook to redirect logged-in users

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pencil, MapPin } from 'lucide-react';
-import DefaultProfilePic from 'images/placeholderPic.jpg';
+import DefaultProfilePic from 'common/images/placeholderPic.jpg';
 import { auth, db, storage } from "firebaseConfig"; // Adjust path based on location
 import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 

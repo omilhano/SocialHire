@@ -4,7 +4,7 @@ import './MainPage.css'; // Custom CSS for the Main page
 import ProfileCard from './components/profileCard/ProfileCard'; // Component for displaying the user's profile information
 import PeopleToBefriend from './components/AddPeople'; // Component for displaying suggestions to connect with people
 import { PostList } from './components/postCard/PostCard';
-import { useAuth } from 'hooks/useAuth'; // Custom hook to handle user authentication state
+import { useAuth } from 'common/hooks/useAuth'; // Custom hook to handle user authentication state
 import { db } from "firebaseConfig"; // Firebase configuration for accessing Firestore
 import {collection, query, where, getDocs } from "firebase/firestore"; // Firestore functions
 

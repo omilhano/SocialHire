@@ -3,8 +3,8 @@ import { doc, collection, query, where, getDocs, addDoc, Timestamp, orderBy, get
 import { db, auth } from 'firebaseConfig';
 import { Heart, X, Trash2, Edit2, MessageCircle } from 'lucide-react';
 import './PostModal.css';
-import { useFirebaseUpload, useFirebaseDocument } from 'hooks/useFirebase';
-import DefaultProfilePic from 'images/placeholderPic.jpg';
+import { useFirebaseUpload, useFirebaseDocument } from 'common/hooks/useFirebase';
+import DefaultProfilePic from 'common/images/placeholderPic.jpg';
 
 const PostModal = ({ postId, collectionName, onClose }) => {
     const { updateDocument, getDocument, deleteDocument } = useFirebaseDocument('posts');

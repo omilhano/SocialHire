@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from 'firebaseConfig';
 import { getDoc, doc, collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';
-import { useGetMessagesOrdered } from 'hooks/useGetMessagesOrdered';
+import { useGetMessagesOrdered } from 'common/hooks/useGetMessagesOrdered';
 import './ChatWindow.css';
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {

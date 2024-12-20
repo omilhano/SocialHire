@@ -1,8 +1,8 @@
 // Importing necessary libraries and assets
 import React, { useEffect, useState } from 'react'; // React core library, useEffect for side-effects, useState for state management
-import placeholderPic from 'images/placeholderPic.jpg'; // Placeholder image to show when a user doesn't have a profile picture
-import { useAuth } from 'hooks/useAuth'; // Custom hook for authentication, likely providing the current user context
-import { useFirebaseDocument } from 'hooks/useFirebase'; // Custom hook for interacting with a Firestore collection (e.g., retrieving user documents)
+import placeholderPic from 'common/images/placeholderPic.jpg'; // Placeholder image to show when a user doesn't have a profile picture
+import { useAuth } from 'common/hooks/useAuth'; // Custom hook for authentication, likely providing the current user context
+import { useFirebaseDocument } from 'common/hooks/useFirebase'; // Custom hook for interacting with a Firestore collection (e.g., retrieving user documents)
 import './ProfileCard.css'; // CSS file for styling the ProfileCard component
 
 // Functional component to display user profile information

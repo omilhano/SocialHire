@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, PencilIcon, TrashIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { auth } from "firebaseConfig";
 import { Timestamp } from 'firebase/firestore';
-import PostModal from 'components/postModal/PostModal';
+import PostModal from 'common/components/postModal/PostModal';
 
 
 export const LikeCommentCount = ({
