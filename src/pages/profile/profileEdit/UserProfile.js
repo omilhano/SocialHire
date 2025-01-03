@@ -12,7 +12,7 @@ import { Toast } from 'common/components/toast';
 import ToggleSwitch from 'common/components/toggleSwitch/ToggleSwitch.js';
 import { AboutSection } from './components/AboutSection.js';
 import { ExperienceSection } from './components/ExperienceSection.js';
-import { PostSection } from './components/PostsSection.js';
+import { PostSection } from './components/EditProfilePostsSection';
 import { JobPostsSection } from '../components/jobPosts/JobPostsSection';
 import './UserProfile.css';
 

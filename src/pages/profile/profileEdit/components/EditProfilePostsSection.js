@@ -133,7 +133,7 @@ export const PostSection = ({
                 />
             )}
 
-            <div className="posts-container">
+            <div className="posts-container-profile-edit">
                 <div className="posts-scroll-container">
                     <PostList
                         posts={localPosts}
@@ -233,7 +233,7 @@ const PostList = ({ posts, onEdit, onDelete }) => {
             {posts.map((post) => (
                 <div
                     key={post.id}
-                    className="post-card"
+                    className="post-card-profile-edit"
                     onClick={(e) => {
                         // Prevent click if user clicked on edit/delete buttons
                         if (!e.target.closest('.post-card-actions')) {

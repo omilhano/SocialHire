@@ -19,6 +19,7 @@ import BlockUserModal from "./components/BlockUserModal";
 import { UserPostsSection } from "./components/userPosts/UserPostsSection";
 import { JobPostsSection } from "../components/jobPosts/JobPostsSection";
 import { UserExperiencesSection } from "./components/userExperiences/UserExperiencesSection";
+import './ProfilePage.css';
 
 // ProfilePage component handles user profile display and related actions
 const ProfilePage = () => {

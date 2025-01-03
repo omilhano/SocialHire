@@ -824,7 +824,7 @@
 }
 
 /* Posts Container and Scroll */
-.posts-container {
+.posts-container-profile-edit {
     position: relative;
 }
 
@@ -876,23 +876,27 @@
     display: flex;
     gap: 20px;
     padding: 0 10px;
+    width: 100%;
 }
 
 /* Post Card */
-.post-card {
+.post-card-profile-edit {
     cursor: pointer;
     flex: 0 0 280px;
-    background: white;
+    align-items: center;
+    background: #f8f9fa;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 16px;
     transition: transform 0.2s, box-shadow 0.2s;
+    max-width: 280px;
+    overflow: hidden;
 }
 
-/* .post-card:hover {
+.post-card-profile-edit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-} */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
 .card-header {
     display: flex;
