@@ -105,7 +105,7 @@ const PostCard = ({ post }) => {
         <div className="post-content">
           <div className="post-header">
             <h3>{post.title || 'Untitled Post'}</h3>
-            <span id="date-post">{formatDate(post.createdAt)}</span>
+            <span class="date-post">{formatDate(post.createdAt)}</span>
           </div>
 
           <p className="post-text">{truncateText(post.content)}</p>
@@ -133,8 +133,6 @@ const PostCard = ({ post }) => {
           </div>
         </div>
       </div>
-
-
     </>
   );
 };
