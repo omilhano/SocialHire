@@ -29,12 +29,12 @@ export const UserPostsSection = ({ posts, editMode, onDeletePost }) => {
   return (
     <div className="user-posts-section">
       <h3 className="section-title">Posts</h3>
-      <div className="posts-container">
+      <div className="posts-container-profile-view">
         {posts.length === 0 ? (
           <p className="no-posts-message">No posts yet.</p>
         ) : (
           posts.map((post) => (
-            <Card key={post.id} className="post-card shadow-sm">
+            <Card key={post.id} className="post-card-profile-view">
               <Card.Body>
                 <Card.Title className="post-title">{post.title}</Card.Title>
                 <Card.Text className="post-content">{post.content}</Card.Text>

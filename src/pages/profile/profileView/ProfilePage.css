@@ -22,12 +22,14 @@
 
 /* User card styles */
 .profile-card {
-    width: 100%;
-    max-width: 500px;
-    background-color: #ffffff;
-    border: 1px solid #17497b; /* Secondary brand color */
+    cursor: pointer;
+    flex: 0 0 280px;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .profile-card-title {

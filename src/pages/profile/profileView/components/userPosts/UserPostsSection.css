@@ -10,31 +10,29 @@
     color: #343a40;
   }
   
-  .posts-container {
+  .posts-container-profile-view {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     justify-content: center;
   }
   
-  .post-card {
-    width: 300px;
-    border: none;
+  .post-card-profile-view {
+    cursor: pointer;
+    flex: 0 0 280px;
+    align-items: center;
     background: #f8f9fa;
-    transition: transform 0.2s;
-  }
-
-  .post-card-out {
-    width: 300px;
-    border: none;
-    background: #f5f5f5;
-    transition: transform 0.2s;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
   
-  /* .post-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  } */
+  .post-card-profile-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
   
   .post-title {
     font-size: 1.2rem;
