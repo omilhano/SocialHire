@@ -276,6 +276,8 @@ const UserProfile = () => {
                 }))}
                 onAddExperience={(experience) => handleExperienceUpdate(experience)}
             />
+            {/*TODO: skill section*/}
+            {/*TODO: experience level */}
             <PostSection
                 posts={postData}
                 editMode={editMode.post}
