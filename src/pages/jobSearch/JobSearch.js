@@ -7,6 +7,7 @@ import JobList from './components/JobList';
 import { db } from 'firebaseConfig'; // Import Firebase db
 import { collection, getDocs, query, where } from 'firebase/firestore'; // Firestore functions
 import './JobSearch.css';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const JobSearch = ({ filters }) => {
   const [showJobModal, setShowJobModal] = useState(false);
@@ -14,6 +15,22 @@ const JobSearch = ({ filters }) => {
   const [loading, setLoading] = useState(true); // To manage loading state
   const [error, setError] = useState(null); // To handle errors
   const navigate = useNavigate(); // Correct use of useNavigate hook
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
+
+  const auth = getAuth();
+
+  // Listen to authentication state change
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedInUserId(user.uid); // Update loggedInUserId when user is authenticated
+      } else {
+        setLoggedInUserId(null); // Set to null if no user is logged in
+      }
+    });
+
+    return () => unsubscribe(); // Clean up the listener on component unmount
+  }, [auth]);
 
   // Open Modal
   const handleOpenModal = () => {
@@ -24,8 +41,8 @@ const JobSearch = ({ filters }) => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        console.log(filters); // Debug check filters being passed
         setLoading(true); // Start loading
+
         let jobsCollectionRef = collection(db, 'jobs'); // Reference to the 'jobs' collection
 
         const queryConditions = [];
@@ -39,6 +56,11 @@ const JobSearch = ({ filters }) => {
         }
         if (filters.userType && filters.userType !== 'Choose User Type') {
           queryConditions.push(where('userType', '==', filters.userType));
+        }
+
+        // Check if user is loggedin before fetch
+        if (loggedInUserId) {
+          queryConditions.push(where('userId', '!=', loggedInUserId));
         }
 
         if (queryConditions.length > 0) {
@@ -79,7 +101,7 @@ const JobSearch = ({ filters }) => {
     };
 
     fetchJobs(); // Call the fetchJobs function
-  }, [filters]); // Re-run the effect whenever filters change
+  }, [filters, loggedInUserId]); // Re-run the effect whenever filters or loggedInUserId change
 
   return (
     <Container fluid id="background-main-page" className="g-0">
