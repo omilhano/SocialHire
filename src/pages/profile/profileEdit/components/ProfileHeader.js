@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Pencil, MapPin } from 'lucide-react';
 import DefaultProfilePic from 'common/images/placeholderPic.jpg';
+import './ProfileHeader.css';
 import { auth, db, storage } from "firebaseConfig"; // Adjust path based on location
 import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 
@@ -126,6 +127,26 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
                 placeholder="Location"
                 className="edit-input"
             />
+            <input
+                type="text"
+                value={formData.location}
+                onChange={(e) => handleInputChange('location', e.target.value)}
+                placeholder="Location"
+                className="edit-input"
+            />
+            <select
+                value={formData.jobSeekingStatus || ""}
+                onChange={(e) => handleInputChange('jobSeekingStatus', e.target.value)}
+                className="edit-input"
+            >
+                <option value="" disabled>
+                    Select Job Seeking Status   
+                </option>
+                <option value="Open to Work">Open to Work</option>
+                <option value="Not Looking">Not Looking</option>
+                <option value="Exploring Opportunities">Exploring Opportunities</option>
+                <option value="No Display"> No Banner Displayed </option>
+            </select>
             <div className="edit-actions">
                 <button onClick={handleSave} className="save-btn">Save</button>
                 <button onClick={handleCancel} className="cancel-btn">Cancel</button>
@@ -145,6 +166,15 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
             <MapPin size={16} />
             {profileData.location}
         </p>
+        <div className="jobSeekingStatus">
+            <h1 className="status-header">Job Seeking Status</h1>
+            {/* Render the banner only if jobSeekingStatus is set */}
+            {profileData.jobSeekingStatus && profileData.jobSeekingStatus !== "No Display" && (
+                <p className="job-seeking-status">
+                    {profileData.jobSeekingStatus}
+                </p>
+                )}
+        </div>
         {/*TODO: add current job title*/}
         {/*TODO: job seeking status banner*/}
         <button onClick={onEdit} className="edit-btn">
