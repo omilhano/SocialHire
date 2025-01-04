@@ -140,11 +140,13 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
 
     <div className="info-display">
         <h1>{profileData.firstName} {profileData.lastName}</h1>
-        <p className="headline">{profileData.headline}</p>
+        {/* <p className="headline">{profileData.headline}</p> TODO maybe not needed*/} 
         <p className="location">
             <MapPin size={16} />
             {profileData.location}
         </p>
+        {/*TODO: add current job title*/}
+        {/*TODO: job seeking status banner*/}
         <button onClick={onEdit} className="edit-btn">
             <Pencil size={16} />
             Edit Basic Info
