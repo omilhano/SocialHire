@@ -176,7 +176,6 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
                 )}
         </div>
         {/*TODO: add current job title*/}
-        {/*TODO: job seeking status banner*/}
         <button onClick={onEdit} className="edit-btn">
             <Pencil size={16} />
             Edit Basic Info
