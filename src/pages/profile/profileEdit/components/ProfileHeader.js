@@ -113,13 +113,13 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
                 placeholder="Last Name"
                 className="edit-input"
             />
-            <input
+            {/*<input
                 type="text"
                 value={formData.headline}
                 onChange={(e) => handleInputChange('headline', e.target.value)}
                 placeholder="Headline"
                 className="edit-input"
-            />
+            /> */}
             <input
                 type="text"
                 value={formData.location}
