@@ -1,19 +1,29 @@
-.post-card {
-    cursor: pointer;
-    padding: 16px;
-    flex: 0 0 280px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.posts-scroll {
     display: flex;
     flex-direction: column;
+    /* Arrange items in a column */
+    justify-content: center;
+    /* Center items vertically */
     align-items: center;
-    margin: 15px;
-    width: 95% !important;
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #e5e7eb ;
-    flex-shrink: 0; /* Keep items fixed width for horizontal scrolling */
+    /* Center items horizontally */
+    padding: 10px;
+    max-width: 100%;
+    height: 100%;
+    /* Make sure the container fills available height */
+}
+
+#outter-scroller {
+    display: flex;
+    /* Flex container */
+    flex-direction: column;
+    /* Items stacked vertically */
+    justify-content: center;
+    /* Center items vertically */
+    align-items: center;
+    /* Center items horizontally */
+    max-width: 100%;
+    width: 100%;
+    /* Ensure full width */
 }
 
 .post-card-out {
@@ -26,16 +36,42 @@
     flex-direction: column;
     align-items: center;
     margin: 10px;
-    width: 100% !important;
+    width: 100%;
+    /* Ensure full width of parent */
     transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #e5e7eb ;
-    flex-shrink: 0; /* Keep items fixed width for horizontal scrolling */
+    border: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
+
+.post-card {
+    cursor: pointer;
+    padding: 16px;
+    width: 300px;
+    /* Increase width */
+    height: 400px;
+    /* Increase height */
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px;
+    max-width: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+
 
 .post-card-out:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-} 
+}
 
 .post-image-container {
     width: 100%;
@@ -65,10 +101,10 @@
     display: flex;
     /* justify-content: space-between; */
     align-items: flex-start;
-    margin-bottom: 8px;    
+    margin-bottom: 8px;
 }
 
-.date-post{
+.date-post {
     text-align: end;
 }
 
@@ -131,26 +167,12 @@
 
 .action-button.liked {
     color: #dc3545;
-  }
-  
-/* Horizontal Scroll */
-.posts-scroll {
-    display: flex;
-    flex-direction: column;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
 }
+
+
 
 .posts-scroll::-webkit-scrollbar {
     height: 8px;
-}
-
-.px-4{
-    width: 100%;
 }
 
 .posts-scroll::-webkit-scrollbar-track {

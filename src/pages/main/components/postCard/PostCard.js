@@ -108,7 +108,7 @@ const PostCard = ({ post }) => {
             <span class="date-post">{formatDate(post.createdAt)}</span>
           </div>
 
-          <p className="post-text">{truncateText(post.content)}</p>
+          <p className="post-text">{truncateText(post.content, 200)}</p>
 
           <div className="post-footer">
             <div className="post-actions">
@@ -167,7 +167,7 @@ const PostList = ({ posts, loading }) => {
 
   return (
     <div className="posts-scroll">
-      <div className="flex space-x-4 px-4">
+      <div className="flex space-x-4 px-4" id='outter-scroller'>
         {posts.map((post) => (
           <div
             key={post.id}

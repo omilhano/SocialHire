@@ -1,3 +1,6 @@
+body{
+    overflow-x: hidden;
+}
 .background-main-page {
     width: 100%;
 }
@@ -73,15 +76,15 @@
         grid-template-rows: auto;
         justify-content: center;
         align-items: center;
+        max-width: 100%;
+        overflow: hidden;
     }
 
     .layout-sidebar {
         display: flex;
-        /* Use flexbox for centering */
         justify-content: center;
-        /* Centers horizontally */
         align-items: center;
-        /* Centers vertically */
+        max-width: 100%;
     }
 
     .sidebar-header {
