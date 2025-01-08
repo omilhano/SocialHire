@@ -113,6 +113,20 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
                 placeholder="Last Name"
                 className="edit-input"
             />
+            <input
+                type="text"
+                value={formData.jobTitle}
+                onChange={(e) => handleInputChange('jobTitle', e.target.value)}
+                placeholder="Current Job Title"
+                className="edit-input"
+            />
+            <input
+                type="text"
+                value={formData.currentCompany}
+                onChange={(e) => handleInputChange('currentCompany', e.target.value)}
+                placeholder="Current Company"
+                className="edit-input"
+            />
             {/*<input
                 type="text"
                 value={formData.headline}
@@ -120,13 +134,6 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
                 placeholder="Headline"
                 className="edit-input"
             /> */}
-            <input
-                type="text"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="Location"
-                className="edit-input"
-            />
             <input
                 type="text"
                 value={formData.location}
@@ -161,6 +168,13 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
 
     <div className="info-display">
         <h1>{profileData.firstName} {profileData.lastName}</h1>
+        <p className="job description">
+            {profileData.jobTitle && profileData.currentCompany &&(
+                <p>
+                    {profileData.jobTitle} working at {profileData.currentCompany}
+                </p>
+            )}
+        </p>
         {/* <p className="headline">{profileData.headline}</p> TODO maybe not needed*/} 
         <p className="location">
             <MapPin size={16} />
@@ -175,7 +189,6 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
                 </p>
                 )}
         </div>
-        {/*TODO: add current job title*/}
         <button onClick={onEdit} className="edit-btn">
             <Pencil size={16} />
             Edit Basic Info
