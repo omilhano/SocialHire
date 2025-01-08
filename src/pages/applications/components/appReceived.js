@@ -8,7 +8,7 @@ import RatingModal from './ratingModal';
 
 const ReceivedApplications = ({ applications }) => {
     const [showModal, setShowModal] = useState(false);
-    const [currentApplicationId, setCurrentApplicationId] = useState(null);
+    const [currentApplication, setCurrentApplication] = useState(null); // Store the full application
     const navigate = useNavigate();
 
     const viewProfile = async (applicantId) => {
@@ -28,30 +28,24 @@ const ReceivedApplications = ({ applications }) => {
         }
     };
 
-    const changeApplicationStatus = async (applicationId, newStatus) => {
+    const changeApplicationStatus = async (application, newStatus) => {
         try {
-            const applicationDoc = doc(db, 'applications', applicationId);
+            const applicationDoc = doc(db, 'applications', application.id);
 
             if (newStatus === 'Rejected') {
                 // Handle rejection: delete the application
                 await deleteDoc(applicationDoc);
                 alert('Application rejected and deleted successfully!');
-                window.location.reload(); // Refresh the page
-            } else if (['Approved', 'Finished'].includes(newStatus)) {
-                // Handle other statuses
-                if (newStatus === 'Finished') {
-                    // Open the modal for rating
-                    setCurrentApplicationId(applicationId); // Set the current application ID
-                    setShowModal(true); // Open the modal
-                } else {
-                    // Update the application status
-                    await updateDoc(applicationDoc, { status: newStatus });
-                    alert(`Application status changed to ${newStatus} successfully!`);
-                    window.location.reload(); // Refresh the page
-                }
             } else {
-                alert('Invalid status value!');
-                return;
+                // Update the application status
+                await updateDoc(applicationDoc, { status: newStatus });
+                alert(`Application status changed to ${newStatus} successfully!`);
+
+                // Open the modal when the status is 'Finished' and set the current application
+                if (newStatus === 'Finished') {
+                    setCurrentApplication(application);  // Set the full application data
+                    setShowModal(true);  // Show the modal
+                }
             }
         } catch (error) {
             console.error('Error handling application:', error);
@@ -59,24 +53,22 @@ const ReceivedApplications = ({ applications }) => {
         }
     };
 
-
     const handleRatingSubmit = async ({ rating, feedback }) => {
         try {
-            const applicationDoc = doc(db, 'applications', currentApplicationId);
+            const applicationDoc = doc(db, 'applications', currentApplication.id);
             await updateDoc(applicationDoc, {
                 status: 'Finished',
                 rating,
                 feedback,
             });
             alert('Job finished and rating submitted successfully!');
-            setShowModal(false);
+            setShowModal(false); // Close the modal
             window.location.reload();
         } catch (error) {
             console.error('Error submitting rating:', error);
             alert('Failed to submit the rating.');
         }
     };
-
 
     return (
         <div className="received-applications container mt-4">
@@ -105,14 +97,14 @@ const ReceivedApplications = ({ applications }) => {
                                             <Button
                                                 variant="success"
                                                 className="btn btn-secondary btn-sm ms-2"
-                                                onClick={() => changeApplicationStatus(app.id, 'Approved')}
+                                                onClick={() => changeApplicationStatus(app, 'Approved')}
                                             >
                                                 Approve
                                             </Button>
                                             <Button
                                                 variant="danger"
                                                 className="btn btn-danger btn-sm ms-2"
-                                                onClick={() => changeApplicationStatus(app.id, 'Rejected')}
+                                                onClick={() => changeApplicationStatus(app, 'Rejected')}
                                             >
                                                 Reject
                                             </Button>
@@ -122,7 +114,7 @@ const ReceivedApplications = ({ applications }) => {
                                         <Button
                                             variant="warning"
                                             className="btn btn-warning btn-sm ms-2"
-                                            onClick={() => changeApplicationStatus(app.id, 'Finished')}
+                                            onClick={() => changeApplicationStatus(app, 'Finished')}
                                         >
                                             Finish Job
                                         </Button>
@@ -135,11 +127,14 @@ const ReceivedApplications = ({ applications }) => {
             ) : (
                 <p>No applications received yet.</p>
             )}
-            <RatingModal
-                show={showModal}
-                onClose={() => setShowModal(false)}
-                onSubmit={handleRatingSubmit}
-            />
+            {currentApplication && (
+                <RatingModal
+                    app={currentApplication} // Pass the full application object
+                    show={showModal}
+                    onClose={() => setShowModal(false)} // Close the modal
+                    onSubmit={handleRatingSubmit}
+                />
+            )}
         </div>
     );
 };

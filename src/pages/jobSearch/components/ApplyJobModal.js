@@ -29,7 +29,7 @@ const ApplyingJobModal = ({ jobId, jobTitle, show, onClose, creatorId }) => {
             motivationText, 
             appliedAt: new Date(),
             creatorId,
-            status: "pending"
+            status: "Pending"
         };
 
         try {
