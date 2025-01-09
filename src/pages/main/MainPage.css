@@ -67,7 +67,12 @@ body{
     border-radius: 20px;
 }
 
-
+@media (max-width: 800px){
+    .grid-layout{
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+}
 @media (max-width: 690px) {
     .grid-layout {
         display: grid;
