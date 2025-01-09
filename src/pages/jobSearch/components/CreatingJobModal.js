@@ -98,7 +98,6 @@ const CreatingJobModal = ({ show, onClose }) => {
             jobData.jobExpectedTime = jobExpectedTime ? `${jobExpectedTime} hours` : 'N/A';
             jobData.location = location || 'N/A';
             jobData.endTime = endTime || 'N/A';
-            jobData.additionalRequirements = additionalRequirements.length > 0 ? additionalRequirements : 'N/A';
         } else if (jobType === 'Formal Job') {
             jobData.location = location || 'N/A';
             jobData.payRange = payRange.min && payRange.max ? payRange : 'N/A';
@@ -160,8 +159,8 @@ const CreatingJobModal = ({ show, onClose }) => {
                                 type="text"
                                 id="jobDescription"
                                 className="form-control"
-                                placeholder="Ex: Fix a tv (Max 750 characters)"
-                                maxLength="750"
+                                placeholder="Ex: Fix a tv (Max 500 characters)"
+                                maxLength="500"
                                 value={jobDescription}
                                 required
                                 onChange={(e) => setJobDescription(e.target.value)}
@@ -240,12 +239,8 @@ const CreatingJobModal = ({ show, onClose }) => {
                                     className="btn btn-primary"
                                     onClick={() => {
                                         if (newRequirement.trim() && newRequirement.length <= 100) {
-                                            setAdditionalRequirements((prevRequirements) => [
-                                                ...prevRequirements,
-                                                newRequirement.trim(),
-                                            ]);
+                                            setAdditionalRequirements([...additionalRequirements, newRequirement.trim()]);
                                             setNewRequirement('');
-                                            console.log("Current Input:", newRequirement); // Debugging
                                         } else {
                                             alert("Please enter a valid requirement (max 100 characters).");
                                         }
@@ -388,7 +383,6 @@ const CreatingJobModal = ({ show, onClose }) => {
                                     onClick={() => {
                                         if (newjobRequirement.trim() && newjobRequirement.length <= 500) {
                                             setAdditionalJobRequirements([...additionalJobRequirements, newjobRequirement.trim()]);
-                                            console.log(additionalJobRequirements);
                                             setNewJobRequirement('');
                                         } else {
                                             alert("Please enter a valid requirement (max 500 characters).");

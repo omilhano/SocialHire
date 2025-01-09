@@ -2,31 +2,13 @@
     gap: 10px;
 }
 
-.jobs-wrapper{
-    width: 800px;
-    border-bottom: 1px solid grey;
-    padding-bottom: 10px;
-}
-
-.job-posting {
-    width: 90%;
+.job-card {
+    width: 100% !important;
 }
 
 .job-card:hover{
     transform: none !important;
     box-shadow: none !important;
-}
-
-#job-card-title{
-    color: #0a66c2
-}
-
-#location-post, #date-post{
-    font-size: 1.2rem;
-}
-
-.job-description{
-    font-size: 1.32rem !important;
 }
 
 .jobs-wrapper {
@@ -44,7 +26,6 @@
 
 .job-header{
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     text-align: center;
     align-items: center;

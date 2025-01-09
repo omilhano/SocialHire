@@ -53,10 +53,10 @@ const JobCard = ({ job }) => {
         if (!text) return '';
         return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
     };
-    // CHANGE PROFILE ACCORDING TO JOBTYPE
+
     return (
-        <div className="job-posting">
-            <div className="job-image-container">
+        <div className="job-card border border-gray-300 rounded-lg shadow-md p-4 flex flex-col">
+            <div className="job-image-container mb-4 flex justify-center">
                 {job.imageUrl ? (
                     <img
                         src={job.imageUrl}
@@ -70,18 +70,17 @@ const JobCard = ({ job }) => {
                 )}
             </div>
 
-            <div className="job-content">
-                <div className="job-header">
-                    <h3 className="text-lg" id='job-card-title'>{job.jobTitle || 'Untitled Job'}</h3>
+            <div className="job-content flex flex-col">
+                <div className="job-header flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-semibold text-gray-800">{job.jobTitle || 'Untitled Job'}</h3>
                     <div className="location-date-class">
                         <span id="location-post">{job.location}</span>
-                        <span>·</span>
                         <span id="date-post">{formatDate(job.createdAt)}</span>
                     </div>
 
                 </div>
 
-                <div className="job-pay">
+                <div className="job-pay text-sm text-gray-600 mb-2">
                     {job.jobType === "Formal Job" && (
                         <>
                             <span className="pay-range">{formatPayRange(job.payRange?.min, job.payRange?.max)}</span>
@@ -93,7 +92,7 @@ const JobCard = ({ job }) => {
 
                     {job.jobType === "Hustler" && (
                         <>
-                            <p className="job-description">
+                            <p className="job-description text-sm text-gray-700 mb-4">
                                 {truncateText(job.jobDescription)}
                             </p>
                             <p className="hourly-rate">{formatHourlyRate(job.pricePerHour)}</p>
@@ -108,7 +107,7 @@ const JobCard = ({ job }) => {
                     )}
                 </div>
 
-                <div className="job-footer">
+                <div className="job-footer flex justify-between items-center">
                     <div className="job-actions flex space-x-4">
                         <button className="applying-job" onClick={() => setApplyingJobModal(true)}>Apply</button>
                         <button className="recommend-job" onClick={() => setRecommendModal(true)}>Recommend</button>

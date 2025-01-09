@@ -104,11 +104,11 @@ const PostCard = ({ post }) => {
 
         <div className="post-content">
           <div className="post-header">
-            <h3 id="postcard-title">{truncateText(post.title) || 'Untitled Post'}</h3>
+            <h3>{post.title || 'Untitled Post'}</h3>
             <span class="date-post">{formatDate(post.createdAt)}</span>
           </div>
 
-          <p className="post-text">{truncateText(post.content)}</p>
+          <p className="post-text">{truncateText(post.content, 200)}</p>
 
           <div className="post-footer">
             <div className="post-actions">

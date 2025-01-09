@@ -36,8 +36,8 @@
     flex-direction: column;
     align-items: center;
     margin: 10px;
-    width: fit-content;
-    max-width: 600px;
+    width: 100%;
+    /* Ensure full width of parent */
     transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #e5e7eb;
     flex-shrink: 0;
@@ -47,8 +47,10 @@
 .post-card {
     cursor: pointer;
     padding: 16px;
-    width: 500px;
+    width: 300px;
+    /* Increase width */
     height: 400px;
+    /* Increase height */
     background: #f8f9fa;
     border-radius: 12px;
     overflow: hidden;
@@ -97,7 +99,7 @@
 
 .post-header {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: flex-start;
     margin-bottom: 8px;
 }
@@ -181,14 +183,4 @@
 .posts-scroll::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 4px;
-}
-
-#postcard-title{
-    word-break: break-all;
-}
-
-@media (max-width: 600px) {
-    .post-card{
-        width: 400px;
-    }
 }
