@@ -3,6 +3,9 @@ import { Heart, MessageCircle, Share2, Briefcase } from 'lucide-react';
 import ApplyingJobModal from './ApplyJobModal';
 import RecommendModal from './recommendModal/RecommendModal'; // Import RecommendModal component
 
+// TODO EMBELEZAR POSTINGS
+// FORMATAR FORMAL POSTS
+
 const JobCard = ({ job }) => {
     const [showApplyingModal, setApplyingJobModal] = useState(false);
     const [showRecommendModal, setRecommendModal] = useState(false); // State for Recommend Modal
@@ -86,6 +89,18 @@ const JobCard = ({ job }) => {
                             <span className="pay-range">{formatPayRange(job.payRange?.min, job.payRange?.max)}</span>
                             <p className="job-description text-sm text-gray-700 mb-4">
                                 {truncateText(job.jobDescription)}
+                            </p>
+                            <p className="job-additional-requirements text-sm text-gray-700 mb-4">
+                                {truncateText(job.additionalJobRequirements)}
+                            </p>
+                            <p className="job-benefits text-sm text-gray-700 mb-4">
+                                {truncateText(job.additionalBenefits)}
+                            </p>
+                            <p className="job-contract text-sm text-gray-700 mb-4">
+                                {truncateText(job.contractDuration)}
+                            </p>
+                            <p className="job-favouredskills text-sm text-gray-700 mb-4">
+                                {truncateText(job.favouredSkills)}
                             </p>
                         </>
                     )}
