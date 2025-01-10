@@ -28,7 +28,7 @@ export const JobPostsSection = ({ jobs, editMode, onDeleteJob }) => {
           <p className="no-jobs-message">No job listings yet.</p>
         ) : (
           jobs.map((job) => (
-            <Card key={job.jobID} className="job-card shadow-sm">
+            <Card key={job.jobID} className="job-posts-content shadow-sm">
               <Card.Body>
                 <Card.Title className="job-title">{job.jobTitle}</Card.Title>
                 <Card.Subtitle className="job-type text-muted mb-2">

@@ -1031,7 +1031,7 @@
     /* Space between job cards */
 }
 
-.job-card {
+.job-posts-content {
     flex: 0 0 auto;
     /* Prevent shrinking and allow the cards to maintain their width */
     min-width: 250px;

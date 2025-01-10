@@ -20,6 +20,7 @@ import { UserPostsSection } from "./components/userPosts/UserPostsSection";
 import { JobPostsSection } from "../components/jobPosts/JobPostsSection";
 import { UserExperiencesSection } from "./components/userExperiences/UserExperiencesSection";
 import './ProfilePage.css';
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 // ProfilePage component handles user profile display and related actions
 const ProfilePage = () => {
@@ -41,6 +42,20 @@ const ProfilePage = () => {
   // Checks if the profile belongs to the logged-in user
   const isCurrentUserProfile = loggedInUserId && profileData?.userId === loggedInUserId;
 
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+      <>
+        {Array(fullStars).fill(<FaStar className="text-yellow-500" />)}
+        {halfStar && <FaStarHalfAlt className="text-yellow-500" />}
+        {Array(emptyStars).fill(<FaRegStar className="text-gray-400" />)}
+      </>
+    );
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -54,7 +69,7 @@ const ProfilePage = () => {
         if (!querySnapshot.empty) {
           const profile = querySnapshot.docs[0].data();
           setProfileData(profile);
-          
+
           // Check friendship status after fetching the profile
           checkFriendshipStatus(loggedInUserId, profile.userId);
 
@@ -96,6 +111,7 @@ const ProfilePage = () => {
         console.error("Error fetching user posts:", err);
       }
     };
+
 
     // Fetches jobs posted by the user
     const fetchUserJobs = async (userId) => {
@@ -169,7 +185,7 @@ const ProfilePage = () => {
     //       where("user_id", "in", [loggedInUserId, profileUserId]),
     //       where("connected_user_id", "in", [loggedInUserId, profileUserId])
     //     );
-        
+
     //     const snapshot = await getDocs(connectionsQuery);
 
     //     if (!snapshot.empty) {
@@ -193,7 +209,7 @@ const ProfilePage = () => {
   const handleEditProfile = () => {
     navigate("/UserProfile");
   };
-// Function to send a friend request
+  // Function to send a friend request
   const handleAddFriend = async () => {
     try {
       const connectionsCollectionRef = collection(db, "Connections"); // Reference to the "Connections" collection in Firestore
@@ -208,7 +224,7 @@ const ProfilePage = () => {
       console.error("Error sending friend request:", err);
     }
   };
-// Function to handle removing a friend
+  // Function to handle removing a friend
   const handleRemoveFriend = async () => {
     try {
       // Create a query to search the "Connections" collection to find the connection
@@ -218,7 +234,7 @@ const ProfilePage = () => {
         where("user_id", "in", [loggedInUserId, profileData.userId]), // Find documents where user_id matches either logged-in or profile user
         where("connected_user_id", "in", [loggedInUserId, profileData.userId]) // Find documents where connected_user_id matches either logged-in or profile user
       );
-       // Execute the query to get the matching documents
+      // Execute the query to get the matching documents
       const snapshot = await getDocs(connectionsQuery);
 
       // If a matching connection is found, remove it by deleting the document
@@ -231,7 +247,7 @@ const ProfilePage = () => {
       console.error("Error removing friend:", err);
     }
   };
-// Function to handle blocking a user
+  // Function to handle blocking a user
   const handleBlockUser = async () => {
     try {
       // Create a query to search for existing connection between the logged-in user and the profile user
@@ -267,7 +283,7 @@ const ProfilePage = () => {
   // Function to handle unblocking a user
   const handleUnblockUser = async () => {
     try {
-       // Create a query to search for an existing connection between the logged-in user and the profile user
+      // Create a query to search for an existing connection between the logged-in user and the profile user
       const connectionsQuery = query(
         collection(db, "Connections"),
         where("user_id", "in", [loggedInUserId, profileData.userId]),
@@ -301,7 +317,7 @@ const ProfilePage = () => {
   }
 
   if (error) {
-     // If an error exists, display the error message in a danger-colored alert
+    // If an error exists, display the error message in a danger-colored alert
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Alert variant="danger">{error}</Alert>
@@ -310,7 +326,7 @@ const ProfilePage = () => {
   }
 
   if (!profileData) {
-     // If no profile data exists, display a warning alert indicating profile not found
+    // If no profile data exists, display a warning alert indicating profile not found
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Alert variant="warning">Profile not found</Alert>
@@ -318,8 +334,8 @@ const ProfilePage = () => {
     );
   }
 
-   // Check if the user has been blocked by the profile owner
-   if (blockStatus === "blockedByOther") {
+  // Check if the user has been blocked by the profile owner
+  if (blockStatus === "blockedByOther") {
     // Display the profile container centered on the screen
     return (
       <Container className="profile-container d-flex flex-column justify-content-center align-items-center">
@@ -384,6 +400,10 @@ const ProfilePage = () => {
           {/* Display user's name in the card title */}
           <Card.Title className="text-center profile-card-title">
             {profileData.firstName} {profileData.lastName}
+            <h3>
+              Rating: {renderStars(profileData.ratings.average)}
+              ({profileData.ratings.count})
+            </h3>
           </Card.Title>
           <Card.Text className="text-center">
             {profileData.headline}
@@ -391,7 +411,7 @@ const ProfilePage = () => {
         </Card.Body>
       </Card>
 
-       {/* Conditional rendering: Only show the "Edit Profile" button if this is the current user's profile */}
+      {/* Conditional rendering: Only show the "Edit Profile" button if this is the current user's profile */}
       {isCurrentUserProfile && (
         <div className="d-flex justify-content-center align-items-center mt-3">
           <Button variant="primary" onClick={handleEditProfile}>
@@ -449,12 +469,12 @@ const ProfilePage = () => {
       {(isCurrentUserProfile ||
         !profileData.privateProfile ||
         friendshipStatus === "friends") && (
-        <>
-          <UserPostsSection posts={userPosts} />
-          <JobPostsSection jobs={userJobs} />
-          <UserExperiencesSection experiences={userExperiences} />
-        </>
-      )}
+          <>
+            <UserPostsSection posts={userPosts} />
+            <JobPostsSection jobs={userJobs} />
+            <UserExperiencesSection experiences={userExperiences} />
+          </>
+        )}
       {/* If it's a private profile and the viewer is not a friend, show a message indicating the profile is private */}
       {!isCurrentUserProfile &&
         profileData.privateProfile &&

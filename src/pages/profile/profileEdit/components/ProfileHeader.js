@@ -4,6 +4,7 @@ import DefaultProfilePic from 'common/images/placeholderPic.jpg';
 import './ProfileHeader.css';
 import { auth, db, storage } from "firebaseConfig"; // Adjust path based on location
 import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 /**
  * Profile Header
@@ -68,6 +69,20 @@ export const ProfileHeader = ({
     </div>
 );
 
+const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+        <>
+            {Array(fullStars).fill(<FaStar className="text-yellow-500" />)}
+            {halfStar && <FaStarHalfAlt className="text-yellow-500" />}
+            {Array(emptyStars).fill(<FaRegStar className="text-gray-400" />)}
+        </>
+    );
+};
+
 // BasicInfoForm.js
 const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) => {
     const [formData, setFormData] = useState({ ...profileData });
@@ -79,10 +94,10 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
     };
 
     const handleSave = () => {
-        console.log("Handle save function:" )
+        console.log("Handle save function:")
         if (onProfileDataChange) {
             Object.keys(formData).forEach((field) =>
-            onProfileDataChange(field, formData[field])
+                onProfileDataChange(field, formData[field])
             );
         }
         if (onSave) {
@@ -147,7 +162,7 @@ const BasicInfoForm = ({ profileData, onProfileDataChange, onSave, onCancel }) =
                 className="edit-input"
             >
                 <option value="" disabled>
-                    Select Job Seeking Status   
+                    Select Job Seeking Status
                 </option>
                 <option value="Open to Work">Open to Work</option>
                 <option value="Not Looking">Not Looking</option>
@@ -168,14 +183,18 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
 
     <div className="info-display">
         <h1>{profileData.firstName} {profileData.lastName}</h1>
+        <h3>
+            Rating: {renderStars(profileData.ratings.average)}
+            ({profileData.ratings.count})
+        </h3>
         <p className="job description">
-            {profileData.jobTitle && profileData.currentCompany &&(
+            {profileData.jobTitle && profileData.currentCompany && (
                 <p>
                     {profileData.jobTitle} working at {profileData.currentCompany}
                 </p>
             )}
         </p>
-        {/* <p className="headline">{profileData.headline}</p> TODO maybe not needed*/} 
+        {/* <p className="headline">{profileData.headline}</p> TODO maybe not needed*/}
         <p className="location">
             <MapPin size={16} />
             {profileData.location}
@@ -187,7 +206,7 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
                 <p className="job-seeking-status">
                     {profileData.jobSeekingStatus}
                 </p>
-                )}
+            )}
         </div>
         <button onClick={onEdit} className="edit-btn">
             <Pencil size={16} />

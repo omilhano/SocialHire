@@ -1,5 +1,6 @@
 import { React, useState } from 'react';
 import { Heart, MessageCircle, Share2, Briefcase } from 'lucide-react';
+import { Button } from 'react-bootstrap';
 import ApplyingJobModal from './ApplyJobModal';
 import RecommendModal from './recommendModal/RecommendModal'; // Import RecommendModal component
 
@@ -58,7 +59,7 @@ const JobCard = ({ job }) => {
     };
 
     return (
-        <div className="job-card border border-gray-300 rounded-lg shadow-md p-4 flex flex-col">
+        <div className="job-card">
             <div className="job-image-container mb-4 flex justify-center">
                 {job.imageUrl ? (
                     <img
@@ -73,41 +74,42 @@ const JobCard = ({ job }) => {
                 )}
             </div>
 
-            <div className="job-content flex flex-col">
-                <div className="job-header flex justify-between items-start mb-2">
+            <div className="job-content">
+                <div className="job-header">
                     <h3 className="text-lg font-semibold text-gray-800">{job.jobTitle || 'Untitled Job'}</h3>
                     <div className="location-date-class">
                         <span id="location-post">{job.location}</span>
+                        <span>*</span>
                         <span id="date-post">{formatDate(job.createdAt)}</span>
                     </div>
 
                 </div>
 
-                <div className="job-pay text-sm text-gray-600 mb-2">
+                <div className="job-pay">
                     {job.jobType === "Formal Job" && (
                         <>
                             <span className="pay-range">{formatPayRange(job.payRange?.min, job.payRange?.max)}</span>
-                            <p className="job-description text-sm text-gray-700 mb-4">
+                            <p className="job-description text-sm text-gray-700">
                                 {truncateText(job.jobDescription)}
                             </p>
-                            <p className="job-additional-requirements text-sm text-gray-700 mb-4">
-                                {truncateText(job.additionalJobRequirements)}
+                            <p className="job-additional-requirements text-sm text-gray-700">
+                                Additional Requirements: {truncateText(job.additionalJobRequirements)}
                             </p>
-                            <p className="job-benefits text-sm text-gray-700 mb-4">
-                                {truncateText(job.additionalBenefits)}
+                            <p className="job-benefits text-sm text-gray-700">
+                                Additional Benefits: {truncateText(job.additionalBenefits)}
                             </p>
-                            <p className="job-contract text-sm text-gray-700 mb-4">
-                                {truncateText(job.contractDuration)}
+                            <p className="job-contract text-sm text-gray-700">
+                               Contract duration: {truncateText(job.contractDuration)}
                             </p>
-                            <p className="job-favouredskills text-sm text-gray-700 mb-4">
-                                {truncateText(job.favouredSkills)}
+                            <p className="job-favouredskills text-sm text-gray-700">
+                                Favoured skills: {truncateText(job.favouredSkills)}
                             </p>
                         </>
                     )}
 
                     {job.jobType === "Hustler" && (
                         <>
-                            <p className="job-description text-sm text-gray-700 mb-4">
+                            <p className="job-description text-sm text-gray-700">
                                 {truncateText(job.jobDescription)}
                             </p>
                             <p className="hourly-rate">{formatHourlyRate(job.pricePerHour)}</p>
@@ -124,8 +126,8 @@ const JobCard = ({ job }) => {
 
                 <div className="job-footer flex justify-between items-center">
                     <div className="job-actions flex space-x-4">
-                        <button className="applying-job" onClick={() => setApplyingJobModal(true)}>Apply</button>
-                        <button className="recommend-job" onClick={() => setRecommendModal(true)}>Recommend</button>
+                        <Button variant='success' className="applying-job" onClick={() => setApplyingJobModal(true)}>Apply</Button>
+                        <Button variant='info' className="recommend-job" onClick={() => setRecommendModal(true)}>Recommend</Button>
                     </div>
                 </div>
             </div>

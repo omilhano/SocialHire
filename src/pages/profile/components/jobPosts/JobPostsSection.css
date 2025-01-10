@@ -17,14 +17,13 @@
   justify-content: center;
 }
 
-.job-card {
+.job-posts-content {
   border: none;
   background: #f8f9fa;
   transition: transform 0.2s;
 }
 
 .job-card:hover {
-  transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
