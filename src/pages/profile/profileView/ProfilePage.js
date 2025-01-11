@@ -401,8 +401,11 @@ const ProfilePage = () => {
           <Card.Title className="text-center profile-card-title">
             {profileData.firstName} {profileData.lastName}
             <h3>
-              Rating: {renderStars(profileData.ratings.average)}
-              ({profileData.ratings.count})
+              Rating: {profileData?.ratings?.average !== undefined
+                ? renderStars(profileData.ratings.average)
+                : renderStars(0)}
+              ({profileData?.ratings?.count || 0})
+
             </h3>
           </Card.Title>
           <Card.Text className="text-center">

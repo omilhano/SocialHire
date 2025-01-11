@@ -184,8 +184,11 @@ const BasicInfoDisplay = ({ profileData, onEdit }) => (
     <div className="info-display">
         <h1>{profileData.firstName} {profileData.lastName}</h1>
         <h3>
-            Rating: {renderStars(profileData.ratings.average)}
-            ({profileData.ratings.count})
+            Rating: {profileData?.ratings?.average !== undefined
+                ? renderStars(profileData.ratings.average)
+                : renderStars(0)}
+            ({profileData?.ratings?.count || 0})
+
         </h3>
         <p className="job description">
             {profileData.jobTitle && profileData.currentCompany && (
