@@ -98,12 +98,12 @@ const RecommendModal = ({ show, onClose, jobId, jobTitle }) => {
 
             // If no chat exists, create a new chat
             if (!chatId) {
+                chatId = [user.uid, friendId].sort().join('_');
                 const newChatRef = await addDoc(chatsCollection, {
                     users: [user.uid, friendId],
                     lastMessage: '',
                     lastMessageTimestamp: Timestamp.now(),
                 });
-                chatId = newChatRef.id;
             }
 
             // Add the recommendation as a new message in the chat's messages subcollection

@@ -11,6 +11,10 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
 
     const chatId = [currentUserId, selectedChat].sort().join('_');
     const { messages, loading, error } = useGetMessagesOrdered(chatId);
+    // Log messages to debug
+    useEffect(() => {
+        console.log('Messages in ChatWindow:', messages);
+    }, [messages]);
 
     useEffect(() => {
         const fetchUserName = async () => {
