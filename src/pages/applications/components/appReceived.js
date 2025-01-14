@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -7,9 +7,38 @@ import { db } from 'firebaseConfig';
 import RatingModal from './ratingModal';
 
 const ReceivedApplications = ({ applications }) => {
+    const [applicantNames, setApplicantNames] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [currentApplication, setCurrentApplication] = useState(null); // Store the full application
     const navigate = useNavigate();
+
+    // Fetch names when applications change
+    useEffect(() => {
+        const fetchApplicantNames = async () => {
+            const names = {};
+            for (const app of applications) {
+                try {
+                    const userDoc = doc(db, 'users', app.applicantId);
+                    const userSnap = await getDoc(userDoc);
+
+                    if (userSnap.exists()) {
+                        const { firstName, lastName } = userSnap.data();
+                        names[app.applicantId] = { firstName, lastName };
+                    } else {
+                        names[app.applicantId] = { firstName: 'Unknown', lastName: 'User' };
+                    }
+                } catch (error) {
+                    console.error('Error fetching applicant details:', error);
+                    names[app.applicantId] = { firstName: 'Error', lastName: 'Fetching' };
+                }
+            }
+            setApplicantNames(names);
+        };
+
+        if (applications && applications.length > 0) {
+            fetchApplicantNames();
+        }
+    }, [applications]);
 
     const viewProfile = async (applicantId) => {
         try {
@@ -33,18 +62,15 @@ const ReceivedApplications = ({ applications }) => {
             const applicationDoc = doc(db, 'applications', application.id);
 
             if (newStatus === 'Rejected') {
-                // Handle rejection: delete the application
                 await deleteDoc(applicationDoc);
                 alert('Application rejected and deleted successfully!');
+                window.location.reload();
             } else {
-                // Update the application status
                 await updateDoc(applicationDoc, { status: newStatus });
                 alert(`Application status changed to ${newStatus} successfully!`);
-
-                // Open the modal when the status is 'Finished' and set the current application
                 if (newStatus === 'Finished') {
-                    setCurrentApplication(application);  // Set the full application data
-                    setShowModal(true);  // Show the modal
+                    setCurrentApplication(application);
+                    setShowModal(true);
                 }
             }
         } catch (error) {
@@ -62,7 +88,7 @@ const ReceivedApplications = ({ applications }) => {
                 feedback,
             });
             alert('Job finished and rating submitted successfully!');
-            setShowModal(false); // Close the modal
+            setShowModal(false);
             window.location.reload();
         } catch (error) {
             console.error('Error submitting rating:', error);
@@ -78,7 +104,10 @@ const ReceivedApplications = ({ applications }) => {
                         <div className="col-md-4 mb-4" key={index}>
                             <div className="card h-100 shadow-sm">
                                 <div className="card-body">
-                                    <h5 className="card-title">Applicant ID: {app.applicantId}</h5>
+                                    <h5 className="card-title">
+                                        Applicant: {applicantNames[app.applicantId]?.firstName || 'Loading...'}{' '}
+                                        {applicantNames[app.applicantId]?.lastName || 'Loading...'}
+                                    </h5>
                                     <h6 className="card-subtitle mb-2 text-muted">{app.jobTitle}</h6>
                                     <p className="card-text">{app.motivationText}</p>
                                     <p className="card-text">Years of experience: {app.yearsOfExperience}</p>
@@ -129,9 +158,9 @@ const ReceivedApplications = ({ applications }) => {
             )}
             {currentApplication && (
                 <RatingModal
-                    app={currentApplication} // Pass the full application object
+                    app={currentApplication}
                     show={showModal}
-                    onClose={() => setShowModal(false)} // Close the modal
+                    onClose={() => setShowModal(false)}
                     onSubmit={handleRatingSubmit}
                 />
             )}
