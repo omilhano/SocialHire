@@ -5,9 +5,10 @@ import Card from 'react-bootstrap/Card';
 import Diversity from 'common/images/Diversity.jpg';
 import Scratch from 'common/images/scratch.png';
 import Explode from 'common/images/explode.png';
-import Alex from 'common/images/SocialHirealex.png';
-import Brenda from 'common/images/SocialHirebrenda.png';
-import Eli from 'common/images/SocialHireeli.png';
+import Alexfoto from 'common/images/alexfoto.webp';
+import Eli from 'common/images/eli.webp';
+import Brenda from 'common/images/brenda.webp';
+import Simon from 'common/images/simon.webp';
 import Dash from 'common/images/dashhalf.png';
 import Diamond from 'common/images/doublediamond.png';
 import useRedirectIfLoggedIn from 'common/hooks/useRedirectIfLoggedIn';
@@ -44,7 +45,7 @@ const About = () => {
                 </div>
                 <div className='founders-cards'>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" alt="Photo of Alexandre Francisco" style={{ 'maxHeight': '310px', 'width': '100%' }} />
+                        <Card.Img variant="top" src={Alexfoto} alt="Photo of Alexandre Francisco" style={{ 'maxHeight': '320px', 'width': '100%' }} />
                         <Card.Body style={{ 'background-color': '#177B7B' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Alexandre Francisco</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
@@ -54,8 +55,8 @@ const About = () => {
                         </Card.Body>
                     </Card>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src="holder.js/100px180" />
-                        {/* style={{ 'maxHeight': '310px', 'width': '100%' }} /> */}
+                        <Card.Img variant="top" src={Brenda} style={{ 'maxHeight': '320px', 'width': '100%' }} />
+                        { }
                         <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.8)' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Brenda Lima</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
@@ -68,8 +69,7 @@ const About = () => {
                         </Card.Body>
                     </Card>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src="holder.js/100px180" />
-                        {/* style={{ 'maxHeight': '310px', 'width': '100%' }} /> */}
+                        <Card.Img variant="top" src={Eli} style={{ 'maxHeight': '320px', 'width': '100%' }} />
                         <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.6)' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Eli Godinho</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
@@ -79,7 +79,7 @@ const About = () => {
                         </Card.Body>
                     </Card>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src="holder.js/100px180" />
+                        <Card.Img variant="top" src={Simon} style={{ 'maxHeight': '320px', 'width': '100%' }} />
                         <Card.Body style={{ 'background-color': 'rgba(23, 123, 123, 0.4)' }}>
                             <Card.Title style={{ 'color': '#E5E5E5' }}>Simon Sazonov</Card.Title>
                             <Card.Text style={{ 'color': '#E5E5E5' }}>
