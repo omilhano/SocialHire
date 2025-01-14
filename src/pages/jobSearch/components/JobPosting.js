@@ -99,7 +99,7 @@ const JobCard = ({ job }) => {
                                 Additional Benefits: {truncateText(job.additionalBenefits)}
                             </p>
                             <p className="job-contract text-sm text-gray-700">
-                               Contract duration: {truncateText(job.contractDuration)}
+                                Contract duration: {truncateText(job.contractDuration)}
                             </p>
                             <p className="job-favouredskills text-sm text-gray-700">
                                 Favoured skills: {truncateText(job.favouredSkills)}
@@ -135,13 +135,14 @@ const JobCard = ({ job }) => {
                 show={showApplyingModal}
                 onClose={() => setApplyingJobModal(false)}
                 jobId={job.id}
-                jobTitle = {job.jobTitle}
+                jobTitle={job.jobTitle}
                 creatorId={job.userId}
             />
             <RecommendModal
                 show={showRecommendModal}
                 onClose={() => setRecommendModal(false)}
                 jobId={job.id}
+                jobTitle={job.jobTitle}
                 creatorId={job.userID}
             />
 

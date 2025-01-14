@@ -8,9 +8,6 @@ import { useAuth } from 'common/hooks/useAuth'; // Custom hook to handle user au
 import { db } from "firebaseConfig"; // Firebase configuration for accessing Firestore
 import {collection, query, where, getDocs } from "firebase/firestore"; // Firestore functions
 
-//tryng users
-import UserCard from './components/UserCard'; 
-
 
 const Main = () => {
     const { user, loading } = useAuth(); // Destructuring user and loading state from the authentication hook
