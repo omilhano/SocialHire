@@ -67,6 +67,8 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
 
             console.log("User blocked successfully.");
             setShowBlockUserModal(false); // Close the modal after blocking
+            // Refresh the page
+            window.location.reload();
         } catch (err) {
             console.error("Error blocking user:", err);
         }
