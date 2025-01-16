@@ -107,6 +107,7 @@ const RecommendModal = ({ show, onClose, jobId, jobTitle }) => {
                 });
             }
             // Create a clickable link to the job page
+            // CHANGE THIS BEFORE DEPLOYING
             const jobLink = `http://localhost:3000/job/${jobId}`; // Assuming your job details route is like /job/:jobId
             const messageText = `I recommend you check out this job: "${jobTitle}". Click here to view the details: ${jobLink}`;
 
