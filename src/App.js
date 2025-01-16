@@ -21,6 +21,7 @@ import ChatPage from 'pages/chat/ChatPage';
 import ProfilePage from 'pages/profile/profileView/ProfilePage';
 import CompanyProfile from 'pages/companyProfile/CompanyProfile1';
 import ApplicationsPage from 'pages/applications/Applications';
+import JobDetailPage from 'pages/jobSearch/components/JobDetailPage';
 
 function App() {
   const [filters, setFilters] = useState({ jobType: '', location: '', numOfPeople: '' }); // Define filters state
@@ -33,7 +34,7 @@ function App() {
     <div className="App">
       {/* Conditional Navbar */}
       {landingNavbarRoutes.includes(currentLocation.pathname.toLowerCase()) ? (
-        <LandingNavbar/>
+        <LandingNavbar />
       ) : (
         <NavbarSocialhire setFilters={setFilters} /> // Pass setFilters to NavbarSocialhire
       )}
@@ -43,11 +44,12 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/Main" element={<Main />} />
         <Route path="/JobSearch" element={<JobSearch filters={filters} />} /> {/* Pass filters to JobSearch */}
+        <Route path="/job/:jobId" element={<JobDetailPage />} />
         <Route path="/UserProfile" element={<Profile />} />
         <Route path='/companyprofile' element={<CompanyProfile />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-        <Route path="/applications" element={<ApplicationsPage/>} />
+        <Route path="/applications" element={<ApplicationsPage />} />
         <Route path="/tos" element={<TOS />} />
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/credits" element={<Credits />} />
