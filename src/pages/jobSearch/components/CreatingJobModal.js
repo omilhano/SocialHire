@@ -5,6 +5,7 @@ import 'common/components/filtersModal/FiltersModal.css';
 import { useAuth } from 'common/hooks/useAuth';
 import { db } from 'firebaseConfig';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
+import Paypal from './Paypal';
 
 // TODO finish Filters
 
@@ -27,6 +28,7 @@ const CreatingJobModal = ({ show, onClose }) => {
     const [favouredSkills, setFavouredSkills] = useState([]);
     const [contractDuration, setDuration] = useState('');
     const [userType, setUserType] = useState(''); // State to store userType
+    const [checkout, setCheckOut] = useState(false);
 
     const { user } = useAuth();
 
@@ -74,6 +76,10 @@ const CreatingJobModal = ({ show, onClose }) => {
         setJobType(value);
     };
 
+    // Calculate the total price dynamically
+    const calculateTotalPrice = () => {
+        return pricePerHour * jobExpectedTime;
+    };
 
     const handleSaveJob = async () => {
         if (!jobTitle) {
@@ -254,6 +260,19 @@ const CreatingJobModal = ({ show, onClose }) => {
                                     <li key={index}>{requirement}</li>
                                 ))}
                             </ul>
+                        </div>
+                        <div className="paypal-wall">
+                            {checkout ? (
+                                <Paypal totalr={calculateTotalPrice()} />
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setCheckOut(true);
+                                    }}
+                                >
+                                    Checkout
+                                </button>
+                            )}
                         </div>
                     </>
                 )}
