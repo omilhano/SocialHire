@@ -4,6 +4,7 @@ import { collection, query, where, getDocs, doc, setDoc, addDoc, Timestamp } fro
 import { db } from 'firebaseConfig';
 import { useAuth } from 'common/hooks/useAuth';
 
+
 const RecommendModal = ({ show, onClose, jobId, jobTitle }) => {
     const { user } = useAuth();
     const [friends, setFriends] = useState([]);
@@ -105,12 +106,15 @@ const RecommendModal = ({ show, onClose, jobId, jobTitle }) => {
                     lastMessageTimestamp: Timestamp.now(),
                 });
             }
+            // Create a clickable link to the job page
+            const jobLink = `http://localhost:3000/job/${jobId}`; // Assuming your job details route is like /job/:jobId
+            const messageText = `I recommend you check out this job: "${jobTitle}". Click here to view the details: ${jobLink}`;
 
             // Add the recommendation as a new message in the chat's messages subcollection
             const messagesCollection = collection(db, 'chats', chatId, 'messages');
             await addDoc(messagesCollection, {
                 senderId: user.uid,
-                text: `I recommend you check out this job: "${jobTitle}".`,
+                text: messageText,
                 timestamp: Timestamp.now(),
             });
 

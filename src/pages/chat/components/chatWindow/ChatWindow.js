@@ -4,6 +4,7 @@ import { getDoc, doc, collection, addDoc, updateDoc, setDoc, query, where, getDo
 import { useGetMessagesOrdered } from 'common/hooks/useGetMessagesOrdered';
 import BlockUserModal from 'pages/profile/profileView/components/BlockUserModal';
 import './ChatWindow.css';
+const BASE_URL = 'http://localhost:3000/'; // Adjust this to your base URL
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [chatUserName, setChatUserName] = useState('');
@@ -39,6 +40,16 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
         fetchUserName();
     }, [selectedChat]);
 
+    const renderMessageText = (text) => {
+        // Regex to find URLs and replace them with anchor tags
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.split(urlRegex).map((part, index) => {
+            if (part.match(urlRegex)) {
+                return <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</a>;
+            }
+            return part; // Just return the regular part of the text
+        });
+    };
 
     const handleBlockUser = async () => {
         try {
@@ -153,7 +164,7 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
                     messages.map((msg, index) => (
                         <div key={index} className={`message ${msg.senderId === currentUserId ? 'sent' : 'received'}`}>
                             <p>{msg.senderId === currentUserId ? 'You' : chatUserName}:</p>
-                            <p>{msg.text}</p>
+                            <p>{renderMessageText(msg.text)}</p> {/* Render message with clickable links */}
                         </div>
                     ))
                 )}
