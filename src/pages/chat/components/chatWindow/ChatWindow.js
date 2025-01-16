@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from 'firebaseConfig';
-import { getDoc, doc, collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { getDoc, doc, collection, addDoc, updateDoc, setDoc, query, where, getDocs  } from 'firebase/firestore';
 import { useGetMessagesOrdered } from 'common/hooks/useGetMessagesOrdered';
+import BlockUserModal from 'pages/profile/profileView/components/BlockUserModal';
 import './ChatWindow.css';
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [chatUserName, setChatUserName] = useState('');
     const [messageText, setMessageText] = useState('');
+    const [showBlockUserModal, setShowBlockUserModal] = useState(false);
     const chatBoxRef = useRef(null); // Ref for the chat-box
 
     const chatId = [currentUserId, selectedChat].sort().join('_');
@@ -36,6 +38,41 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
 
         fetchUserName();
     }, [selectedChat]);
+
+
+    const handleBlockUser = async () => {
+        try {
+            const connectionsQuery = query(
+                collection(db, "Connections"),
+                where("user_id", "in", [currentUserId, selectedChat]),
+                where("connected_user_id", "in", [currentUserId, selectedChat])
+            );
+            const snapshot = await getDocs(connectionsQuery);
+
+            if (!snapshot.empty) {
+                const docId = snapshot.docs[0].id;
+                await updateDoc(doc(db, "Connections", docId), { 
+                    status: "blocked" ,
+                    blocked_by: currentUserId // Track who blocked whom
+                });
+            } else {
+                await addDoc(collection(db, "Connections"), {
+                    user_id: currentUserId,
+                    connected_user_id: selectedChat,
+                    status: "blocked",
+                    blocked_by: currentUserId, // Track who blocked whom
+                    created_at: new Date(),
+                });
+            }
+
+            console.log("User blocked successfully.");
+            setShowBlockUserModal(false); // Close the modal after blocking
+            // Refresh the page
+            window.location.reload();
+        } catch (err) {
+            console.error("Error blocking user:", err);
+        }
+    };
 
     const handleSendMessage = async () => {
         if (!messageText || !selectedChat || !currentUserId) {
@@ -95,6 +132,19 @@ const ChatWindow = ({ currentUserId, selectedChat }) => {
     return (
         <div className="chat-main">
             <h2>Chat with {chatUserName}</h2>
+            {/* Block Button */}
+            <button 
+                className="block-button" 
+                onClick={() => setShowBlockUserModal(true)}
+            >
+                Block User
+            </button>
+            {/* Block User Modal */}
+            <BlockUserModal 
+                show={showBlockUserModal} 
+                onHide={() => setShowBlockUserModal(false)} 
+                onConfirm={handleBlockUser} 
+            />
 
             <div className="chat-box" ref={chatBoxRef}>
                 {messages.length === 0 ? (

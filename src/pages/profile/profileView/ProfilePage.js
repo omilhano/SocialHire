@@ -165,7 +165,7 @@ const ProfilePage = () => {
           const connection = snapshot.docs[0].data();
           if (connection.status === "blocked") {
             // Handle block statuses
-            if (connection.user_id === loggedInUserId) {
+            if (connection.blocked_by === loggedInUserId) {
               setBlockStatus("blocked");
             } else {
               setBlockStatus("blockedByOther");
@@ -269,6 +269,7 @@ const ProfilePage = () => {
           user_id: loggedInUserId,
           connected_user_id: profileData.userId,
           status: "blocked", // Set the initial status to "blocked"
+          blocked_by: loggedInUserId,
           created_at: new Date(), // Set the creation date of the new connection
         });
       }
