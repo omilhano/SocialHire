@@ -82,7 +82,6 @@ const JobCard = ({ job }) => {
                         <span>*</span>
                         <span id="date-post">{formatDate(job.createdAt)}</span>
                     </div>
-
                 </div>
 
                 <div className="job-pay">
@@ -126,11 +125,30 @@ const JobCard = ({ job }) => {
 
                 <div className="job-footer flex justify-between items-center">
                     <div className="job-actions flex space-x-4">
-                        <Button variant='success' className="applying-job" onClick={() => setApplyingJobModal(true)}>Apply</Button>
-                        <Button variant='info' className="recommend-job" onClick={() => setRecommendModal(true)}>Recommend</Button>
+                        <Button
+                            variant='success'
+                            className="applying-job"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent parent click event
+                                setApplyingJobModal(true);
+                            }}
+                        >
+                            Apply
+                        </Button>
+                        <Button
+                            variant='info'
+                            className="recommend-job"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent parent click event
+                                setRecommendModal(true);
+                            }}
+                        >
+                            Recommend
+                        </Button>
                     </div>
                 </div>
             </div>
+
             <ApplyingJobModal
                 show={showApplyingModal}
                 onClose={() => setApplyingJobModal(false)}
@@ -145,7 +163,6 @@ const JobCard = ({ job }) => {
                 jobTitle={job.jobTitle}
                 creatorId={job.userID}
             />
-
         </div>
     );
 };
