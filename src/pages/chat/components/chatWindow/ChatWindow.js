@@ -4,7 +4,7 @@ import { getDoc, doc, collection, addDoc, updateDoc, setDoc, query, where, getDo
 import { useGetMessagesOrdered } from 'common/hooks/useGetMessagesOrdered';
 import BlockUserModal from 'pages/profile/profileView/components/BlockUserModal';
 import './ChatWindow.css';
-const BASE_URL = 'http://localhost:3000/'; // Adjust this to your base URL
+
 
 const ChatWindow = ({ currentUserId, selectedChat }) => {
     const [chatUserName, setChatUserName] = useState('');

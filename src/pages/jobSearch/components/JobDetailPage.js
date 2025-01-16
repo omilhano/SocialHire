@@ -1,13 +1,45 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+// Fetch job by ID from Firestore
+const fetchJobById = async (jobId) => {
+    const db = getFirestore();
+
+    try {
+        // Reference to the job document in the "jobs" collection
+        const jobRef = doc(db, 'jobs', jobId);
+        const jobSnapshot = await getDoc(jobRef);
+
+        if (jobSnapshot.exists()) {
+            return jobSnapshot.data();
+        } else {
+            console.log('No such job!');
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching job:", error);
+        return null;
+    }
+};
 
 const JobDetailPage = () => {
-    const location = useLocation();
+    const { jobId } = useParams(); // Get jobId from URL parameters
     const navigate = useNavigate();
-    const job = location.state?.job; // Access the passed job data
+    const [job, setJob] = useState(null);
+
+    useEffect(() => {
+        // Fetch job details using the jobId from the URL
+        const getJobDetails = async () => {
+            const jobData = await fetchJobById(jobId);
+            setJob(jobData);
+        };
+
+        getJobDetails();
+    }, [jobId]); // Dependency array ensures this runs when jobId changes
 
     if (!job) {
-        return <div>No job details available. Please navigate back to the listings page.</div>;
+        return <div>Loading job details...</div>;
     }
 
     const formatPayRange = (min, max) => {
