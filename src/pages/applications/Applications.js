@@ -5,9 +5,6 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import ReceivedApplications from "./components/appReceived";
 
-/* TODO ADD COMMENTS
-   CHANGE STRUCTURE
-*/
 
 
 const ApplicationsPage = () => {
